@@ -125,8 +125,50 @@ public class BuildingMode extends JFrame {
         plusButton.setPreferredSize(buttonSize);
         minusButton.setPreferredSize(buttonSize);
 
+        plusButton.addActionListener(e -> updateBarrierCount(true, numberOfBarriers, initialValue, Integer.MAX_VALUE, barrierType));
+        minusButton.addActionListener(e -> updateBarrierCount(false, numberOfBarriers, initialValue, Integer.MAX_VALUE, barrierType));
+
         return barrierPanel;
     }
+
+    private void updateBarrierCount(boolean increment, JLabel label, int minCount, int maxCount, int barrierType) {
+        // Determine which barrier count to update
+        switch (barrierType) {
+            case 1: // Simple Barriers
+                if (increment && simpleBarriersCount < maxCount) {
+                    simpleBarriersCount++;
+                } else if (!increment && simpleBarriersCount > minCount) {
+                    simpleBarriersCount--;
+                }
+                label.setText(String.valueOf(simpleBarriersCount));
+                break;
+            case 2: // Firm Barriers
+                if (increment && firmBarriersCount < maxCount) {
+                    firmBarriersCount++;
+                } else if (!increment && firmBarriersCount > minCount) {
+                    firmBarriersCount--;
+                }
+                label.setText(String.valueOf(firmBarriersCount));
+                break;
+            case 3: // Explosive Barriers
+                if (increment && explosiveBarriersCount < maxCount) {
+                    explosiveBarriersCount++;
+                } else if (!increment && explosiveBarriersCount > minCount) {
+                    explosiveBarriersCount--;
+                }
+                label.setText(String.valueOf(explosiveBarriersCount));
+                break;
+            case 4: // Gift Barriers
+                if (increment && giftBarriersCount < maxCount) {
+                    giftBarriersCount++;
+                } else if (!increment && giftBarriersCount > minCount) {
+                    giftBarriersCount--;
+                }
+                label.setText(String.valueOf(giftBarriersCount));
+                break;
+        }
+    }
+
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
             BuildingMode frame = new BuildingMode();
