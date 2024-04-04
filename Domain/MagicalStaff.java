@@ -64,5 +64,8 @@ public class MagicalStaff {
     // Getters
     public int getWidth() { return width; }
     public int getHeight() { return height; }
+    public int getX() { return xPosition; }
+    public int getY() { return yPosition; }
+
 }
 

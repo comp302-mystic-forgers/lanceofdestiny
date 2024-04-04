@@ -4,15 +4,15 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class GameWindow extends JFrame {
-    private MagicalStaffView magicalStaffView;
+    private GameView GameView;
 
     public GameWindow() {
         super("Lance of Destiny");
         setSize(400, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        magicalStaffView = new MagicalStaffView(getWidth(), getHeight());
-        add(magicalStaffView);
+        GameView = new GameView(getWidth(), getHeight());
+        add(GameView);
 
         // Key bindings for moving and rotating the staff
         setFocusable(true);
@@ -20,9 +20,9 @@ public class GameWindow extends JFrame {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT) {
-                    magicalStaffView.moveStaff(e.getKeyCode());
+                    GameView.moveStaff(e.getKeyCode());
                 } else if (e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_D) {
-                    magicalStaffView.rotateStaff(e.getKeyCode());
+                    GameView.rotateStaff(e.getKeyCode());
                 }
             }
         });
