@@ -13,7 +13,7 @@ class BackgroundPanel extends JPanel {
     public BackgroundPanel() {
         setLayout(new BorderLayout());
         try {
-            backgroundImage = ImageIO.read(new File("/Users/gulbeyazb/lanceofdestiny/Assets/Images/200Background.png"));
+            backgroundImage = ImageIO.read(new File("Assets/Images/200Background.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
