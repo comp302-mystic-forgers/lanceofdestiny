@@ -34,7 +34,7 @@ public class BuildingMode extends JFrame {
 
         bottomPanel.setLayout(new BorderLayout());
 
-        ImageIcon imageIcon = new ImageIcon("Images/Player.png");
+        ImageIcon imageIcon = new ImageIcon("Assets/Images/Player.png");
         JLabel imageLabel = new JLabel(imageIcon);
         imageLabel.setHorizontalAlignment(JLabel.CENTER);
         imageLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
@@ -58,10 +58,10 @@ public class BuildingMode extends JFrame {
         controlPanel.setLayout(new GridLayout(4, 4, 10, 10));
 
         // Add each barrier's control to the control panel
-        controlPanel.add(createBarrierControl("Simple Barriers", simpleBarriersCount, 1, "/Users/gulbeyazb/lanceofdestiny/Assets/Images/200Bluegem.png"));
-        controlPanel.add(createBarrierControl("Firm Barriers", firmBarriersCount, 2, "/Users/gulbeyazb/lanceofdestiny/Assets/Images/200Firm.png"));
-        controlPanel.add(createBarrierControl("Explosive Barriers", explosiveBarriersCount, 3, "/Users/gulbeyazb/lanceofdestiny/Assets/Images/200Redgem.png"));
-        controlPanel.add(createBarrierControl("Gift Barriers", giftBarriersCount, 4, "/Users/gulbeyazb/lanceofdestiny/Assets/Images/200Greengem.png"));
+        controlPanel.add(createBarrierControl("Simple Barriers", simpleBarriersCount, 1, "Assets/Images/200Bluegem.png"));
+        controlPanel.add(createBarrierControl("Firm Barriers", firmBarriersCount, 2, "Assets/Images/200Firm.png"));
+        controlPanel.add(createBarrierControl("Explosive Barriers", explosiveBarriersCount, 3, "Assets/Images/200Redgem.png"));
+        controlPanel.add(createBarrierControl("Gift Barriers", giftBarriersCount, 4, "Assets/Images/200Greengem.png"));
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setOpaque(false);
