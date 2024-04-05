@@ -1,16 +1,18 @@
 package Domain;
 import java.awt.Graphics;
 import java.awt.Color;
+import javax.swing.*;
 
 public class FireBall {
     private int x, y; // Fireball position
-    private final int diameter = 16; // Fireball size
+    private final int diameter = 20; // Fireball size
     private int xVelocity = 1; // Fireball horizontal movement speed
     private int yVelocity = 1; // Fireball vertical movement speed
-
+    private ImageIcon icon;
     public FireBall(int startX, int startY) {
         this.x = startX;
         this.y = startY;
+        this.icon = new ImageIcon("Assets/Images/200FireBall.png");
     }
     public void setVelocity(int xVel, int yVel) {
         this.xVelocity = xVel;
@@ -34,8 +36,12 @@ public class FireBall {
     }
 
     public void draw(Graphics g) {
-        g.setColor(Color.RED);
-        g.fillOval(x, y, diameter, diameter);
+        if (icon!= null) {
+            g.drawImage(icon.getImage(), x, y, diameter, diameter, null);
+        } else {
+            g.setColor(Color.RED);
+            g.fillOval(x, y, diameter, diameter);
+        }
     }
 
     // Collision detection with the Magical Staff

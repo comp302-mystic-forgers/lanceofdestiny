@@ -4,30 +4,46 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
+import javax.swing.*;
 
 public class MagicalStaff {
     private int xPosition, yPosition;
-    private int width, height = 20;
+    private int width, height = 5;
     private double angle = 0; // Rotation angle in degrees
+    private ImageIcon icon;
 
     public MagicalStaff(int panelWidth, int panelHeight) {
         this.width = (int) (panelWidth * 0.1); // Initialize staff width as 10% of panel width
         this.xPosition = (panelWidth - width) / 2; // Center the staff horizontally
         this.yPosition = panelHeight - height - 30; // Position staff from the bottom
+        this.icon = new ImageIcon("Assets/Images/200Player.png");
     }
 
     public void draw(Graphics g) {
-        Graphics2D g2d = (Graphics2D) g.create();
+        if (icon!= null) {
+            Graphics2D g2d = (Graphics2D) g.create();
 
-        // Translate the graphics context to the rotation anchor point
-        g2d.translate(xPosition + width / 2, yPosition + height / 2);
-        // Rotate the graphics context
-        g2d.rotate(Math.toRadians(angle));
-        // Translate back and draw the staff
-        g2d.setColor(Color.BLACK);
-        g2d.fillRect(-width / 2, -height / 2, width, height);
+            // Translate the graphics context to the rotation anchor point
+            g2d.translate(xPosition + width / 2, yPosition + height / 2);
+            // Rotate the graphics context
+            g2d.rotate(Math.toRadians(angle));
+            // Translate back and draw the staff
+            g2d.drawImage(icon.getImage(), -icon.getIconWidth() / 2, -icon.getIconHeight() / 2, null);
 
-        g2d.dispose(); // Dispose of this graphics context and release any system resources that it is using
+            g2d.dispose(); // Dispose of this graphics context and release any system resources that it is using
+        } else {
+            Graphics2D g2d = (Graphics2D) g.create();
+
+            // Translate the graphics context to the rotation anchor point
+            g2d.translate(xPosition + width / 2, yPosition + height / 2);
+            // Rotate the graphics context
+            g2d.rotate(Math.toRadians(angle));
+            // Translate back and draw the staff
+            g2d.setColor(Color.BLACK);
+            g2d.fillRect(-width / 2, -height / 2, width, height);
+
+            g2d.dispose(); // Dispose of this graphics context and release any system resources that it is using
+        }
     }
 
     public void move(int keyCode, int panelWidth) {
