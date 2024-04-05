@@ -8,6 +8,10 @@ public class Login extends JFrame implements ActionListener {
     private JTextField userNameField;
     private JPasswordField passwordField;
     private JButton loginButton;
+    private JPanel newPanel;
+
+
+
 
 
     public Login(){
@@ -17,11 +21,19 @@ public class Login extends JFrame implements ActionListener {
         setLayout(new GridLayout(3, 2));
         JLabel userNameLabel = new JLabel("username: ");
         add(userNameLabel);
+        userNameField = new JTextField();
+        add(userNameField);
+
+
         JLabel passwordLabel = new JLabel("Password: ");
         add(passwordLabel);
+        passwordField = new JPasswordField();
+        add(passwordField);
+
         loginButton = new JButton("Login: ");
         loginButton.addActionListener(this);
         add(loginButton);
+
 
         setVisible(true);
     }
@@ -32,13 +44,21 @@ public class Login extends JFrame implements ActionListener {
         if (e.getSource() == loginButton){
             String username = userNameField.getText();
             String password = new String(passwordField.getPassword());
+            if (isValidLogin(username, password)){
+                JOptionPane.showMessageDialog(this, "Login is successful", "Success", JOptionPane.INFORMATION_MESSAGE);
+
+            }
+            else {
+                JOptionPane.showMessageDialog(this, "Invalid username or password. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
+
+            }
 
 
         }
 
     }
     private boolean isValidLogin(String username, String password) {
-        return username.length() > 5 || password.length() > 12;
+        return username.length() > 5 && password.length() > 12;
     }
 
     public static void main(String[] args) {
