@@ -46,7 +46,9 @@ public class Login extends JFrame implements ActionListener {
             String password = new String(passwordField.getPassword());
             if (isValidLogin(username, password)){
                 JOptionPane.showMessageDialog(this, "Login is successful", "Success", JOptionPane.INFORMATION_MESSAGE);
-
+                BuildingModeMenu buildingModeMenu = new BuildingModeMenu();
+                buildingModeMenu.setVisible(true);
+                this.dispose();
             }
             else {
                 JOptionPane.showMessageDialog(this, "Invalid username or password. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
