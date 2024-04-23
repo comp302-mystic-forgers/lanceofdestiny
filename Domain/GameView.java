@@ -14,6 +14,9 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     private MagicalStaff magicalStaff;
     private FireBall fireball;
     private ArrayList<SimpleBarrier> simpleBarriers; // ArrayList to hold SimpleBarrier objects
+    private ArrayList<ReinforcedBarrier> reinforcedBarriers;
+    private ArrayList<ExplosiveBarrier> explosiveBarriers;
+    private ArrayList<RewardingBarrier> rewardingBarriers;
     private Timer timer;
     private boolean gameRunning = true;
 
@@ -22,11 +25,20 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         this.magicalStaff = new MagicalStaff(panelWidth, panelHeight - 50); // Position MagicalStaff towards the bottom
         this.fireball = new FireBall(panelWidth / 2, 0); // Start Fireball from the top middle
         this.simpleBarriers = new ArrayList<>(); // Initialize the ArrayList
+        this.reinforcedBarriers = new ArrayList<>();
+        this.explosiveBarriers = new ArrayList<>();
+        this.rewardingBarriers = new ArrayList<>();
         addComponentListener(this);
 
         // Create multiple SimpleBarrier objects and add them to the ArrayList
         simpleBarriers.add(new SimpleBarrier(100, 200, 50, 20));
         simpleBarriers.add(new SimpleBarrier(300, 150, 50, 20));
+        reinforcedBarriers.add(new ReinforcedBarrier(400, 100, 50, 20));
+        reinforcedBarriers.add(new ReinforcedBarrier(300, 100, 50, 20));
+        explosiveBarriers.add(new ExplosiveBarrier(500, 100, 50, 15));
+        explosiveBarriers.add(new ExplosiveBarrier(600, 100, 50, 15));
+        rewardingBarriers.add(new RewardingBarrier(700, 100, 50, 20));
+        rewardingBarriers.add(new RewardingBarrier(800, 100, 50, 20));
 
         timer = new Timer(10, this);
         timer.start();
@@ -41,6 +53,15 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             // Draw all SimpleBarrier objects in the ArrayList
             for (SimpleBarrier barrier : simpleBarriers) {
                 barrier.draw(g);
+            }
+            for (ReinforcedBarrier rbarrier : reinforcedBarriers) {
+                rbarrier.draw(g);
+            }
+            for (ExplosiveBarrier ebarrier : explosiveBarriers) {
+                ebarrier.draw(g);
+            }
+            for (RewardingBarrier rwbarrier : rewardingBarriers) {
+                rwbarrier.draw(g);
             }
         } else {
             // Optionally, draw a "Game Over" message directly onto the panel
@@ -82,6 +103,27 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             if (barrier.collidesWithFireBall(fireball)) {
                 barrier.destroy(); // Destroy the barrier
                 barrier.handleCollisionResponse(fireball); // Handle collision response
+            }
+        }
+
+        for (ReinforcedBarrier rbarrier : reinforcedBarriers) {
+            if (rbarrier.collidesWithFireBall(fireball)) {
+                rbarrier.isDestroyed(); // Destroy the barrier
+                rbarrier.handleCollisionResponse(fireball); // Handle collision response
+            }
+        }
+
+        for (ExplosiveBarrier ebarrier : explosiveBarriers) {
+            if (ebarrier.collidesWithFireBall(fireball)) {
+                ebarrier.destroy(); // Destroy the barrier
+                ebarrier.handleCollisionResponse(fireball); // Handle collision response
+            }
+        }
+
+        for (RewardingBarrier rwbarrier : rewardingBarriers) {
+            if (rwbarrier.collidesWithFireBall(fireball)) {
+                rwbarrier.destroy(); // Destroy the barrier
+                rwbarrier.handleCollisionResponse(fireball); // Handle collision response
             }
         }
     }

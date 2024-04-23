@@ -1,0 +1,52 @@
+package Domain;
+import javax.swing.*;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.util.Random;
+import java.awt.*;
+
+public class ReinforcedBarrier extends Barrier{
+    private int hitsRequired;
+    private int hitsReceived;
+    private ImageIcon icon;
+
+    public ReinforcedBarrier(int x, int y, int width, int height) {
+        super(x, y, width, height);
+        Random random = new Random();
+        this.hitsRequired = random.nextInt(5) + 1;
+        this.hitsReceived = hitsRequired;
+        this.icon = new ImageIcon("Assets/Images/200Firm.png");
+    }
+
+    @Override
+    public void draw(Graphics g) {
+        if (hitsReceived > 0) {
+            g.drawImage(icon.getImage(), x, y, width, height, null);
+            g.setColor(Color.BLACK);
+            g.setFont(new Font("Arial", Font.BOLD, 20));
+            g.drawString(String.valueOf(hitsReceived), x + (width / 2) - 10, y + 30);
+        }
+    }
+
+    // Method to handle collision with FireBall
+    public boolean collidesWithFireBall(FireBall fireBall) {
+        return !isDestroyed() && fireBall.getX() + fireBall.getDiameter() >= x &&
+                fireBall.getX() <= x + width && fireBall.getY() + fireBall.getDiameter() >= y &&
+                fireBall.getY() <= y + height;
+    }
+
+    public void decreaseHitsReceived() {
+        hitsReceived--;
+    }
+
+    // Method to handle destruction by FireBall
+    public boolean isDestroyed() {
+        return hitsReceived <= 0;
+    }
+
+    public void handleCollisionResponse(FireBall fireBall) {
+        // Reverse FireBall's direction
+        fireBall.reverseYDirection();
+        decreaseHitsReceived();
+    }
+}

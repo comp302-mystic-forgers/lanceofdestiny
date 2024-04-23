@@ -52,17 +52,6 @@ public class FireBall {
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
     public void draw(Graphics g) {
         if (icon!= null) {
             g.drawImage(icon.getImage(), x, y, diameter, diameter, null);

@@ -38,12 +38,11 @@ public class WelcomePage extends JFrame {
         add(loginButton, BorderLayout.SOUTH);
     }
 
-    /**
-    public static void main(String[] args) {
+
+    /*public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             BuildingModeController buildingModeController = new BuildingModeController();
             Domain.WelcomePage welcomePage = new Domain.WelcomePage(buildingModeController);
         });
-    }
-     **/
+    }*/
 }
