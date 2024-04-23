@@ -3,13 +3,18 @@ package Domain;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 public class BuildingMode extends JFrame {
     // Initialize counts with the minimum required values
+    private BuildingModeController buildingModeController;
     private int simpleBarriersCount = 75;
     private int firmBarriersCount = 10;
     private int explosiveBarriersCount = 5;
     private int giftBarriersCount = 10;
-    public BuildingMode() {
+    public BuildingMode(BuildingModeController buildingModeController) {
+        this.buildingModeController = buildingModeController;
         setTitle("Lance of Destiny - Building Mode");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -45,7 +50,6 @@ public class BuildingMode extends JFrame {
         backgroundPanel.add(bottomPanel, BorderLayout.SOUTH);
         pack();
         setLocationRelativeTo(null);
-        setVisible(true);
 
     }
     private void setupControlPanel() {
@@ -81,6 +85,14 @@ public class BuildingMode extends JFrame {
             // Placeholder for play functionality
             System.out.println("Play functionality to be implemented");
         });
+        playButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                buildingModeController.setCurrentMode("finish");
+                buildingModeController.switchScreens();
+            }
+        });
+
         // Add control panel to the main frame
         add(controlPanel, BorderLayout.EAST);
         controlPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -169,13 +181,47 @@ public class BuildingMode extends JFrame {
         }
     }
 
+    /**
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
-            BuildingMode frame = new BuildingMode();
+            BuildingModeController buildingModeController = new BuildingModeController();
+            BuildingMode frame = new BuildingMode(buildingModeController);
             frame.pack(); // Adjusts the frame to fit its components
             frame.setLocationRelativeTo(null); // Center the frame on the screen
             frame.setVisible(true);
         });
     }
+     **/
 
+    public int getSimpleBarriersCount() {
+        return simpleBarriersCount;
+    }
+
+    public void setSimpleBarriersCount(int simpleBarriersCount) {
+        this.simpleBarriersCount = simpleBarriersCount;
+    }
+
+    public int getFirmBarriersCount() {
+        return firmBarriersCount;
+    }
+
+    public void setFirmBarriersCount(int firmBarriersCount) {
+        this.firmBarriersCount = firmBarriersCount;
+    }
+
+    public int getExplosiveBarriersCount() {
+        return explosiveBarriersCount;
+    }
+
+    public void setExplosiveBarriersCount(int explosiveBarriersCount) {
+        this.explosiveBarriersCount = explosiveBarriersCount;
+    }
+
+    public int getGiftBarriersCount() {
+        return giftBarriersCount;
+    }
+
+    public void setGiftBarriersCount(int giftBarriersCount) {
+        this.giftBarriersCount = giftBarriersCount;
+    }
 }

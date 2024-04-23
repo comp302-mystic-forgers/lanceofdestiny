@@ -1,17 +1,22 @@
 package Domain;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 
 public class BuildingModeMenu extends JFrame {
 
-    // Path to your background image
-    private String backgroundImagePath = "Assets/Images/BuidlingModeStartBackground.png"; // Update this path
+    private BuildingModeController buildingModeController;
 
-    public BuildingModeMenu() {
+    // Path to your background image
+    private String backgroundImagePath = "Assets/Images/BuildingModeStartBackground.png"; // Update this path
+
+    public BuildingModeMenu(BuildingModeController buildingModeController) {
+        this.buildingModeController = buildingModeController;
         setTitle("Lance of Destiny - Building Mode Menu");
         setSize(400, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -27,8 +32,15 @@ public class BuildingModeMenu extends JFrame {
         JButton loadGameButton = new JButton("Load Game");
         loadGameButton.addActionListener(e -> System.out.println("Load game action"));
 
+
         JButton newGameButton = new JButton("New Game");
-        newGameButton.addActionListener(e -> System.out.println("New game action"));
+        newGameButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                buildingModeController.setCurrentMode("assembly_menu");
+                buildingModeController.switchScreens();
+            }
+        });
 
         buttonPanel.add(loadGameButton);
         buttonPanel.add(newGameButton);
@@ -36,12 +48,16 @@ public class BuildingModeMenu extends JFrame {
         add(buttonPanel, BorderLayout.SOUTH);
 
         setLocationRelativeTo(null);
-        setVisible(true);
     }
 
+    /**
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(BuildingModeMenu::new);
+        SwingUtilities.invokeLater(() -> {
+            BuildingModeController buildingModeController = new BuildingModeController();
+            BuildingModeMenu buildingModeMenu = new BuildingModeMenu(buildingModeController);
+        });
     }
+     **/
 
     // Inner class to use a background image
     static class BackgroundPanel extends JPanel {
