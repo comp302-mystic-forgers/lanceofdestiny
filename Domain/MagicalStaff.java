@@ -53,7 +53,15 @@ public class MagicalStaff {
         } else if (keyCode == KeyEvent.VK_RIGHT) {
             xPosition = Math.min(panelWidth - width, xPosition + movementSpeed);
         }
+
+        // Ensure staff stays within bounds
+        if (xPosition < 0) {
+            xPosition = 0;
+        } else if (xPosition + width > panelWidth) {
+            xPosition = panelWidth - width;
+        }
     }
+
 
     public void rotate(int keyCode) {
         if (keyCode == KeyEvent.VK_A) {

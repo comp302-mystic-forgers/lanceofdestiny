@@ -26,14 +26,42 @@ public class FireBall {
 
         // Check for collision with left and right borders
         if (x <= 0 || x + diameter >= panelWidth) {
+            // Reverse x velocity
             xVelocity = -xVelocity;
+            // Adjust position to ensure FireBall stays within bounds
+            x = Math.max(0, Math.min(x, panelWidth - diameter));
         }
 
-        // Check for collision with top border
-        if (y <= 0) {
+        // Check for collision with top and bottom borders
+        if (y <= 0 || y + diameter >= panelHeight) {
+            // Reverse y velocity
             yVelocity = -yVelocity;
+            // Adjust position to ensure FireBall stays within bounds
+            y = Math.max(0, Math.min(y, panelHeight - diameter));
+        }
+
+        // Check for collision with left and right borders
+        if (x <= 0 || x + diameter >= panelWidth || y <= 0 || y + diameter >= panelHeight) {
+            // Reverse both x and y velocity (for corners)
+            if (x <= 0 || x + diameter >= panelWidth) {
+                xVelocity = -xVelocity;
+            }
+            if (y <= 0 || y + diameter >= panelHeight) {
+                yVelocity = -yVelocity;
+            }
         }
     }
+
+
+
+
+
+
+
+
+
+
+
 
     public void draw(Graphics g) {
         if (icon!= null) {
