@@ -39,13 +39,11 @@ public class ReinforcedBarrier extends Barrier{
         hitsReceived--;
     }
 
-    // Method to handle destruction by FireBall
     public boolean isDestroyed() {
         return hitsReceived <= 0;
     }
 
     public void handleCollisionResponse(FireBall fireBall) {
-        // Reverse FireBall's direction
         fireBall.reverseYDirection();
         decreaseHitsReceived();
     }

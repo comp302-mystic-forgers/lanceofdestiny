@@ -8,11 +8,7 @@ public class GameController {
     private GameWindow gameWindow;
     private String currentMode;
 
-    void startTheGame() {}
-    void createTheGame() {}
 
-    void generateSpell(String spellType) {}
-    void changeGameMode(String currentMode) {}
 
     public GameController() {
         buildingModeController = new BuildingModeController(this);
