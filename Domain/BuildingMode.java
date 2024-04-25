@@ -22,7 +22,9 @@ public class BuildingMode extends JFrame {
         BackgroundPanel backgroundPanel = new BackgroundPanel();
         setContentPane(backgroundPanel);
 
-        GameLayoutPanel layoutPanel = new GameLayoutPanel();
+        GameLayoutPanel layoutPanel = new GameLayoutPanel(
+                simpleBarriersCount, firmBarriersCount, explosiveBarriersCount, giftBarriersCount, 0.5
+        );
         layoutPanel.setOpaque(false);
         TitledBorder titledBorder = BorderFactory.createTitledBorder("Editing Area for the Player");
         layoutPanel.setBorder(titledBorder);
@@ -79,11 +81,6 @@ public class BuildingMode extends JFrame {
         saveButton.addActionListener(e -> {
             // Placeholder for save functionality
             System.out.println("Load functionality to be implemented");
-        });
-
-        playButton.addActionListener(e -> {
-            // Placeholder for play functionality
-            System.out.println("Play functionality to be implemented");
         });
         playButton.addActionListener(new ActionListener() {
             @Override
