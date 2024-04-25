@@ -1,5 +1,6 @@
 package Domain;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import java.awt.Graphics;
 import java.awt.event.ComponentEvent;
@@ -8,6 +9,9 @@ import javax.swing.Timer;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList; // Import ArrayList class
 
 public class GameView extends JPanel implements ComponentListener, ActionListener {
@@ -19,9 +23,19 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     private ArrayList<RewardingBarrier> rewardingBarriers;
     private Timer timer;
     private boolean gameRunning = true;
+    private BufferedImage background;
 
     public GameView(int panelWidth, int panelHeight) {
         super();
+        try {
+            InputStream inputStream = getClass().getResourceAsStream("/Assets/Images/200Background.png");
+            if (inputStream == null) {
+                throw new IOException("Image not found.");
+            }
+            background = ImageIO.read(inputStream);
+        } catch (IOException e) {
+            System.err.println("Error loading background image: " + e.getMessage());
+        }
         this.magicalStaff = new MagicalStaff(panelWidth, panelHeight - 50); // Position MagicalStaff towards the bottom
         this.fireball = new FireBall(panelWidth / 2, 0); // Start Fireball from the top middle
         this.simpleBarriers = new ArrayList<>(); // Initialize the ArrayList
@@ -48,6 +62,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         if (gameRunning) {
+            g.drawImage(background, 0, 0, getWidth(), getHeight(), this);
             magicalStaff.draw(g);
             fireball.draw(g);
             // Draw all SimpleBarrier objects in the ArrayList
