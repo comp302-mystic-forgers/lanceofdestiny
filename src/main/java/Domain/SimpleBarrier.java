@@ -1,15 +1,14 @@
-package src.main.java.Domain;
+package Domain;
 import javax.swing.*;
 import java.awt.Graphics;
 
 public class SimpleBarrier extends Barrier {
+    private boolean destroyed;
     private ImageIcon icon;
-
-    private int xSpeed;
-    private int ySpeed;
 
     public SimpleBarrier(int x, int y, int width, int height) {
         super(x, y, width, height);
+        destroyed = false;
         this.icon = new ImageIcon("Assets/Images/200Bluegem.png");
     }
 
@@ -26,25 +25,11 @@ public class SimpleBarrier extends Barrier {
                 fireBall.getY() <= y + height;
     }
 
+    public void destroy() {
+        destroyed = true;
+    }
     public void handleCollisionResponse(FireBall fireBall) {
         fireBall.reverseYDirection();
-    }
-
-
-    public int getxSpeed() {
-        return xSpeed;
-    }
-
-    public void setxSpeed(int xSpeed) {
-        this.xSpeed = xSpeed;
-    }
-
-    public int getySpeed() {
-        return ySpeed;
-    }
-
-    public void setySpeed(int ySpeed) {
-        this.ySpeed = ySpeed;
     }
 }
 

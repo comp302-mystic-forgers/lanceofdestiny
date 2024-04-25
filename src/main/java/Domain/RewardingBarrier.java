@@ -1,9 +1,10 @@
-package src.main.java.Domain;
+package Domain;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class RewardingBarrier extends Barrier{
+    public boolean destroyed;
     private ImageIcon icon;
     private ImageIcon icon2;
     private int xSpeed; //DO WE NEED IT TO MOVE IT HORIZONTALY?
@@ -11,6 +12,7 @@ public class RewardingBarrier extends Barrier{
 
     public RewardingBarrier(int x, int y, int width, int height) {
         super(x, y, width, height);
+        destroyed = false;
         this.icon = new ImageIcon("Assets/Images/200Greengem.png");
         this.icon2 = new ImageIcon("Assets/Images/giftbox.png");
         this.xSpeed = 0;
@@ -26,11 +28,6 @@ public class RewardingBarrier extends Barrier{
             y += ySpeed;
             x += xSpeed;
         }
-    }
-
-    public boolean collidesWithMagicalStaff(MagicalStaff magicalStaff) {
-        return !destroyed && x < magicalStaff.getX() + magicalStaff.getWidth() && x + width > magicalStaff.getX() &&
-                y + height >= magicalStaff.getY() && y < magicalStaff.getY() + magicalStaff.getHeight();
     }
 
     public boolean collidesWithFireBall(FireBall fireBall) {
