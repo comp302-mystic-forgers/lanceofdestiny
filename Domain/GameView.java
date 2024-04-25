@@ -24,6 +24,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     private Timer timer;
     private boolean gameRunning = true;
     private BufferedImage background;
+    private GiftTaking giftWindow;
 
     public GameView(int panelWidth, int panelHeight) {
         super();
@@ -36,12 +37,13 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         } catch (IOException e) {
             System.err.println("Error loading background image: " + e.getMessage());
         }
-        this.magicalStaff = new MagicalStaff(panelWidth, panelHeight - 50); // Position MagicalStaff towards the bottom
+        this.magicalStaff = new MagicalStaff(panelWidth, panelHeight - 100); // Position MagicalStaff towards the bottom
         this.fireball = new FireBall(panelWidth / 2, 0); // Start Fireball from the top middle
         this.simpleBarriers = new ArrayList<>(); // Initialize the ArrayList
         this.reinforcedBarriers = new ArrayList<>();
         this.explosiveBarriers = new ArrayList<>();
         this.rewardingBarriers = new ArrayList<>();
+        this.giftWindow = new GiftTaking();
         addComponentListener(this);
 
         // Create multiple SimpleBarrier objects and add them to the ArrayList
@@ -79,7 +81,6 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                 rwbarrier.draw(g);
             }
         } else {
-            // Optionally, draw a "Game Over" message directly onto the panel
         }
     }
 
@@ -113,25 +114,25 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             // Further actions to reset or end the game can be added here
         }
 
-        // Check collision with all SimpleBarrier objects
+
         for (SimpleBarrier barrier : simpleBarriers) {
             if (barrier.collidesWithFireBall(fireball)) {
-                barrier.destroy(); // Destroy the barrier
-                barrier.handleCollisionResponse(fireball); // Handle collision response
+                barrier.destroy();
+                barrier.handleCollisionResponse(fireball);
             }
         }
 
         for (ReinforcedBarrier rbarrier : reinforcedBarriers) {
             if (rbarrier.collidesWithFireBall(fireball)) {
-                rbarrier.isDestroyed(); // Destroy the barrier
-                rbarrier.handleCollisionResponse(fireball); // Handle collision response
+                rbarrier.isDestroyed();
+                rbarrier.handleCollisionResponse(fireball);
             }
         }
 
         for (ExplosiveBarrier ebarrier : explosiveBarriers) {
             if (ebarrier.collidesWithFireBall(fireball)) {
-                ebarrier.destroy(); // Destroy the barrier
-                ebarrier.handleCollisionResponse(fireball); // Handle collision response
+                ebarrier.destroy();
+                ebarrier.handleCollisionResponse(fireball);
             }
             if(ebarrier.destroyed) {
                 if (ebarrier.getY() + ebarrier.getHeight() > magicalStaff.getY() &&
@@ -146,8 +147,19 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
 
         for (RewardingBarrier rwbarrier : rewardingBarriers) {
             if (rwbarrier.collidesWithFireBall(fireball)) {
-                rwbarrier.destroy(); // Destroy the barrier
-                rwbarrier.handleCollisionResponse(fireball); // Handle collision response
+                rwbarrier.destroy();
+                rwbarrier.handleCollisionResponse(fireball);
+            }
+            if(rwbarrier.destroyed) {
+                if (rwbarrier.getY() + rwbarrier.getHeight() > magicalStaff.getY() &&
+                        rwbarrier.getX() + rwbarrier.getWidth() > magicalStaff.getX() &&
+                        rwbarrier.getX() < magicalStaff.getX() + magicalStaff.getWidth()){
+                    if (!giftWindow.isVisible()) {
+                        gameRunning = false;
+                        giftWindow.setVisible(true);
+                    }
+                    gameRunning = true;
+                }
             }
         }
     }
