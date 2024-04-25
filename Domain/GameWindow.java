@@ -8,7 +8,8 @@ public class GameWindow extends JFrame {
 
     public GameWindow() {
         super("Lance of Destiny");
-        setSize(400, 300);
+        //setSize(800, 600);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         GameView = new GameView(getWidth(), getHeight());
@@ -23,6 +24,8 @@ public class GameWindow extends JFrame {
                     GameView.moveStaff(e.getKeyCode());
                 } else if (e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_D) {
                     GameView.rotateStaff(e.getKeyCode());
+                } else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                    GameView.throwBall(e.getKeyCode());
                 }
             }
         });
