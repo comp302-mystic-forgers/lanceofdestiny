@@ -22,9 +22,9 @@ public class ReinforcedBarrier extends Barrier{
     public void draw(Graphics g) {
         if (hitsReceived > 0) {
             g.drawImage(icon.getImage(), x, y, width, height, null);
-            g.setColor(Color.BLACK);
-            g.setFont(new Font("Arial", Font.BOLD, 20));
-            g.drawString(String.valueOf(hitsReceived), x + (width / 2) - 10, y + 30);
+            g.setColor(Color.WHITE);
+            g.setFont(new Font("Arial", Font.BOLD, 15));
+            g.drawString(String.valueOf(hitsReceived), x + 20, y + 17);
         }
     }
 
