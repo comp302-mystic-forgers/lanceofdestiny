@@ -133,6 +133,15 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                 ebarrier.destroy(); // Destroy the barrier
                 ebarrier.handleCollisionResponse(fireball); // Handle collision response
             }
+            if(ebarrier.destroyed) {
+                if (ebarrier.getY() + ebarrier.getHeight() > magicalStaff.getY() &&
+                        ebarrier.getX() + ebarrier.getWidth() > magicalStaff.getX() &&
+                        ebarrier.getX() < magicalStaff.getX() + magicalStaff.getWidth()) {
+                    gameRunning = false;
+                    timer.stop(); // Stop the game loop
+                    JOptionPane.showMessageDialog(this, "Game Over", "End", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
         }
 
         for (RewardingBarrier rwbarrier : rewardingBarriers) {

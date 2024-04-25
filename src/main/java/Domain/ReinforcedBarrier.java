@@ -1,4 +1,4 @@
-package src.main.java.Domain;
+package Domain;
 import javax.swing.*;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -9,8 +9,6 @@ public class ReinforcedBarrier extends Barrier{
     private int hitsRequired;
     private int hitsReceived;
     private ImageIcon icon;
-    private int xSpeed;
-    private int ySpeed;
 
     public ReinforcedBarrier(int x, int y, int width, int height) {
         super(x, y, width, height);
@@ -22,13 +20,11 @@ public class ReinforcedBarrier extends Barrier{
 
     @Override
     public void draw(Graphics g) {
-        if(!destroyed){
-            if (hitsReceived > 0) {
-                g.drawImage(icon.getImage(), x, y, width, height, null);
-                g.setColor(Color.WHITE);
-                g.setFont(new Font("Arial", Font.BOLD, 15));
-                g.drawString(String.valueOf(hitsReceived), x + 20, y + 17);
-            }
+        if (hitsReceived > 0) {
+            g.drawImage(icon.getImage(), x, y, width, height, null);
+            g.setColor(Color.WHITE);
+            g.setFont(new Font("Arial", Font.BOLD, 15));
+            g.drawString(String.valueOf(hitsReceived), x + 20, y + 17);
         }
     }
 
@@ -43,44 +39,14 @@ public class ReinforcedBarrier extends Barrier{
         hitsReceived--;
     }
 
+    // Method to handle destruction by FireBall
     public boolean isDestroyed() {
         return hitsReceived <= 0;
     }
 
     public void handleCollisionResponse(FireBall fireBall) {
+        // Reverse FireBall's direction
         fireBall.reverseYDirection();
         decreaseHitsReceived();
-    }
-
-    public int getxSpeed() {
-        return xSpeed;
-    }
-
-    public void setxSpeed(int xSpeed) {
-        this.xSpeed = xSpeed;
-    }
-
-    public int getySpeed() {
-        return ySpeed;
-    }
-
-    public void setySpeed(int ySpeed) {
-        this.ySpeed = ySpeed;
-    }
-
-    public int getHitsRequired() {
-        return hitsRequired;
-    }
-
-    public void setHitsRequired(int hitsRequired) {
-        this.hitsRequired = hitsRequired;
-    }
-
-    public int getHitsReceived() {
-        return hitsReceived;
-    }
-
-    public void setHitsReceived(int hitsReceived) {
-        this.hitsReceived = hitsReceived;
     }
 }
