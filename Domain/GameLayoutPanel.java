@@ -106,4 +106,23 @@ class GameLayoutPanel extends JPanel {
             return giftBarrierImage;
         }
     }
+
+    public void redrawBarriers() {
+        placedBarriers.clear();
+    }
+
+    public void setSimpleBarriersCount(int simpleBarriersCount) {
+        this.simpleBarriersCount = simpleBarriersCount;
+    }
+    public void setFirmBarriersCount(int firmBarriersCount) {
+        this.firmBarriersCount = firmBarriersCount;
+    }
+
+    public void setExplosiveBarriersCount(int explosiveBarriersCount) {
+        this.explosiveBarriersCount = explosiveBarriersCount;
+    }
+
+    public void setGiftBarriersCount(int giftBarriersCount) {
+        this.giftBarriersCount = giftBarriersCount;
+    }
 }
