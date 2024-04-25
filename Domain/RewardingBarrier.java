@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class RewardingBarrier extends Barrier{
-    private boolean destroyed;
+    public boolean destroyed;
     private ImageIcon icon;
     private ImageIcon icon2;
     private int xSpeed; //DO WE NEED IT TO MOVE IT HORIZONTALY?
@@ -30,24 +30,25 @@ public class RewardingBarrier extends Barrier{
         }
     }
 
-    // Method to handle collision with FireBall
     public boolean collidesWithFireBall(FireBall fireBall) {
         return !destroyed && fireBall.getX() + fireBall.getDiameter() >= x &&
                 fireBall.getX() <= x + width && fireBall.getY() + fireBall.getDiameter() >= y &&
                 fireBall.getY() <= y + height;
     }
 
-    // Method to handle destruction by FireBall
     public void destroy() {
         destroyed = true;
-        xSpeed = (int) (Math.random() * 5) - 2; // Random horizontal speed
+        xSpeed = (int) (Math.random() * 5) - 2;
         ySpeed = 5; // Vertical speed towards the Magical Staff
     }
 
-    // Method to handle collision response for FireBall
     public void handleCollisionResponse(FireBall fireBall) {
-        // Reverse FireBall's direction
         fireBall.reverseYDirection();
         destroy();
     }
+
+    public int getX() { return x; }
+    public int getY() { return y; }
+    public int getHeight() { return height; }
+    public int getWidth() { return width; }
 }

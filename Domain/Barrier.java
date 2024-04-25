@@ -2,7 +2,6 @@ package Domain;
 
 import java.awt.*;
 
-// Barrier.java
 public abstract class Barrier {
     protected int x, y; // Position
     protected int width, height; // Dimensions
@@ -15,8 +14,6 @@ public abstract class Barrier {
     }
 
     public abstract void draw(Graphics g);
-
-    // Add more common methods and attributes as needed
 }
 
 

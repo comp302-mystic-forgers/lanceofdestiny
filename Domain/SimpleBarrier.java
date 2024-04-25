@@ -19,21 +19,16 @@ public class SimpleBarrier extends Barrier {
         }
     }
 
-    // Method to handle collision with FireBall
     public boolean collidesWithFireBall(FireBall fireBall) {
         return !destroyed && fireBall.getX() + fireBall.getDiameter() >= x &&
                 fireBall.getX() <= x + width && fireBall.getY() + fireBall.getDiameter() >= y &&
                 fireBall.getY() <= y + height;
     }
 
-    // Method to handle destruction by FireBall
     public void destroy() {
         destroyed = true;
     }
-
-    // Method to handle collision response for FireBall
     public void handleCollisionResponse(FireBall fireBall) {
-        // Reverse FireBall's direction
         fireBall.reverseYDirection();
     }
 }
