@@ -5,12 +5,15 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+
+
 public class PauseScreen extends JFrame {
     private JButton helpButton;
     private JButton saveButton;
     private JButton exitButton;
-    public PauseScreen() {
+    public PauseScreen(GameWindow gameWindow) {
         super("Pause");
+
         setSize(250,150);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         helpButton = new JButton("Help");
@@ -50,12 +53,16 @@ public class PauseScreen extends JFrame {
 
         setLocationRelativeTo(null);
     }
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            PauseScreen pauseScreen = new PauseScreen();
-            pauseScreen.setVisible(true);
-        });
+
+    public  void closePauseScreen() {
+        this.dispose(); //
     }
+   // public static void main(String[] args) {
+       // SwingUtilities.invokeLater(() -> {
+        //    PauseScreen pauseScreen = new PauseScreen();
+        //    pauseScreen.setVisible(true);
+        //});
+   // }
 
 
 }
