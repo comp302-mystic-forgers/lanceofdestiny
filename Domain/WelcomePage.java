@@ -36,6 +36,8 @@ public class WelcomePage extends JFrame {
             }
         });
         add(loginButton, BorderLayout.SOUTH);
+
+        setLocationRelativeTo(null);
     }
 
 

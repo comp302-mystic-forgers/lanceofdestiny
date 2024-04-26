@@ -38,7 +38,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             System.err.println("Error loading background image: " + e.getMessage());
         }
         this.magicalStaff = new MagicalStaff(panelWidth, panelHeight - 100); // Position MagicalStaff towards the bottom
-        this.fireball = new FireBall(panelWidth + 950, panelHeight + 950); // Start Fireball from the top middle
+        this.fireball = new FireBall(panelWidth + 745,735); // Start Fireball from the top middle
         this.simpleBarriers = new ArrayList<>(); // Initialize the ArrayList
         this.reinforcedBarriers = new ArrayList<>();
         this.explosiveBarriers = new ArrayList<>();
