@@ -1,49 +1,58 @@
-package src.main.java.Domain;
+package Domain;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.UUID;
-
 
 public class GameInfo {
-    private UUID gameId;
-    private PlayerAccount player;
-    private int score;
+    private int simpleBarriersRemaining;
+    private int reinforcedBarriersRemaining;
+    private int explosiveBarriersRemaining;
+    private int rewardingBarriersRemaining;
     private int lives;
-    private GameState gameState;
-    private Date lastSaved;
-    private List<Spell> spellsAcquired;
-    private List<Barrier> barriersRemaining;
+    private int score;
+    private List<String> spellsAcquired;
 
-    public  GameInfo(){
-        this.gameId = UUID.randomUUID();
-        this.player = new PlayerAccount();
-        this.gameState = GameState.ACTIVE;
-        this.lives = 3;
-        this.score = 0;
-        this.spellsAcquired = new ArrayList<>();
-        this.barriersRemaining = new ArrayList<>();
-    };
-
-    public UUID getGameId() {
-        return gameId;
-    }
-
-    public PlayerAccount getPlayer() {
-        return player;
-    }
-
-    public void setPlayer(PlayerAccount playerId) {
-        this.player = player;
-    }
-
-    public int getScore() {
-        return score;
-    }
-
-    public void setScore(int score) {
+    public GameInfo(int simpleBarriersRemaining, int reinforcedBarriersRemaining, int explosiveBarriersRemaining, int rewardingBarriersRemaining, int lives, int score, List<String> spellsAcquired) {
+        this.simpleBarriersRemaining = simpleBarriersRemaining;
+        this.reinforcedBarriersRemaining = reinforcedBarriersRemaining;
+        this.explosiveBarriersRemaining = explosiveBarriersRemaining;
+        this.rewardingBarriersRemaining = rewardingBarriersRemaining;
+        this.lives = lives;
         this.score = score;
+        this.spellsAcquired = spellsAcquired;
+    }
+
+    // ... Getters and setters for the attributes
+
+    public int getSimpleBarriersRemaining() {
+        return simpleBarriersRemaining;
+    }
+
+    public void setSimpleBarriersRemaining(int simpleBarriersRemaining) {
+        this.simpleBarriersRemaining = simpleBarriersRemaining;
+    }
+
+    public int getReinforcedBarriersRemaining() {
+        return reinforcedBarriersRemaining;
+    }
+
+    public void setReinforcedBarriersRemaining(int reinforcedBarriersRemaining) {
+        this.reinforcedBarriersRemaining = reinforcedBarriersRemaining;
+    }
+
+    public int getExplosiveBarriersRemaining() {
+        return explosiveBarriersRemaining;
+    }
+
+    public void setExplosiveBarriersRemaining(int explosiveBarriersRemaining) {
+        this.explosiveBarriersRemaining = explosiveBarriersRemaining;
+    }
+
+    public int getRewardingBarriersRemaining() {
+        return rewardingBarriersRemaining;
+    }
+
+    public void setRewardingBarriersRemaining(int rewardingBarriersRemaining) {
+        this.rewardingBarriersRemaining = rewardingBarriersRemaining;
     }
 
     public int getLives() {
@@ -54,36 +63,22 @@ public class GameInfo {
         this.lives = lives;
     }
 
-    public GameState getGameState() {
-        return gameState;
+    public int getScore() {
+        return score;
     }
 
-    public void setGameState(GameState gameState) {
-        this.gameState = gameState;
+    public void setScore(int score) {
+        this.score = score;
     }
 
-    public Date getLastSaved() {
-        return lastSaved;
-    }
-
-    public void setLastSaved(Date lastSaved) {
-        this.lastSaved = lastSaved;
-    }
-
-    public List<Spell> getSpellsAcquired() {
+    public List<String> getSpellsAcquired() {
         return spellsAcquired;
     }
 
-    public void setSpellsAcquired(List<Spell> pellsAcquired) {
+    public void setSpellsAcquired(List<String> spellsAcquired) {
         this.spellsAcquired = spellsAcquired;
     }
 
-    public List<Barrier> getBarriersRemaining() {
-        return barriersRemaining;
-    }
 
-    public void setBarriersRemaining(List<Barrier> barriersRemaining) {
-        this.barriersRemaining = barriersRemaining;
-    }
-
+    // ... Other methods
 }

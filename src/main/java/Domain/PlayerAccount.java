@@ -1,28 +1,17 @@
-package src.main.java.Domain;
+package Domain;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class PlayerAccount {
+     private String username;
+     private String password;
+     private List<GameInfo> games;
 
-    private String playerId;
-    private String username;
-    private String password;
-    private List<GameInfo> games;
-
-    public PlayerAccount(String username, String password) {
-        this.username = username;
-        this.password = password;
-        this.games = new ArrayList<>();
-    }
-    public PlayerAccount(){
-    }
-    public PlayerAccount(String playerId, String username, String password, List<GameInfo> games) {
-        this.playerId = playerId;
-        this.username = username;
-        this.password = password;
-        this.games = games;
-    }
+     public PlayerAccount(String username, String password) {
+     this.username = username;
+     this.password = password;
+     this.games = new ArrayList<>();
+     }
 
 
     // ... Getters and setters for the attributes
@@ -51,11 +40,7 @@ public class PlayerAccount {
         this.games = games;
     }
 
-    public String getPlayerId() {
-        return playerId;
-    }
+     // ... Other methods
 
-    public void setPlayerId(String playerId) {
-        this.playerId = playerId;
-    }
+
 }
