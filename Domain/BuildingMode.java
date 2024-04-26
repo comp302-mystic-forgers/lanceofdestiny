@@ -13,6 +13,8 @@ public class BuildingMode extends JFrame {
     private int firmBarriersCount = 10;
     private int explosiveBarriersCount = 5;
     private int giftBarriersCount = 10;
+    private GameLayoutPanel gameLayoutPanel;
+
     public BuildingMode(BuildingModeController buildingModeController) {
         this.buildingModeController = buildingModeController;
         setTitle("Lance of Destiny - Building Mode");
@@ -22,13 +24,16 @@ public class BuildingMode extends JFrame {
         BackgroundPanel backgroundPanel = new BackgroundPanel();
         setContentPane(backgroundPanel);
 
-        GameLayoutPanel layoutPanel = new GameLayoutPanel();
+        GameLayoutPanel layoutPanel = new GameLayoutPanel(
+                simpleBarriersCount, firmBarriersCount, explosiveBarriersCount, giftBarriersCount, 0.5
+        );
         layoutPanel.setOpaque(false);
         TitledBorder titledBorder = BorderFactory.createTitledBorder("Editing Area for the Player");
         layoutPanel.setBorder(titledBorder);
         titledBorder.setTitleColor(Color.white);
         layoutPanel.setPreferredSize(new Dimension(650, 400));
         backgroundPanel.add(layoutPanel, BorderLayout.CENTER);
+        this.gameLayoutPanel = layoutPanel;
 
         setupControlPanel();
 
@@ -69,7 +74,7 @@ public class BuildingMode extends JFrame {
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setOpaque(false);
-        JButton saveButton = new JButton("Load");
+        JButton saveButton = new JButton("Save");
         JButton playButton = new JButton("Play");
         buttonPanel.add(saveButton);
         buttonPanel.add(playButton);
@@ -77,13 +82,12 @@ public class BuildingMode extends JFrame {
         controlPanel.add(buttonPanel);
 
         saveButton.addActionListener(e -> {
-            // Placeholder for save functionality
-            System.out.println("Load functionality to be implemented");
-        });
-
-        playButton.addActionListener(e -> {
-            // Placeholder for play functionality
-            System.out.println("Play functionality to be implemented");
+            gameLayoutPanel.setSimpleBarriersCount(simpleBarriersCount);
+            gameLayoutPanel.setFirmBarriersCount(firmBarriersCount);
+            gameLayoutPanel.setExplosiveBarriersCount(explosiveBarriersCount);
+            gameLayoutPanel.setGiftBarriersCount(giftBarriersCount);
+            gameLayoutPanel.redrawBarriers();
+            gameLayoutPanel.repaint();
         });
         playButton.addActionListener(new ActionListener() {
             @Override
@@ -93,7 +97,6 @@ public class BuildingMode extends JFrame {
             }
         });
 
-        // Add control panel to the main frame
         add(controlPanel, BorderLayout.EAST);
         controlPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.Y_AXIS));

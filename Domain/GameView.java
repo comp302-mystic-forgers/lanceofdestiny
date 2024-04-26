@@ -38,7 +38,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             System.err.println("Error loading background image: " + e.getMessage());
         }
         this.magicalStaff = new MagicalStaff(panelWidth, panelHeight - 100); // Position MagicalStaff towards the bottom
-        this.fireball = new FireBall(panelWidth / 2, 0); // Start Fireball from the top middle
+        this.fireball = new FireBall(panelWidth + 745,735); // Start Fireball from the top middle
         this.simpleBarriers = new ArrayList<>(); // Initialize the ArrayList
         this.reinforcedBarriers = new ArrayList<>();
         this.explosiveBarriers = new ArrayList<>();
@@ -87,9 +87,11 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     @Override
     public void actionPerformed(ActionEvent e) {
         if (gameRunning) {
-            fireball.move(getWidth(), getHeight());
-            checkCollisions();
-            repaint();
+            if (fireball.isBallActive) {
+                fireball.move(getWidth(), getHeight());
+                checkCollisions();
+                repaint();
+            }
         }
     }
 
@@ -108,6 +110,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
 
         // Game Over condition: Fireball falls below the Magical Staff
         if (fireball.getY() + fireball.getDiameter() > magicalStaff.getY() + magicalStaff.getHeight()) {
+            fireball.isBallActive = false;
             gameRunning = false;
             timer.stop(); // Stop the game loop
             JOptionPane.showMessageDialog(this, "Game Over", "End", JOptionPane.INFORMATION_MESSAGE);
@@ -165,15 +168,22 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     }
 
     public void moveStaff(int keyCode) {
-        if (gameRunning) {
+        if (gameRunning && fireball.isBallActive) {
             magicalStaff.move(keyCode, getWidth());
             repaint();
         }
     }
 
     public void rotateStaff(int keyCode) {
-        if (gameRunning) {
+        if (gameRunning && fireball.isBallActive) {
             magicalStaff.rotate(keyCode);
+            repaint();
+        }
+    }
+
+    public void throwBall(int keyCode) {
+        if (gameRunning) {
+            fireball.ballThrower(keyCode);
             repaint();
         }
     }
