@@ -40,6 +40,8 @@ public class WelcomePage extends JFrame {
             }
         });
         add(loginButton, BorderLayout.SOUTH);
+
+        setLocationRelativeTo(null);
     }
     // Inner class to use a background image
     static class BackgroundPanel extends JPanel {
