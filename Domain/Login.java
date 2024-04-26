@@ -39,7 +39,7 @@ public class Login extends JFrame implements ActionListener {
         loginButton = new JButton("Login: ");
         loginButton.addActionListener(this);
         add(loginButton);
-
+        setLocationRelativeTo(null);
     }
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == loginButton) {
