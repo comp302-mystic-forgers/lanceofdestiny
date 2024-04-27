@@ -34,8 +34,6 @@ public class Login extends JFrame implements ActionListener {
         add(loginButton);
 
     }
-
-    @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == loginButton) {
             String username = userNameField.getText();
@@ -55,12 +53,12 @@ public class Login extends JFrame implements ActionListener {
         return username.length() > 5 && password.length() > 6;
     }
 
-    /**
+   /**
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             BuildingModeController buildingModeController = new BuildingModeController();
             Login login = new Login(buildingModeController);
         });
-    }
-     **/
+    }**/
+
 }
