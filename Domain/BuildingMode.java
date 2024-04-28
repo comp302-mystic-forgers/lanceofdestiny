@@ -18,6 +18,7 @@ public class BuildingMode extends JFrame {
     public BuildingMode(BuildingModeController buildingModeController) {
         this.buildingModeController = buildingModeController;
         setTitle("Lance of Destiny - Building Mode");
+        setSize(1280, 720);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
@@ -31,7 +32,7 @@ public class BuildingMode extends JFrame {
         TitledBorder titledBorder = BorderFactory.createTitledBorder("Editing Area for the Player");
         layoutPanel.setBorder(titledBorder);
         titledBorder.setTitleColor(Color.white);
-        layoutPanel.setPreferredSize(new Dimension(650, 400));
+        layoutPanel.setPreferredSize(new Dimension(getWidth()/8*6, getHeight()/8*6));
         backgroundPanel.add(layoutPanel, BorderLayout.CENTER);
         this.gameLayoutPanel = layoutPanel;
 
@@ -39,7 +40,7 @@ public class BuildingMode extends JFrame {
 
         JPanel bottomPanel = new JPanel();
         bottomPanel.setOpaque(false);
-        bottomPanel.setPreferredSize(new Dimension(getWidth(), 200));
+        bottomPanel.setPreferredSize(new Dimension(getWidth(), getHeight()/8*2));
         add(bottomPanel, BorderLayout.SOUTH);
 
         bottomPanel.setLayout(new BorderLayout());
@@ -62,7 +63,7 @@ public class BuildingMode extends JFrame {
         controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.Y_AXIS));
         controlPanel.setBorder(BorderFactory.createTitledBorder("Obstacles"));
         controlPanel.setOpaque(false);
-        Dimension preferredSize = new Dimension(350, controlPanel.getHeight());
+        Dimension preferredSize = new Dimension(getWidth()/8*2, controlPanel.getHeight());
         controlPanel.setPreferredSize(preferredSize);
         controlPanel.setLayout(new GridLayout(4, 4, 10, 10));
 
