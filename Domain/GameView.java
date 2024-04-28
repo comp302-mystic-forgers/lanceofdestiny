@@ -29,7 +29,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     public GameView(int panelWidth, int panelHeight) {
         super();
         try {
-            InputStream inputStream = getClass().getResourceAsStream("/Assets/Images/200Background.png");
+            InputStream inputStream = getClass().getResourceAsStream("Assets/Images/200Background.png");
             if (inputStream == null) {
                 throw new IOException("Image not found.");
             }
