@@ -27,6 +27,7 @@ public class BuildingModeController {
     public void switchScreens() {
         switch (currentMode) {
             case "login":
+                welcomePage.getClip().stop();
                 welcomePage.setVisible(false);
                 loginPage.setVisible(true);
                 currentMode = "building_mode_menu";
@@ -37,6 +38,7 @@ public class BuildingModeController {
                 currentMode = "assembly_menu";
                 break;
             case "assembly_menu":
+                buildingModeMenu.getClip().stop();
                 buildingModeMenu.setVisible(false);
                 assemblyMenu.setVisible(true);
                 currentMode = "finish";
