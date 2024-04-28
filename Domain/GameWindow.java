@@ -8,6 +8,7 @@ import java.awt.event.KeyEvent;
 
 public class GameWindow extends JFrame {
     private PauseScreen pauseScreen;
+    private BuildingModeController buildingModeController;
     private boolean gamePaused;
     private GameView GameView;
     private JButton pauseButton;
@@ -15,6 +16,7 @@ public class GameWindow extends JFrame {
         super("Lance of Destiny");
         setSize(400, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
 
         GameView = new GameView(getWidth(), getHeight());
         add(GameView);
@@ -50,7 +52,9 @@ public class GameWindow extends JFrame {
         gamePaused = true;
         pauseButton.setText("Resume");
         GameView.getTimer().stop(); // Stop the game loop using the timer from GameView
-        PauseScreen pauseScreen = new PauseScreen(this); // Pass reference of GameWindow to PauseScreen
+        //PauseScreen pauseScreen = new PauseScreen(this); // Pass reference of GameWindow to PauseScreen
+        PauseScreen pauseScreen = new PauseScreen(this, buildingModeController);
+
         pauseScreen.setVisible(true);
     }
 
@@ -63,7 +67,9 @@ public class GameWindow extends JFrame {
             pauseScreen.closePauseScreen(); // Close the pause screen if it exists
         }
     }
+
     public static void main(String[] args) {
+
         new GameWindow();
     }
 }
