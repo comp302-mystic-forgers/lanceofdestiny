@@ -1,5 +1,7 @@
 # Lance Of Destiny
 
+By: Agne Armonaite, Emircan Kılıç, Ertuğrul Altuntaş, Ferhat Özen, Gülbeyaz Baymaz and Igor Cvijanović
+
 
 ## Introduction
 Lance of Destiny is an interactive game where you will play and navigate a magical staff that balances a fireball which destroys barriers to reach the lance of destiny.
@@ -16,7 +18,8 @@ In order to win, you need to find destroy all obstacles.
 6. Play the game! Avoid dropping the ball and reach the lance with your live to win the game!
 
 ## Class Structure
-In order to implement this game, we set up 31 different classes.
+In order to implement this game, we set up 23 different classes.
+
 
 ## Bonus Feature
 1. Collect Gift
@@ -84,9 +87,5 @@ There are four options in the pause screen:
 Player have the default screen that is not in full screen.
 Player has the ability to adjust screen size. The zoom will not be affected, but only certain part of the maps can be shown.
 HUD will always be shown in different sizes.
-
-### Contributors
-
-Created by Agne Armonaite, Emircan Kılıç, Ertuğrul Altuntaş, Ferhat Özen, Gülbeyaz Baymaz and Igor Cvijanović
 
 
