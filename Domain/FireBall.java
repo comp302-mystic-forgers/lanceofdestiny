@@ -1,18 +1,14 @@
 package Domain;
 import java.awt.Graphics;
 import java.awt.Color;
-import java.awt.event.KeyEvent;
 import javax.swing.*;
 
 public class FireBall {
     private int x, y; // Fireball position
     private final int diameter = 20; // Fireball size
     private int xVelocity = 1; // Fireball horizontal movement speed
-    private int yVelocity = - 1; // Fireball vertical movement speed
+    private int yVelocity = 1; // Fireball vertical movement speed
     private ImageIcon icon;
-
-    public boolean isBallActive = false;
-
     public FireBall(int startX, int startY) {
         this.x = startX;
         this.y = startY;
@@ -21,12 +17,6 @@ public class FireBall {
     public void setVelocity(int xVel, int yVel) {
         this.xVelocity = xVel;
         this.yVelocity = yVel;
-    }
-
-    public void ballThrower(int keyCode) {
-        if (keyCode == KeyEvent.VK_SPACE) {
-            isBallActive = true;
-        }
     }
 
     // Moves the Fireball and bounces it off the borders
