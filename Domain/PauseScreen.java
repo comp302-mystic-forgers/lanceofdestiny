@@ -11,34 +11,19 @@ public class PauseScreen extends JFrame {
     private JButton helpButton;
     private JButton saveButton;
     private JButton exitButton;
-    private BuildingModeController buildingModeController;
-
-    private JButton returnMenuButton;
-    public PauseScreen(GameWindow gameWindow, BuildingModeController buildingModeController) {
+    public PauseScreen(GameWindow gameWindow) {
         super("Pause");
-        this.buildingModeController = buildingModeController;
 
         setSize(250,150);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         helpButton = new JButton("Help");
-        saveButton = new JButton("Save");
         exitButton = new JButton("Exit");
-        returnMenuButton = new JButton("Return to Menu");
-
+        saveButton = new JButton("Save");
 
         helpButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(PauseScreen.this, "Help window will be opened", "Help", JOptionPane.INFORMATION_MESSAGE);
-            }
-        });
-
-
-        saveButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(PauseScreen.this, "Game Saved", "Save", JOptionPane.INFORMATION_MESSAGE);
-
             }
         });
         exitButton.addActionListener(new ActionListener() {
@@ -50,28 +35,24 @@ public class PauseScreen extends JFrame {
                 }
             }
         });
-        returnMenuButton.addActionListener(new ActionListener() {
+
+        saveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(PauseScreen.this, "Building Mode Menu will be opened", "Menu", JOptionPane.INFORMATION_MESSAGE);
-
+                JOptionPane.showMessageDialog(PauseScreen.this, "Game Saved", "Save", JOptionPane.INFORMATION_MESSAGE);
 
             }
         });
 
         JPanel buttonPanel = new JPanel(new GridLayout(3, 1));
         buttonPanel.add(helpButton);
-
-        buttonPanel.add(saveButton);
-
         buttonPanel.add(exitButton);
-        buttonPanel.add(returnMenuButton);
+        buttonPanel.add(saveButton);
         add(buttonPanel);
 
 
         setLocationRelativeTo(null);
     }
-
 
     public  void closePauseScreen() {
         this.dispose(); //
