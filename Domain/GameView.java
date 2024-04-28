@@ -220,7 +220,6 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         magicalStaff.updatePosition(getWidth(), getHeight());
         repaint();
     }
-
     @Override
     public void componentMoved(ComponentEvent e) {}
 
