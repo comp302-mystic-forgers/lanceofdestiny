@@ -2,7 +2,7 @@ package Domain;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
-import java.awt.Graphics;
+import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import javax.swing.Timer;
@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList; // Import ArrayList class
@@ -24,6 +25,10 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     private Timer timer;
     private boolean gameRunning = true;
     private BufferedImage background;
+    private BufferedImage simpleBarrierImage;
+    private BufferedImage firmBarrierImage;
+    private BufferedImage explosiveBarrierImage;
+    private BufferedImage giftBarrierImage;
     private GiftTaking giftWindow;
 
     public GameView(int panelWidth, int panelHeight) {
@@ -34,11 +39,15 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                 throw new IOException("Image not found.");
             }
             background = ImageIO.read(inputStream);
+            simpleBarrierImage = ImageIO.read(new File("Assets/Images/200Bluegem.png"));
+            firmBarrierImage = ImageIO.read(new File("Assets/Images/200Firm.png"));
+            explosiveBarrierImage = ImageIO.read(new File("Assets/Images/200Redgem.png"));
+            giftBarrierImage = ImageIO.read(new File("Assets/Images/200Greengem.png"));
         } catch (IOException e) {
             System.err.println("Error loading background image: " + e.getMessage());
         }
         this.magicalStaff = new MagicalStaff(panelWidth, panelHeight - 100); // Position MagicalStaff towards the bottom
-        this.fireball = new FireBall(panelWidth + 745,735); // Start Fireball from the top middle
+        this.fireball = new FireBall(magicalStaff.getX() + magicalStaff.getWidth()/3,magicalStaff.getY() - magicalStaff.getHeight()/160); // Start Fireball from the top middle
         this.simpleBarriers = new ArrayList<>(); // Initialize the ArrayList
         this.reinforcedBarriers = new ArrayList<>();
         this.explosiveBarriers = new ArrayList<>();
@@ -46,15 +55,33 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         this.giftWindow = new GiftTaking();
         addComponentListener(this);
 
+        int count = GameLayoutPanel.placedBarriers.size();
+
+        for (int i = 0; i < count; i++) {
+            Rectangle rectangle = GameLayoutPanel.placedBarriers.get(i);
+            Integer type = GameLayoutPanel.placedBarrierTypes.get(i);
+
+            if (type == 1) {
+                simpleBarriers.add(new SimpleBarrier((int) rectangle.getX()/6*8, (int) rectangle.getY()/6*8, (int) rectangle.getWidth()/6*8, (int) rectangle.getHeight()/6*8));
+            } else if (type == 2) {
+                reinforcedBarriers.add(new ReinforcedBarrier((int) rectangle.getX()/6*8, (int) rectangle.getY()/6*8, (int) rectangle.getWidth()/6*8, (int) rectangle.getHeight()/6*8));
+            } else if (type == 3) {
+                explosiveBarriers.add(new ExplosiveBarrier((int) rectangle.getX()/6*8, (int) rectangle.getY()/6*8, (int) rectangle.getWidth()/6*8, (int) rectangle.getHeight()/6*8));
+            } else {
+                rewardingBarriers.add(new RewardingBarrier((int) rectangle.getX()/6*8, (int) rectangle.getY()/6*8, (int) rectangle.getWidth()/6*8, (int) rectangle.getHeight()/6*8));
+            }
+        }
+
         // Create multiple SimpleBarrier objects and add them to the ArrayList
-        simpleBarriers.add(new SimpleBarrier(100, 200, 50, 20));
-        simpleBarriers.add(new SimpleBarrier(300, 150, 50, 20));
-        reinforcedBarriers.add(new ReinforcedBarrier(400, 100, 50, 20));
-        reinforcedBarriers.add(new ReinforcedBarrier(300, 100, 50, 20));
-        explosiveBarriers.add(new ExplosiveBarrier(500, 100, 50, 15));
-        explosiveBarriers.add(new ExplosiveBarrier(600, 100, 50, 15));
-        rewardingBarriers.add(new RewardingBarrier(700, 100, 50, 20));
-        rewardingBarriers.add(new RewardingBarrier(800, 100, 50, 20));
+//        simpleBarriers.add(new SimpleBarrier(100, 200, 50, 20));
+//        simpleBarriers.add(new SimpleBarrier(300, 150, 50, 20));
+//        reinforcedBarriers.add(new ReinforcedBarrier(400, 100, 50, 20));
+//        reinforcedBarriers.add(new ReinforcedBarrier(300, 100, 50, 20));
+//        explosiveBarriers.add(new ExplosiveBarrier(500, 100, 50, 15));
+//        explosiveBarriers.add(new ExplosiveBarrier(600, 100, 50, 15));
+//        rewardingBarriers.add(new RewardingBarrier(700, 100, 50, 20));
+//        rewardingBarriers.add(new RewardingBarrier(800, 100, 50, 20));
+
 
         timer = new Timer(10, this);
         timer.start();
@@ -68,6 +95,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             magicalStaff.draw(g);
             fireball.draw(g);
             // Draw all SimpleBarrier objects in the ArrayList
+
             for (SimpleBarrier barrier : simpleBarriers) {
                 barrier.draw(g);
             }
@@ -80,7 +108,6 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             for (RewardingBarrier rwbarrier : rewardingBarriers) {
                 rwbarrier.draw(g);
             }
-        } else {
         }
     }
 

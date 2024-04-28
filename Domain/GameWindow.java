@@ -8,10 +8,9 @@ public class GameWindow extends JFrame {
 
     public GameWindow() {
         super("Lance of Destiny");
-        //setSize(800, 600);
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setSize(1280, 720);
+        //setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
         GameView = new GameView(getWidth(), getHeight());
         add(GameView);
 
@@ -30,6 +29,7 @@ public class GameWindow extends JFrame {
             }
         });
         setVisible(true);
+        setLocationRelativeTo(null);
     }
 
     public static void main(String[] args) {
