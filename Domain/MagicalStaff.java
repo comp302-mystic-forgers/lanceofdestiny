@@ -47,7 +47,7 @@ public class MagicalStaff {
     }
 
     public void move(int keyCode, int panelWidth) {
-        int movementSpeed = 10;
+        int movementSpeed = 20;
         if (keyCode == KeyEvent.VK_LEFT) {
             xPosition = Math.max(0, xPosition - movementSpeed);
         } else if (keyCode == KeyEvent.VK_RIGHT) {
