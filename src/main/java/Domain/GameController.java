@@ -22,6 +22,7 @@ public class GameController {
             gameWindow = new GameWindow();
             gameWindow.setVisible(true);
         }
+
     }
 
     public void setCurrentMode(String mode) {

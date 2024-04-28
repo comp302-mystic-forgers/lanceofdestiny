@@ -26,6 +26,21 @@ public class PlayerAccountDAO {
         playerAccountCollection.insertOne(document);
     }
 
+    public PlayerAccount findPlayerAccountByUsername(String username) {
+        FindIterable<Document> iterable = playerAccountCollection.find(new Document("username", username));
+        Document document = iterable.first();
+        if (document == null) {
+            return null;
+        }
+        String usernameFromDB = document.getString("username");
+        String passwordFromDB = document.getString("password");
+        List<GameInfo> gamesFromDB = new ArrayList<>();
+        // Convert the "games" field from the document to a list of GameInfo objects
+        // ...
+        PlayerAccount playerAccount = new PlayerAccount(usernameFromDB, passwordFromDB, gamesFromDB);
+        return playerAccount;
+    }
+
      public PlayerAccount loadPlayerAccount(String username) {
 
          FindIterable<Document> iterable = playerAccountCollection.find(new Document("username", username));

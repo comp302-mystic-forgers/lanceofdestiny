@@ -13,6 +13,12 @@ public class PlayerAccount {
      this.games = new ArrayList<>();
      }
 
+    public PlayerAccount(String username, String password, List<GameInfo> games) {
+        this.username = username;
+        this.password = password;
+        this.games = games;
+    }
+
 
     // ... Getters and setters for the attributes
 
