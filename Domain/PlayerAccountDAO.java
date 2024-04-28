@@ -41,36 +41,36 @@ public class PlayerAccountDAO {
         return playerAccount;
     }
 
-     public PlayerAccount loadPlayerAccount(String username) {
+    public PlayerAccount loadPlayerAccount(String username) {
 
-         FindIterable<Document> iterable = playerAccountCollection.find(new Document("username", username));
-         MongoCursor<Document> cursor = iterable.iterator();
+        FindIterable<Document> iterable = playerAccountCollection.find(new Document("username", username));
+        MongoCursor<Document> cursor = iterable.iterator();
 
-             if (cursor.hasNext()) {
-                 Document document = cursor.next();
-                 List<Document> games = (List<Document>) document.get("games");
-                 List<GameInfo> gameInfos = new ArrayList();
+        if (cursor.hasNext()) {
+            Document document = cursor.next();
+            List<Document> games = (List<Document>) document.get("games");
+            List<GameInfo> gameInfos = new ArrayList();
 
-                for (Document game : games) {
-                     int simpleBarriersRemaining = game.getInteger("simpleBarriersRemaining");
-                     int reinforcedBarriersRemaining = game.getInteger("reinforcedBarriersRemaining");
-                     int explosiveBarriersRemaining = game.getInteger("explosiveBarriersRemaining");
-                     int rewardingBarriersRemaining = game.getInteger("rewardingBarriersRemaining");
-                     int lives = game.getInteger("lives");
-                     int score = game.getInteger("score");
-                     List<String> spellsAcquired = (List<String>) game.get("spellsAcquired");
+            for (Document game : games) {
+                int simpleBarriersRemaining = game.getInteger("simpleBarriersRemaining");
+                int reinforcedBarriersRemaining = game.getInteger("reinforcedBarriersRemaining");
+                int explosiveBarriersRemaining = game.getInteger("explosiveBarriersRemaining");
+                int rewardingBarriersRemaining = game.getInteger("rewardingBarriersRemaining");
+                int lives = game.getInteger("lives");
+                int score = game.getInteger("score");
+                List<String> spellsAcquired = (List<String>) game.get("spellsAcquired");
 
-                     GameInfo gameInfo = new GameInfo(simpleBarriersRemaining, reinforcedBarriersRemaining, explosiveBarriersRemaining, rewardingBarriersRemaining, lives, score, spellsAcquired);
-                     gameInfos.add(gameInfo);
-                 }
+                GameInfo gameInfo = new GameInfo(simpleBarriersRemaining, reinforcedBarriersRemaining, explosiveBarriersRemaining, rewardingBarriersRemaining, lives, score, spellsAcquired);
+                gameInfos.add(gameInfo);
+            }
 
-                 PlayerAccount playerAccount = new PlayerAccount(document.getString("username"), document.getString("password"));
-                 playerAccount.setGames(gameInfos);
+            PlayerAccount playerAccount = new PlayerAccount(document.getString("username"), document.getString("password"));
+            playerAccount.setGames(gameInfos);
 
-                 return playerAccount;
-             } else {
-                return null;
-                }
+            return playerAccount;
+        } else {
+            return null;
         }
+    }
 
 }

@@ -76,12 +76,12 @@ public class Login extends JFrame implements ActionListener {
         return username.length() > 5 && password.length() > 6;
     }
 
-   /**
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            BuildingModeController buildingModeController = new BuildingModeController();
-            Login login = new Login(buildingModeController);
-        });
-    }**/
+    /**
+     public static void main(String[] args) {
+     SwingUtilities.invokeLater(() -> {
+     BuildingModeController buildingModeController = new BuildingModeController();
+     Login login = new Login(buildingModeController);
+     });
+     }**/
 
 }
