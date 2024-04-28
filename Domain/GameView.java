@@ -229,7 +229,4 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
 
     @Override
     public void componentHidden(ComponentEvent e) {}
-    public Timer getTimer() {
-        return timer;
-    }
 }

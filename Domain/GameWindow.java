@@ -1,16 +1,11 @@
 package Domain;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import javax.swing.JFrame;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class GameWindow extends JFrame {
-    private PauseScreen pauseScreen;
-    private boolean gamePaused;
     private GameView GameView;
-    private JButton pauseButton;
+
     public GameWindow() {
         super("Lance of Destiny");
         setSize(1280, 720);
@@ -19,19 +14,6 @@ public class GameWindow extends JFrame {
 
         GameView = new GameView(getWidth(), getHeight());
         add(GameView);
-        pauseButton = new JButton("Pause");
-        pauseButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (!gamePaused) {
-                    pauseGame();
-                } else {
-                    resumeGame();
-                }
-            }
-        });
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.add(pauseButton);
-        add(buttonPanel, BorderLayout.NORTH);
 
         // Key bindings for moving and rotating the staff
         setFocusable(true);
@@ -50,23 +32,7 @@ public class GameWindow extends JFrame {
         setVisible(true);
         setLocationRelativeTo(null);
     }
-    private void pauseGame() {
-        gamePaused = true;
-        pauseButton.setText("Resume");
-        GameView.getTimer().stop(); // Stop the game loop using the timer from GameView
-        PauseScreen pauseScreen = new PauseScreen(this); // Pass reference of GameWindow to PauseScreen
-        pauseScreen.setVisible(true);
-    }
 
-    public void resumeGame() {
-
-        gamePaused = false;
-        pauseButton.setText("Pause");
-        GameView.getTimer().start(); // Resume the game loop using the timer from GameView
-        if (pauseScreen != null) {
-            pauseScreen.closePauseScreen(); // Close the pause screen if it exists
-        }
-    }
     public static void main(String[] args) {
         new GameWindow();
     }
