@@ -13,7 +13,7 @@ public class BuildingModeMenu extends JFrame {
     private BuildingModeController buildingModeController;
 
     // Path to your background image
-    private String backgroundImagePath = "Assets/Images/BuildingModeStartBackground.png"; // Update this path
+    private String backgroundImagePath = "Assets/Images/BuildingModeStartBackground.png";
 
     public BuildingModeMenu(BuildingModeController buildingModeController) {
         this.buildingModeController = buildingModeController;
