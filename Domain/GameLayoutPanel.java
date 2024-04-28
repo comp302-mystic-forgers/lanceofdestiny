@@ -19,7 +19,8 @@ class GameLayoutPanel extends JPanel {
     private int firmBarriersCount;
     private int explosiveBarriersCount;
     private int giftBarriersCount;
-    private ArrayList<Rectangle> placedBarriers;
+    protected static ArrayList<Rectangle> placedBarriers;
+    protected static ArrayList<Integer> placedBarrierTypes;
     private Random rand;
     private double scale;
 
@@ -32,6 +33,7 @@ class GameLayoutPanel extends JPanel {
         this.scale = scale;
         rand = new Random();
         placedBarriers = new ArrayList<>();
+        placedBarrierTypes = new ArrayList<>();
         setOpaque(false);
         try {
             backgroundImage = ImageIO.read(new File("Assets/Images/200Background.png"));
@@ -81,7 +83,18 @@ class GameLayoutPanel extends JPanel {
                 offsetX = 20;
             }
 
-            g.drawImage(chooseBarrierImage(), offsetX, offsetY, this);
+            BufferedImage barrierImage = chooseBarrierImage();
+            g.drawImage(barrierImage, offsetX, offsetY, this);
+
+            if (barrierImage == simpleBarrierImage) {
+                placedBarrierTypes.add(1);
+            } else if (barrierImage == firmBarrierImage) {
+                placedBarrierTypes.add(2);
+            } else if (barrierImage == explosiveBarrierImage) {
+                placedBarrierTypes.add(3);
+            } else {
+                placedBarrierTypes.add(4);
+            }
             placedBarriers.add(new Rectangle(offsetX, offsetY, width, height));
             offsetX += width + padding;
         }
@@ -109,6 +122,7 @@ class GameLayoutPanel extends JPanel {
 
     public void redrawBarriers() {
         placedBarriers.clear();
+        placedBarrierTypes.clear();
     }
 
     public void setSimpleBarriersCount(int simpleBarriersCount) {
