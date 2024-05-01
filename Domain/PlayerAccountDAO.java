@@ -30,7 +30,7 @@ public class PlayerAccountDAO {
         FindIterable<Document> iterable = playerAccountCollection.find(new Document("username", username));
         Document document = iterable.first();
         if (document == null) {
-            return null;
+                return null;
         }
         String usernameFromDB = document.getString("username");
         String passwordFromDB = document.getString("password");
