@@ -22,7 +22,6 @@ public class WelcomePage extends JFrame {
     private Clip clip;
 
     public WelcomePage(BuildingModeController buildingModeController) {
-        this.buildingModeController = buildingModeController;
 
         setTitle("Lance of Destiny");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
