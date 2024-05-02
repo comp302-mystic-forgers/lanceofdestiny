@@ -69,11 +69,11 @@ public class MagicalStaff {
 
     public void rotate(int keyCode) {
         if (keyCode == KeyEvent.VK_A) {
-            angle -= 45; // Rotate left
-            if (angle < -135) angle = -135; // Limit rotation
+            angle -= 15; // Rotate left
+            if (angle < -45) angle = -45; // Limit rotation
         } else if (keyCode == KeyEvent.VK_D) {
-            angle += 45; // Rotate right
-            if (angle > 135) angle = 135; // Limit rotation
+            angle += 15; // Rotate right
+            if (angle > 45) angle = 45; // Limit rotation
         }
     }
 
@@ -94,6 +94,7 @@ public class MagicalStaff {
     public int getHeight() { return height; }
     public int getX() { return xPosition; }
     public int getY() { return yPosition; }
+    public double getAngle() { return angle; }
 
 }
 
