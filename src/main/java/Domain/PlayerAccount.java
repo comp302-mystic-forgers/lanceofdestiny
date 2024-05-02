@@ -3,15 +3,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PlayerAccount {
-     private String username;
-     private String password;
-     private List<GameInfo> games;
+    private String username;
+    private String password;
+    private List<GameInfo> games;
 
-     public PlayerAccount(String username, String password) {
-     this.username = username;
-     this.password = password;
-     this.games = new ArrayList<>();
-     }
+    public PlayerAccount(String username, String password) {
+        this.username = username;
+        this.password = password;
+        this.games = new ArrayList<>();
+    }
 
     public PlayerAccount(String username, String password, List<GameInfo> games) {
         this.username = username;
@@ -46,7 +46,7 @@ public class PlayerAccount {
         this.games = games;
     }
 
-     // ... Other methods
+    // ... Other methods
 
 
 }

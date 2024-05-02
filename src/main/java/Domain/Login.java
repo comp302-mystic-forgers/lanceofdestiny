@@ -1,4 +1,4 @@
-package src.main.java.Domain;
+package Domain;
 
 import javax.swing.*;
 import java.awt.*;
@@ -49,7 +49,6 @@ public class Login extends JFrame implements ActionListener {
                 PlayerAccount playerAccount = playerAccountDAO.findPlayerAccountByUsername(username);
                 if (playerAccount != null && playerAccount.getPassword().equals(password)) {
                     JOptionPane.showMessageDialog(this, "Login is successful", "Success", JOptionPane.INFORMATION_MESSAGE);
-                    UserSession.getInstance().setCurrentPlayer(playerAccount);
                     buildingModeController.setCurrentMode("building_mode_menu");
                     buildingModeController.switchScreens();
                     this.dispose();

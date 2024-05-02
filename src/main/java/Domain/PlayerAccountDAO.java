@@ -1,4 +1,4 @@
-package src.main.java.Domain;
+package Domain;
 
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
@@ -32,13 +32,12 @@ public class PlayerAccountDAO {
         if (document == null) {
                 return null;
         }
-        String idFromDB = document.getObjectId("_id").toString();
         String usernameFromDB = document.getString("username");
         String passwordFromDB = document.getString("password");
         List<GameInfo> gamesFromDB = new ArrayList<>();
         // Convert the "games" field from the document to a list of GameInfo objects
         // ...
-        PlayerAccount playerAccount = new PlayerAccount(idFromDB, usernameFromDB, passwordFromDB, gamesFromDB);
+        PlayerAccount playerAccount = new PlayerAccount(usernameFromDB, passwordFromDB, gamesFromDB);
         return playerAccount;
     }
 
@@ -61,8 +60,8 @@ public class PlayerAccountDAO {
                 int score = game.getInteger("score");
                 List<String> spellsAcquired = (List<String>) game.get("spellsAcquired");
 
-                //GameInfo gameInfo = new GameInfo(simpleBarriersRemaining, reinforcedBarriersRemaining, explosiveBarriersRemaining, rewardingBarriersRemaining, lives, score, spellsAcquired);
-                //gameInfos.add(gameInfo);
+                GameInfo gameInfo = new GameInfo(simpleBarriersRemaining, reinforcedBarriersRemaining, explosiveBarriersRemaining, rewardingBarriersRemaining, lives, score, spellsAcquired);
+                gameInfos.add(gameInfo);
             }
 
             PlayerAccount playerAccount = new PlayerAccount(document.getString("username"), document.getString("password"));

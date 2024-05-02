@@ -1,20 +1,19 @@
-package src.main.java.Domain;
-
-
+package Domain;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import javax.swing.Timer;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.ArrayList; // Import ArrayList class
 
 public class GameView extends JPanel implements ComponentListener, ActionListener {
     private MagicalStaff magicalStaff;
@@ -23,25 +22,17 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     private ArrayList<ReinforcedBarrier> reinforcedBarriers;
     private ArrayList<ExplosiveBarrier> explosiveBarriers;
     private ArrayList<RewardingBarrier> rewardingBarriers;
-    private OverwhelmingFireBall overFireBall;
-    private MagicalStaffExp magicalStaffExp;
     private Timer timer;
     private boolean gameRunning = true;
-    private  PauseScreen pauseScreen;
     private BufferedImage background;
     private BufferedImage simpleBarrierImage;
     private BufferedImage firmBarrierImage;
     private BufferedImage explosiveBarrierImage;
     private BufferedImage giftBarrierImage;
-    //private GiftTaking giftWindow;
-    private PlayerAccount currentPlayer;
-    private  PlayerAccountDAO playerAccountDAO;
-    private final GameInfoDAO gameInfoDAO;
-    public GameView(int panelWidth, int panelHeight, GameInfoDAO gameInfoDAO, PlayerAccountDAO playerAccountDAO) {
+    private GiftTaking giftWindow;
+
+    public GameView(int panelWidth, int panelHeight) {
         super();
-        this.gameInfoDAO =gameInfoDAO;
-        this.playerAccountDAO = playerAccountDAO;
-        this.currentPlayer = UserSession.getInstance().getCurrentPlayer();
         try {
             InputStream inputStream = getClass().getResourceAsStream("Assets/Images/200Background.png");
             if (inputStream == null) {
@@ -55,15 +46,13 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         } catch (IOException e) {
             System.err.println("Error loading background image: " + e.getMessage());
         }
-        this.magicalStaff = new MagicalStaff(panelWidth, panelHeight); // Position MagicalStaff towards the bottom
-        this.fireball = new FireBall(magicalStaff.getX() + magicalStaff.getWidth()/3,magicalStaff.getY() - 4 * magicalStaff.getHeight()); // Start Fireball from the top middle
+        this.magicalStaff = new MagicalStaff(panelWidth, panelHeight - 100); // Position MagicalStaff towards the bottom
+        this.fireball = new FireBall(magicalStaff.getX() + magicalStaff.getWidth()/3,magicalStaff.getY() - magicalStaff.getHeight()/160); // Start Fireball from the top middle
         this.simpleBarriers = new ArrayList<>(); // Initialize the ArrayList
         this.reinforcedBarriers = new ArrayList<>();
         this.explosiveBarriers = new ArrayList<>();
         this.rewardingBarriers = new ArrayList<>();
-        this.overFireBall = new OverwhelmingFireBall(fireball);
-        this.magicalStaffExp = new MagicalStaffExp(magicalStaff);
-        //this.giftWindow = new GiftTaking();
+        this.giftWindow = new GiftTaking();
         addComponentListener(this);
 
         int count = GameLayoutPanel.placedBarriers.size();
@@ -82,39 +71,28 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                 rewardingBarriers.add(new RewardingBarrier((int) rectangle.getX()/6*8, (int) rectangle.getY()/6*8, (int) rectangle.getWidth()/6*8, (int) rectangle.getHeight()/6*8));
             }
         }
+
+        // Create multiple SimpleBarrier objects and add them to the ArrayList
+//        simpleBarriers.add(new SimpleBarrier(100, 200, 50, 20));
+//        simpleBarriers.add(new SimpleBarrier(300, 150, 50, 20));
+//        reinforcedBarriers.add(new ReinforcedBarrier(400, 100, 50, 20));
+//        reinforcedBarriers.add(new ReinforcedBarrier(300, 100, 50, 20));
+//        explosiveBarriers.add(new ExplosiveBarrier(500, 100, 50, 15));
+//        explosiveBarriers.add(new ExplosiveBarrier(600, 100, 50, 15));
+//        rewardingBarriers.add(new RewardingBarrier(700, 100, 50, 20));
+//        rewardingBarriers.add(new RewardingBarrier(800, 100, 50, 20));
+
+
         timer = new Timer(10, this);
         timer.start();
     }
-    void saveGameInfo() {
-        GameInfo gameInfo = new GameInfo();
-        PlayerAccount playerAccount = playerAccountDAO.findPlayerAccountByUsername(currentPlayer.getUsername());
-        gameInfo.getPlayer().setPlayerId(playerAccount.getPlayerId());
-        gameInfo.getPlayer().setUsername(playerAccount.getUsername());
-        gameInfo.setScore(1000);
-        gameInfo.setLives(3);
-        gameInfo.setGameState(GameState.PASSIVE);
-        gameInfo.setLastSaved(new Date());
-        gameInfo.setSpellsAcquired(null);
-        List<Barrier> remainingBarriers = new ArrayList<>();
-        remainingBarriers.addAll(reinforcedBarriers);
-        remainingBarriers.addAll(simpleBarriers);
-        remainingBarriers.addAll(explosiveBarriers);
-        remainingBarriers.addAll(rewardingBarriers);
-        gameInfo.setBarriersRemaining(remainingBarriers);
-        try {
-            gameInfoDAO.saveGameInfo(gameInfo);
-        } catch (Exception e) {
-            System.err.println("Error saving game info: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         if (gameRunning) {
             g.drawImage(background, 0, 0, getWidth(), getHeight(), this);
             magicalStaff.draw(g);
-
             fireball.draw(g);
             // Draw all SimpleBarrier objects in the ArrayList
 
@@ -154,38 +132,8 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         }
 
         if (fireball.collidesWithMagicalStaff(magicalStaff)) {
-            double speed = Math.hypot(fireball.xVelocity, fireball.yVelocity);
-
-            // Angle of the staff in radians
-            double staffAngleRadians = Math.toRadians(magicalStaff.getAngle());
-
-            // Normal vector to the staff surface
-            double normalX = Math.cos(Math.PI / 2 + staffAngleRadians);
-            double normalY = Math.sin(Math.PI / 2 + staffAngleRadians);
-
-            // Incident vector is just the velocity vector of the fireball
-            double incidentX = fireball.xVelocity;
-            double incidentY = fireball.yVelocity;
-
-            // Dot product of incident vector and the normal vector
-            double dotProduct = incidentX * normalX + incidentY * normalY;
-
-            // Reflection vector calculation
-            double reflectionX = incidentX - 2 * dotProduct * normalX;
-            double reflectionY = incidentY - 2 * dotProduct * normalY;
-
-            // Normalize the reflection vector and scale it by the original speed
-            double reflectionMagnitude = Math.hypot(reflectionX, reflectionY);
-            fireball.xVelocity = (reflectionX / reflectionMagnitude) * speed;
-            fireball.yVelocity = (reflectionY / reflectionMagnitude) * speed;
-
-            // Ensure the fireball bounces away from the staff correctly
-            fireball.yVelocity = -Math.abs(fireball.yVelocity); // This ensures it always moves away from the staff
+            fireball.reverseYDirection();
         }
-
-
-
-
 
         // Game Over condition: Fireball falls below the Magical Staff
         if (fireball.getY() + fireball.getDiameter() > magicalStaff.getY() + magicalStaff.getHeight()) {
@@ -199,37 +147,22 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
 
         for (SimpleBarrier barrier : simpleBarriers) {
             if (barrier.collidesWithFireBall(fireball)) {
-                if(overFireBall.isActivated()){
-                    overFireBall.handleCollisionResponse(barrier);
-                }
-                else{
-                    barrier.destroy();
-                    barrier.handleCollisionResponse(fireball);
-                }
+                barrier.destroy();
+                barrier.handleCollisionResponse(fireball);
             }
         }
 
         for (ReinforcedBarrier rbarrier : reinforcedBarriers) {
             if (rbarrier.collidesWithFireBall(fireball)) {
-                if(overFireBall.isActivated()){
-                    overFireBall.handleCollisionResponse(rbarrier);
-                }
-                else{
-                    rbarrier.isDestroyed();
-                    rbarrier.handleCollisionResponse(fireball);
-                }
+                rbarrier.isDestroyed();
+                rbarrier.handleCollisionResponse(fireball);
             }
         }
 
         for (ExplosiveBarrier ebarrier : explosiveBarriers) {
             if (ebarrier.collidesWithFireBall(fireball)) {
-                if(overFireBall.isActivated()){
-                    overFireBall.handleCollisionResponse(ebarrier);
-                }
-                else {
-                    ebarrier.destroy();
-                    ebarrier.handleCollisionResponse(fireball);
-                }
+                ebarrier.destroy();
+                ebarrier.handleCollisionResponse(fireball);
             }
             if(ebarrier.destroyed) {
                 if (ebarrier.getY() + ebarrier.getHeight() > magicalStaff.getY() &&
@@ -244,37 +177,26 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
 
         for (RewardingBarrier rwbarrier : rewardingBarriers) {
             if (rwbarrier.collidesWithFireBall(fireball)) {
-                if (overFireBall.isActivated()){
-                    overFireBall.handleCollisionResponse(rwbarrier);
-                }
-                else{
-                    rwbarrier.destroy();
-                    rwbarrier.handleCollisionResponse(fireball);
-                }
+                rwbarrier.destroy();
+                rwbarrier.handleCollisionResponse(fireball);
             }
             if(rwbarrier.destroyed) {
                 if (rwbarrier.getY() + rwbarrier.getHeight() > magicalStaff.getY() &&
                         rwbarrier.getX() + rwbarrier.getWidth() > magicalStaff.getX() &&
                         rwbarrier.getX() < magicalStaff.getX() + magicalStaff.getWidth()){
-                    magicalStaffExp.activate();
-                    long currentTime = System.currentTimeMillis();
-                    if (currentTime - magicalStaffExp.getTime() > 30 * 10) {
-                        magicalStaffExp.deactivate();
+                    if (!giftWindow.isVisible()) {
+                        gameRunning = false;
+                        giftWindow.setVisible(true);
                     }
-
-                    /*overFireBall.activate();
-                    long currentTime = System.currentTimeMillis();
-                    if (currentTime - overFireBall.getTime() > 30 * 10) {
-                        overFireBall.deactivate();
-                    }*/
+                    gameRunning = true;
                 }
             }
         }
     }
 
-    public void moveStaff(int keyCode, int type) {
+    public void moveStaff(int keyCode) {
         if (gameRunning && fireball.isBallActive) {
-            magicalStaff.move(keyCode, getWidth(), type);
+            magicalStaff.move(keyCode, getWidth());
             repaint();
         }
     }
@@ -283,20 +205,6 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         if (gameRunning && fireball.isBallActive) {
             magicalStaff.rotate(keyCode);
             repaint();
-        }
-    }
-
-    public void resetStaff(int keyCode) {
-        if (keyCode == KeyEvent.VK_A) {
-            while (magicalStaff.getAngle() < 0) {
-                magicalStaff.resetRotation(keyCode);
-                repaint();
-            }
-        } else if (keyCode == KeyEvent.VK_D) {
-                while (magicalStaff.getAngle() > 0) {
-                    magicalStaff.resetRotation(keyCode);
-                    repaint();
-                }
         }
     }
 
@@ -320,12 +228,4 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
 
     @Override
     public void componentHidden(ComponentEvent e) {}
-    public Timer getTimer() {
-        return timer;
-    }
-
-
-    public boolean isGameRunning() {
-        return gameRunning;
-    }
 }

@@ -1,4 +1,4 @@
-package src.main.java.Domain;
+package Domain;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -7,22 +7,16 @@ import java.awt.event.KeyEvent;
 import javax.swing.*;
 
 public class MagicalStaff {
-    private boolean canonsEquipped;
-    private boolean isFiring;
-    private double xPosition, yPosition;
-    private double width, height = 20;
+    private int xPosition, yPosition;
+    private int width, height = 5;
     private double angle = 0; // Rotation angle in degrees
     private ImageIcon icon;
 
-    public MagicalStaff(double panelWidth, double panelHeight) {
-        this.width = panelWidth * 0.1; // Initialize staff width as 10% of panel width
+    public MagicalStaff(int panelWidth, int panelHeight) {
+        this.width = (int) (panelWidth * 0.1); // Initialize staff width as 10% of panel width
         this.xPosition = (panelWidth - width) / 2; // Center the staff horizontally
         this.yPosition = panelHeight - height - 30; // Position staff from the bottom
         this.icon = new ImageIcon("Assets/Images/200Player.png");
-    }
-
-    public void setHeight(double height) {
-        this.height = height;
     }
 
     public void draw(Graphics g) {
@@ -46,27 +40,18 @@ public class MagicalStaff {
             g2d.rotate(Math.toRadians(angle));
             // Translate back and draw the staff
             g2d.setColor(Color.BLACK);
-            g2d.fillRect((int) -width / 2, (int) -height / 2, (int) width, (int) height);
+            g2d.fillRect(-width / 2, -height / 2, width, height);
 
-            g2d.dispose();
+            g2d.dispose(); // Dispose of this graphics context and release any system resources that it is using
         }
     }
 
-    public void move(int keyCode, int panelWidth, int type) {
-        double pressSpeed = this.width/2;
-        double holdSpeed = 2*this.width;
-        if (type == 0) {
-            if (keyCode == KeyEvent.VK_LEFT) {
-                xPosition = Math.max(0, xPosition - pressSpeed);
-            } else if (keyCode == KeyEvent.VK_RIGHT) {
-                xPosition = Math.min(panelWidth - width, xPosition + pressSpeed);
-            }
-        } else if (type == 1) {
-            if (keyCode == KeyEvent.VK_LEFT) {
-                xPosition = Math.max(0, xPosition - 0.01 * holdSpeed);
-            } else if (keyCode == KeyEvent.VK_RIGHT) {
-                xPosition = Math.min(panelWidth - width, xPosition + 0.01 * holdSpeed);
-            }
+    public void move(int keyCode, int panelWidth) {
+        int movementSpeed = 20;
+        if (keyCode == KeyEvent.VK_LEFT) {
+            xPosition = Math.max(0, xPosition - movementSpeed);
+        } else if (keyCode == KeyEvent.VK_RIGHT) {
+            xPosition = Math.min(panelWidth - width, xPosition + movementSpeed);
         }
 
         // Ensure staff stays within bounds
@@ -80,84 +65,31 @@ public class MagicalStaff {
 
     public void rotate(int keyCode) {
         if (keyCode == KeyEvent.VK_A) {
-            angle -= 20 * 0.1; // Rotate left
-            if (angle < -45) angle = -45; // Limit rotation
+            angle -= 45; // Rotate left
+            if (angle < -135) angle = -135; // Limit rotation
         } else if (keyCode == KeyEvent.VK_D) {
-            angle += 20 * 0.1; // Rotate right
-            if (angle > 45) angle = 45; // Limit rotation
+            angle += 45; // Rotate right
+            if (angle > 135) angle = 135; // Limit rotation
         }
     }
 
     // Reset rotation to horizontal
-    public void resetRotation(int keyCode) {
-        if (keyCode == KeyEvent.VK_A) {
-            if (angle <= - 45) {
-                angle = angle + 45;
-            } else {
-                angle = 0;
-            }
-        } else if (keyCode == KeyEvent.VK_D) {
-            if (angle >= 45) {
-                angle = angle - 45;
-            } else {
-                angle = 0;
-            }
-        }
+    public void resetRotation() {
+        angle = 0;
     }
-
     // In MagicalStaff.java, add a method to update position:
     public void updatePosition(int panelWidth, int panelHeight) {
-        this.width = panelWidth * 0.1; // 10% of the panel width
+        this.width = (int) (panelWidth * 0.1); // 10% of the panel width
         this.xPosition = (panelWidth - this.width) / 2; // Center the staff horizontally
         this.yPosition = panelHeight - this.height - 30; // Position from the bottom
     }
 
 
     // Getters
-    public double getWidth() { return width; }
-    public double getHeight() { return height; }
-    public double getX() { return xPosition; }
-    public double getY() { return yPosition; }
+    public int getWidth() { return width; }
+    public int getHeight() { return height; }
+    public int getX() { return xPosition; }
+    public int getY() { return yPosition; }
 
-    public void equipCanons() {
-        canonsEquipped = true;
-        System.out.println("Magical canons equipped to the staff.");
-    }
-
-    public void startFiring() {
-        if (canonsEquipped) {
-            isFiring = true;
-            System.out.println("Magical canons start firing.");
-            // Code to handle the firing logic
-        }
-    }
-
-    public void stopFiring() {
-        if (isFiring) {
-            isFiring = false;
-            System.out.println("Magical canons stop firing.");
-            // Code to handle stopping firing
-        }
-    }
-
-    public boolean isCanonsEquipped() {
-        return canonsEquipped;
-    }
-
-    public void setCanonsEquipped(boolean canonsEquipped) {
-        this.canonsEquipped = canonsEquipped;
-    }
-
-    public boolean isFiring() {
-        return isFiring;
-    }
-
-    public void setFiring(boolean firing) {
-        isFiring = firing;
-    }
-
-    public double getAngle() {
-        return angle;
-    }
 }
 
