@@ -5,11 +5,11 @@ import java.awt.event.KeyEvent;
 import javax.swing.*;
 
 public class FireBall {
-    private int x, y; // Fireball position
-    private final int diameter = 20; // Fireball size
-    private int xVelocity = 3; // Fireball horizontal movement speed
-    private int yVelocity = - 2; // Fireball vertical movement speed
-    private ImageIcon icon;
+    public int x, y; // Fireball position
+    public final int diameter = 20; // Fireball size
+    public double xVelocity = 3; // Fireball horizontal movement speed
+    public double yVelocity = - 2; // Fireball vertical movement speed
+    public ImageIcon icon;
 
     public boolean isBallActive = false;
 

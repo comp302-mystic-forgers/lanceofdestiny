@@ -1,5 +1,7 @@
 package Domain;
 
+
+
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import java.awt.*;
@@ -85,6 +87,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         if (gameRunning) {
             g.drawImage(background, 0, 0, getWidth(), getHeight(), this);
             magicalStaff.draw(g);
+
             fireball.draw(g);
             // Draw all SimpleBarrier objects in the ArrayList
 
@@ -124,8 +127,38 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         }
 
         if (fireball.collidesWithMagicalStaff(magicalStaff)) {
-            fireball.reverseYDirection();
+            double speed = Math.hypot(fireball.xVelocity, fireball.yVelocity);
+
+            // Angle of the staff in radians
+            double staffAngleRadians = Math.toRadians(magicalStaff.getAngle());
+
+            // Normal vector to the staff surface
+            double normalX = Math.cos(Math.PI / 2 + staffAngleRadians);
+            double normalY = Math.sin(Math.PI / 2 + staffAngleRadians);
+
+            // Incident vector is just the velocity vector of the fireball
+            double incidentX = fireball.xVelocity;
+            double incidentY = fireball.yVelocity;
+
+            // Dot product of incident vector and the normal vector
+            double dotProduct = incidentX * normalX + incidentY * normalY;
+
+            // Reflection vector calculation
+            double reflectionX = incidentX - 2 * dotProduct * normalX;
+            double reflectionY = incidentY - 2 * dotProduct * normalY;
+
+            // Normalize the reflection vector and scale it by the original speed
+            double reflectionMagnitude = Math.hypot(reflectionX, reflectionY);
+            fireball.xVelocity = (reflectionX / reflectionMagnitude) * speed;
+            fireball.yVelocity = (reflectionY / reflectionMagnitude) * speed;
+
+            // Ensure the fireball bounces away from the staff correctly
+            fireball.yVelocity = -Math.abs(fireball.yVelocity); // This ensures it always moves away from the staff
         }
+
+
+
+
 
         // Game Over condition: Fireball falls below the Magical Staff
         if (fireball.getY() + fireball.getDiameter() > magicalStaff.getY() + magicalStaff.getHeight()) {
