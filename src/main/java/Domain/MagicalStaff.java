@@ -19,6 +19,10 @@ public class MagicalStaff {
         this.icon = new ImageIcon("Assets/Images/200Player.png");
     }
 
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
     public void draw(Graphics g) {
         if (icon!= null) {
             Graphics2D g2d = (Graphics2D) g.create();

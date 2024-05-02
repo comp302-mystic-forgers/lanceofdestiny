@@ -3,12 +3,10 @@ import javax.swing.*;
 import java.awt.Graphics;
 
 public class SimpleBarrier extends Barrier {
-    private boolean destroyed;
     private ImageIcon icon;
 
     public SimpleBarrier(int x, int y, int width, int height) {
         super(x, y, width, height);
-        destroyed = false;
         this.icon = new ImageIcon("Assets/Images/200Bluegem.png");
     }
 
@@ -25,9 +23,6 @@ public class SimpleBarrier extends Barrier {
                 fireBall.getY() <= y + height;
     }
 
-    public void destroy() {
-        destroyed = true;
-    }
     public void handleCollisionResponse(FireBall fireBall) {
         fireBall.reverseYDirection();
     }
