@@ -5,20 +5,20 @@ import java.awt.event.KeyEvent;
 import javax.swing.*;
 
 public class FireBall {
-    public int x, y; // Fireball position
-    public final int diameter = 20; // Fireball size
-    public double xVelocity = 3; // Fireball horizontal movement speed
-    public double yVelocity = - 2; // Fireball vertical movement speed
-    public ImageIcon icon;
+    private double x, y; // Fireball position
+    private final int diameter = 20; // Fireball size
+    private double xVelocity = 3; // Fireball horizontal movement speed
+    private double yVelocity = 2; // Fireball vertical movement speed
+    private ImageIcon icon;
 
     public boolean isBallActive = false;
 
-    public FireBall(int startX, int startY) {
+    public FireBall(double startX, double startY) {
         this.x = startX;
         this.y = startY;
         this.icon = new ImageIcon("Assets/Images/200FireBall.png");
     }
-    public void setVelocity(int xVel, int yVel) {
+    public void setVelocity(double xVel, double yVel) {
         this.xVelocity = xVel;
         this.yVelocity = yVel;
     }
@@ -64,10 +64,10 @@ public class FireBall {
 
     public void draw(Graphics g) {
         if (icon!= null) {
-            g.drawImage(icon.getImage(), x, y, diameter, diameter, null);
+            g.drawImage(icon.getImage(), (int) x, (int) y, diameter, diameter, null);
         } else {
             g.setColor(Color.RED);
-            g.fillOval(x, y, diameter, diameter);
+            g.fillOval((int) x, (int) y, diameter, diameter);
         }
     }
 
@@ -84,7 +84,7 @@ public class FireBall {
         xVelocity *= -1;
     }
     // Getter methods
-    public int getX() { return x; }
-    public int getY() { return y; }
+    public double getX() { return x; }
+    public double getY() { return y; }
     public int getDiameter() { return diameter; }
 }

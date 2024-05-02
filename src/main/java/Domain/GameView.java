@@ -50,8 +50,8 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         } catch (IOException e) {
             System.err.println("Error loading background image: " + e.getMessage());
         }
-        this.magicalStaff = new MagicalStaff(panelWidth, panelHeight - 100); // Position MagicalStaff towards the bottom
-        this.fireball = new FireBall(magicalStaff.getX() + magicalStaff.getWidth()/3,magicalStaff.getY() - magicalStaff.getHeight()/160); // Start Fireball from the top middle
+        this.magicalStaff = new MagicalStaff(panelWidth, panelHeight); // Position MagicalStaff towards the bottom
+        this.fireball = new FireBall(magicalStaff.getX() + magicalStaff.getWidth()/3,magicalStaff.getY() - 2.5 * magicalStaff.getHeight()); // Start Fireball from the top middle
         this.simpleBarriers = new ArrayList<>(); // Initialize the ArrayList
         this.reinforcedBarriers = new ArrayList<>();
         this.explosiveBarriers = new ArrayList<>();
@@ -245,9 +245,9 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         }
     }
 
-    public void moveStaff(int keyCode) {
+    public void moveStaff(int keyCode, int type) {
         if (gameRunning && fireball.isBallActive) {
-            magicalStaff.move(keyCode, getWidth());
+            magicalStaff.move(keyCode, getWidth(), type);
             repaint();
         }
     }
@@ -257,6 +257,11 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             magicalStaff.rotate(keyCode);
             repaint();
         }
+    }
+
+    public void resetStaff() {
+        magicalStaff.resetRotation();
+        repaint();
     }
 
     public void throwBall(int keyCode) {
