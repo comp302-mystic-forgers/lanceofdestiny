@@ -30,6 +30,8 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     private BufferedImage explosiveBarrierImage;
     private BufferedImage giftBarrierImage;
     private GiftTaking giftWindow;
+    private HUD hud;
+    private Score score;
 
     public GameView(int panelWidth, int panelHeight) {
         super();
@@ -53,6 +55,8 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         this.explosiveBarriers = new ArrayList<>();
         this.rewardingBarriers = new ArrayList<>();
         this.giftWindow = new GiftTaking();
+        this.hud = new HUD();
+        this.score = new Score();
         addComponentListener(this);
 
         int count = GameLayoutPanel.placedBarriers.size();
@@ -87,6 +91,14 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         timer.start();
     }
 
+    public static String getLives() {
+        return "basst";
+    }
+
+    public int getScore() {
+        return score.getScoreValue();
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -108,6 +120,8 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             for (RewardingBarrier rwbarrier : rewardingBarriers) {
                 rwbarrier.draw(g);
             }
+            add(hud, BorderLayout.NORTH);
+
         }
     }
 
@@ -148,6 +162,9 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         for (SimpleBarrier barrier : simpleBarriers) {
             if (barrier.collidesWithFireBall(fireball)) {
                 barrier.destroy();
+                long barrierDestroyTime = System.currentTimeMillis(); // Calculate barrier destroy time
+                score.updateScore((int) barrierDestroyTime);
+                hud.updateScore(score.getScoreValue()); // Update the HUD with the new score
                 barrier.handleCollisionResponse(fireball);
             }
         }
