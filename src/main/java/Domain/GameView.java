@@ -22,6 +22,8 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     private ArrayList<ReinforcedBarrier> reinforcedBarriers;
     private ArrayList<ExplosiveBarrier> explosiveBarriers;
     private ArrayList<RewardingBarrier> rewardingBarriers;
+    private OverwhelmingFireBall overFireBall;
+    private MagicalStaffExp magicalStaffExp;
     private Timer timer;
     private boolean gameRunning = true;
     private BufferedImage background;
@@ -29,7 +31,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     private BufferedImage firmBarrierImage;
     private BufferedImage explosiveBarrierImage;
     private BufferedImage giftBarrierImage;
-    private GiftTaking giftWindow;
+    //private GiftTaking giftWindow;
 
     public GameView(int panelWidth, int panelHeight) {
         super();
@@ -52,7 +54,9 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         this.reinforcedBarriers = new ArrayList<>();
         this.explosiveBarriers = new ArrayList<>();
         this.rewardingBarriers = new ArrayList<>();
-        this.giftWindow = new GiftTaking();
+        this.overFireBall = new OverwhelmingFireBall(fireball);
+        this.magicalStaffExp = new MagicalStaffExp(magicalStaff);
+        //this.giftWindow = new GiftTaking();
         addComponentListener(this);
 
         int count = GameLayoutPanel.placedBarriers.size();
@@ -71,18 +75,6 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                 rewardingBarriers.add(new RewardingBarrier((int) rectangle.getX()/6*8, (int) rectangle.getY()/6*8, (int) rectangle.getWidth()/6*8, (int) rectangle.getHeight()/6*8));
             }
         }
-
-        // Create multiple SimpleBarrier objects and add them to the ArrayList
-//        simpleBarriers.add(new SimpleBarrier(100, 200, 50, 20));
-//        simpleBarriers.add(new SimpleBarrier(300, 150, 50, 20));
-//        reinforcedBarriers.add(new ReinforcedBarrier(400, 100, 50, 20));
-//        reinforcedBarriers.add(new ReinforcedBarrier(300, 100, 50, 20));
-//        explosiveBarriers.add(new ExplosiveBarrier(500, 100, 50, 15));
-//        explosiveBarriers.add(new ExplosiveBarrier(600, 100, 50, 15));
-//        rewardingBarriers.add(new RewardingBarrier(700, 100, 50, 20));
-//        rewardingBarriers.add(new RewardingBarrier(800, 100, 50, 20));
-
-
         timer = new Timer(10, this);
         timer.start();
     }
@@ -147,22 +139,37 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
 
         for (SimpleBarrier barrier : simpleBarriers) {
             if (barrier.collidesWithFireBall(fireball)) {
-                barrier.destroy();
-                barrier.handleCollisionResponse(fireball);
+                if(overFireBall.isActivated()){
+                    overFireBall.handleCollisionResponse(barrier);
+                }
+                else{
+                    barrier.destroy();
+                    barrier.handleCollisionResponse(fireball);
+                }
             }
         }
 
         for (ReinforcedBarrier rbarrier : reinforcedBarriers) {
             if (rbarrier.collidesWithFireBall(fireball)) {
-                rbarrier.isDestroyed();
-                rbarrier.handleCollisionResponse(fireball);
+                if(overFireBall.isActivated()){
+                    overFireBall.handleCollisionResponse(rbarrier);
+                }
+                else{
+                    rbarrier.isDestroyed();
+                    rbarrier.handleCollisionResponse(fireball);
+                }
             }
         }
 
         for (ExplosiveBarrier ebarrier : explosiveBarriers) {
             if (ebarrier.collidesWithFireBall(fireball)) {
-                ebarrier.destroy();
-                ebarrier.handleCollisionResponse(fireball);
+                if(overFireBall.isActivated()){
+                    overFireBall.handleCollisionResponse(ebarrier);
+                }
+                else {
+                    ebarrier.destroy();
+                    ebarrier.handleCollisionResponse(fireball);
+                }
             }
             if(ebarrier.destroyed) {
                 if (ebarrier.getY() + ebarrier.getHeight() > magicalStaff.getY() &&
@@ -177,18 +184,29 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
 
         for (RewardingBarrier rwbarrier : rewardingBarriers) {
             if (rwbarrier.collidesWithFireBall(fireball)) {
-                rwbarrier.destroy();
-                rwbarrier.handleCollisionResponse(fireball);
+                if (overFireBall.isActivated()){
+                    overFireBall.handleCollisionResponse(rwbarrier);
+                }
+                else{
+                    rwbarrier.destroy();
+                    rwbarrier.handleCollisionResponse(fireball);
+                }
             }
             if(rwbarrier.destroyed) {
                 if (rwbarrier.getY() + rwbarrier.getHeight() > magicalStaff.getY() &&
                         rwbarrier.getX() + rwbarrier.getWidth() > magicalStaff.getX() &&
                         rwbarrier.getX() < magicalStaff.getX() + magicalStaff.getWidth()){
-                    if (!giftWindow.isVisible()) {
-                        gameRunning = false;
-                        giftWindow.setVisible(true);
+                    magicalStaffExp.activate();
+                    long currentTime = System.currentTimeMillis();
+                    if (currentTime - magicalStaffExp.getTime() > 30 * 10) {
+                        magicalStaffExp.deactivate();
                     }
-                    gameRunning = true;
+
+                    /*overFireBall.activate();
+                    long currentTime = System.currentTimeMillis();
+                    if (currentTime - overFireBall.getTime() > 30 * 10) {
+                        overFireBall.deactivate();
+                    }*/
                 }
             }
         }

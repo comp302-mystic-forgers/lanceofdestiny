@@ -20,11 +20,13 @@ public class ReinforcedBarrier extends Barrier{
 
     @Override
     public void draw(Graphics g) {
-        if (hitsReceived > 0) {
-            g.drawImage(icon.getImage(), x, y, width, height, null);
-            g.setColor(Color.WHITE);
-            g.setFont(new Font("Arial", Font.BOLD, 15));
-            g.drawString(String.valueOf(hitsReceived), x + 20, y + 17);
+        if(!destroyed){
+            if (hitsReceived > 0) {
+                g.drawImage(icon.getImage(), x, y, width, height, null);
+                g.setColor(Color.WHITE);
+                g.setFont(new Font("Arial", Font.BOLD, 15));
+                g.drawString(String.valueOf(hitsReceived), x + 20, y + 17);
+            }
         }
     }
 
