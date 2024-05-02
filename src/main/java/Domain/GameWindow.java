@@ -1,10 +1,14 @@
 package Domain;
+import javax.swing.JFrame;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import javax.swing.Timer;
 
 public class GameWindow extends JFrame {
     private PauseScreen pauseScreen;
@@ -37,20 +41,87 @@ public class GameWindow extends JFrame {
 
         // Key bindings for moving and rotating the staff
         setFocusable(true);
-        addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT) {
-                    GameView.moveStaff(e.getKeyCode());
-                } else if (e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_D) {
-                    GameView.rotateStaff(e.getKeyCode());
-                } else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-                    GameView.throwBall(e.getKeyCode());
-                }
-            }
-        });
+
+        keyListener listener = new keyListener();
+        addKeyListener(listener);
+
         setVisible(true);
         setLocationRelativeTo(null);
+    }
+
+    class keyListener extends KeyAdapter {
+        private Timer actionTimer;
+        protected boolean lPressed = false;
+        protected boolean rPressed = false;
+        protected boolean APressed = false;
+        protected boolean DPressed = false;
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+                lPressed = true;
+                GameView.moveStaff(e.getKeyCode(), 0);
+                actionTimer.start();
+                KeyHoldController();
+            }  else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+                rPressed = true;
+                GameView.moveStaff(e.getKeyCode(), 0);
+                actionTimer.start();
+                KeyHoldController();
+            } else if (e.getKeyCode() == KeyEvent.VK_A) {
+                APressed = true;
+                GameView.rotateStaff(e.getKeyCode());
+                actionTimer.start();
+                KeyHoldController();
+            } else if (e.getKeyCode() ==  KeyEvent.VK_D) {
+                DPressed = true;
+                GameView.rotateStaff(e.getKeyCode());
+                actionTimer.start();
+                KeyHoldController();
+            }  else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                GameView.throwBall(e.getKeyCode());
+            }
+        }
+
+        public void KeyHoldController() {
+            actionTimer = new Timer(10, e-> {
+                if (lPressed) {
+                    GameView.moveStaff(KeyEvent.VK_LEFT, 1);
+                } else if (rPressed) {
+                    GameView.moveStaff(KeyEvent.VK_RIGHT, 1);
+                } else if (APressed) {
+                    GameView.rotateStaff(KeyEvent.VK_A);
+                } else if (DPressed) {
+                    GameView.rotateStaff(KeyEvent.VK_D);
+                }
+
+            });
+            actionTimer.setRepeats(true);
+        }
+
+        public void keyReleased(KeyEvent e) {
+            if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+                lPressed = false;
+                actionTimer.stop();
+                actionTimer = null;
+                GameView.moveStaff(e.getKeyCode(), 0);
+            } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+                rPressed = false;
+                actionTimer.stop();
+                actionTimer = null;
+                GameView.moveStaff(e.getKeyCode(), 0);
+            } else if (e.getKeyCode() == KeyEvent.VK_A) {
+                APressed = false;
+                actionTimer.stop();
+                actionTimer = null;
+                GameView.resetStaff();
+            } else if (e.getKeyCode() == KeyEvent.VK_D) {
+                DPressed = false;
+                actionTimer.stop();
+                actionTimer = null;
+                GameView.resetStaff();
+            }
+        }
 
     }
     private void pauseGame() {
@@ -73,6 +144,8 @@ public class GameWindow extends JFrame {
         }
         this.requestFocusInWindow();
     }
+
+
 
 
 
