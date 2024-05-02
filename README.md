@@ -37,7 +37,7 @@ Player needs to log in to his account saved in the online DataBase or sign up wi
 Once logged in, player will go to Building Mode Menu. In Building Mode Menu he/ she can load an old game (soon feature implementation) or create a new game.
 
 #### 1.3 Building Mode (Assembly of Barriers)
-Player needs to choose the amount of each barrier type included.
+Player needs to choose the amount of each barrier type included. The rendering of the Assembly / Building Mode is established through GameLayoutPanel.
 
 ##### Value & Type
  SimpleBarrier -> Only needs to be touched once by Fireball to break \
