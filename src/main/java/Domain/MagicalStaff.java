@@ -89,11 +89,20 @@ public class MagicalStaff {
     }
 
     // Reset rotation to horizontal
-    public void resetRotation() {
-        while (angle >= 45) {
-            angle = angle - 45;
+    public void resetRotation(int keyCode) {
+        if (keyCode == KeyEvent.VK_A) {
+            if (angle <= - 45) {
+                angle = angle + 45;
+            } else {
+                angle = 0;
+            }
+        } else if (keyCode == KeyEvent.VK_D) {
+            if (angle >= 45) {
+                angle = angle - 45;
+            } else {
+                angle = 0;
+            }
         }
-        angle = 0;
     }
 
     // In MagicalStaff.java, add a method to update position:

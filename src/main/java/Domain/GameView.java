@@ -5,11 +5,8 @@ package Domain;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import java.awt.*;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
+import java.awt.event.*;
 import javax.swing.Timer;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -293,9 +290,18 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         }
     }
 
-    public void resetStaff() {
-        magicalStaff.resetRotation();
-        repaint();
+    public void resetStaff(int keyCode) {
+        if (keyCode == KeyEvent.VK_A) {
+            while (magicalStaff.getAngle() < 0) {
+                magicalStaff.resetRotation(keyCode);
+                repaint();
+            }
+        } else if (keyCode == KeyEvent.VK_D) {
+                while (magicalStaff.getAngle() > 0) {
+                    magicalStaff.resetRotation(keyCode);
+                    repaint();
+                }
+        }
     }
 
     public void throwBall(int keyCode) {

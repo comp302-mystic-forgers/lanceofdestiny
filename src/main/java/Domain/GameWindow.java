@@ -4,8 +4,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.Timer;
@@ -63,23 +61,23 @@ public class GameWindow extends JFrame {
             if (e.getKeyCode() == KeyEvent.VK_LEFT) {
                 lPressed = true;
                 GameView.moveStaff(e.getKeyCode(), 0);
-                actionTimer.start();
                 KeyHoldController();
+                actionTimer.start();
             }  else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
                 rPressed = true;
                 GameView.moveStaff(e.getKeyCode(), 0);
-                actionTimer.start();
                 KeyHoldController();
+                actionTimer.start();
             } else if (e.getKeyCode() == KeyEvent.VK_A) {
                 APressed = true;
                 GameView.rotateStaff(e.getKeyCode());
-                actionTimer.start();
                 KeyHoldController();
+                actionTimer.start();
             } else if (e.getKeyCode() ==  KeyEvent.VK_D) {
                 DPressed = true;
                 GameView.rotateStaff(e.getKeyCode());
-                actionTimer.start();
                 KeyHoldController();
+                actionTimer.start();
             }  else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
                 GameView.throwBall(e.getKeyCode());
             }
@@ -116,12 +114,12 @@ public class GameWindow extends JFrame {
                 APressed = false;
                 actionTimer.stop();
                 actionTimer = null;
-                GameView.resetStaff();
+                GameView.resetStaff(e.getKeyCode());
             } else if (e.getKeyCode() == KeyEvent.VK_D) {
                 DPressed = false;
                 actionTimer.stop();
                 actionTimer = null;
-                GameView.resetStaff();
+                GameView.resetStaff(e.getKeyCode());
             }
         }
 
