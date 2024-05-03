@@ -1,5 +1,4 @@
-package src.main.java.Domain;
-
+package Domain;
 
 public class UserSession {
     private static UserSession instance;

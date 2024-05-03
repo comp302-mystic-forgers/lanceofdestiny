@@ -12,8 +12,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,14 +35,16 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     private BufferedImage explosiveBarrierImage;
     private BufferedImage giftBarrierImage;
     //private GiftTaking giftWindow;
-    private final PlayerAccount playerAccount;
+    private PlayerAccount currentPlayer;
 
+    private  PlayerAccountDAO playerAccountDAO;
     private final GameInfoDAO gameInfoDAO;
 
-    public GameView(int panelWidth, int panelHeight, PlayerAccount playerAccount, GameInfoDAO gameInfoDAO) {
+    public GameView(int panelWidth, int panelHeight, GameInfoDAO gameInfoDAO, PlayerAccountDAO playerAccountDAO) {
         super();
-        this.playerAccount = playerAccount;
         this.gameInfoDAO =gameInfoDAO;
+        this.playerAccountDAO = playerAccountDAO;
+        this.currentPlayer = UserSession.getInstance().getCurrentPlayer();
         try {
             InputStream inputStream = getClass().getResourceAsStream("Assets/Images/200Background.png");
             if (inputStream == null) {
@@ -90,8 +90,9 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     }
     void saveGameInfo() {
         GameInfo gameInfo = new GameInfo();
-        playerAccount.setUsername("glbyzbb");
-        gameInfo.setPlayer(playerAccount);
+        PlayerAccount playerAccount = playerAccountDAO.findPlayerAccountByUsername(currentPlayer.getUsername());
+        gameInfo.getPlayer().setPlayerId(playerAccount.getPlayerId());
+        gameInfo.getPlayer().setUsername(playerAccount.getUsername());
         gameInfo.setScore(1000);
         gameInfo.setLives(3);
         gameInfo.setGameState(GameState.PASSIVE);

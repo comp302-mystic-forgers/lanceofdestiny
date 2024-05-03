@@ -15,7 +15,7 @@ public class GameWindow extends JFrame {
     private GameView GameView;
     private JButton pauseButton;
     private GameInfoDAO gameInfoDAO;
-
+    private PlayerAccountDAO playerAccountDAO;
     public GameWindow() {
         super("Lance of Destiny");
         setSize(1280, 720);
@@ -23,7 +23,8 @@ public class GameWindow extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Database connection = new Database();
         gameInfoDAO = new GameInfoDAO(connection);
-        GameView = new GameView(getWidth(), getHeight(),new PlayerAccount(), gameInfoDAO);
+        playerAccountDAO = new PlayerAccountDAO(connection);
+        GameView = new GameView(getWidth(), getHeight(), gameInfoDAO, playerAccountDAO);
         add(GameView);
         pauseButton = new JButton("Pause");
         pauseButton.addActionListener(new ActionListener() {
