@@ -41,10 +41,10 @@ public class PauseScreen extends JFrame {
         saveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                isSaveClicked = true;
-                JOptionPane.showMessageDialog(PauseScreen.this, "Game Saved", "Save", JOptionPane.INFORMATION_MESSAGE);
-                gameWindow.handleSaveAction();
-
+                if (gameView.isGameRunning() && !gameWindow.isGameSaved()) {
+                    JOptionPane.showMessageDialog(PauseScreen.this, "Game Saved", "Save", JOptionPane.INFORMATION_MESSAGE);
+                    gameWindow.handleSaveAction();
+                }
             }
         });
         exitButton.addActionListener(new ActionListener() {
@@ -83,13 +83,6 @@ public class PauseScreen extends JFrame {
         this.dispose(); //
     }
 
-    public boolean isSaveClicked() {
-        return isSaveClicked;
-    }
-
-    public void setSaveClicked(boolean saveClicked) {
-        isSaveClicked = saveClicked;
-    }
     // public static void main(String[] args) {
     // SwingUtilities.invokeLater(() -> {
     //    PauseScreen pauseScreen = new PauseScreen();

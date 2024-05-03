@@ -27,7 +27,6 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     private MagicalStaffExp magicalStaffExp;
     private Timer timer;
     private boolean gameRunning = true;
-
     private  PauseScreen pauseScreen;
     private BufferedImage background;
     private BufferedImage simpleBarrierImage;
@@ -36,10 +35,8 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     private BufferedImage giftBarrierImage;
     //private GiftTaking giftWindow;
     private PlayerAccount currentPlayer;
-
     private  PlayerAccountDAO playerAccountDAO;
     private final GameInfoDAO gameInfoDAO;
-
     public GameView(int panelWidth, int panelHeight, GameInfoDAO gameInfoDAO, PlayerAccountDAO playerAccountDAO) {
         super();
         this.gameInfoDAO =gameInfoDAO;
@@ -133,8 +130,6 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             for (RewardingBarrier rwbarrier : rewardingBarriers) {
                 rwbarrier.draw(g);
             }
-        } else if (pauseScreen.isSaveClicked()) {
-            saveGameInfo();
         }
     }
 
@@ -330,4 +325,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     }
 
 
+    public boolean isGameRunning() {
+        return gameRunning;
+    }
 }

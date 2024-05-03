@@ -16,6 +16,7 @@ public class GameWindow extends JFrame {
     private JButton pauseButton;
     private GameInfoDAO gameInfoDAO;
     private PlayerAccountDAO playerAccountDAO;
+    private boolean isGameSaved = false;
     public GameWindow() {
         super("Lance of Destiny");
         setSize(1280, 720);
@@ -135,7 +136,6 @@ public class GameWindow extends JFrame {
     }
 
     public void resumeGame() {
-
         gamePaused = false;
         pauseButton.setText("Pause");
         GameView.getTimer().start(); // Resume the game loop using the timer from GameView
@@ -143,14 +143,19 @@ public class GameWindow extends JFrame {
             pauseScreen.closePauseScreen(); // Close the pause screen if it exists
         }
         this.requestFocusInWindow();
+        isGameSaved = false;
     }
     public void handleSaveAction() {
         if (GameView != null) {
             GameView.saveGameInfo();
+            isGameSaved = true;
         }
     }
 
 
+    public boolean isGameSaved() {
+        return isGameSaved;
+    }
 
     public static void main(String[] args) {
         new GameWindow();
