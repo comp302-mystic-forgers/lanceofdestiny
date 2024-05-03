@@ -1,19 +1,26 @@
 package Domain;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class PlayerAccount {
+
+    private UUID playerId;
     private String username;
     private String password;
     private List<GameInfo> games;
 
     public PlayerAccount(String username, String password) {
+        this.playerId = UUID.randomUUID();
         this.username = username;
         this.password = password;
         this.games = new ArrayList<>();
     }
-
+    public PlayerAccount(){
+        this.playerId = UUID.randomUUID();
+    }
     public PlayerAccount(String username, String password, List<GameInfo> games) {
+        this.playerId = UUID.randomUUID();
         this.username = username;
         this.password = password;
         this.games = games;
@@ -46,7 +53,8 @@ public class PlayerAccount {
         this.games = games;
     }
 
-    // ... Other methods
-
+    public UUID getPlayerId() {
+        return playerId;
+    }
 
 }

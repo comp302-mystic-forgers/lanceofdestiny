@@ -16,14 +16,16 @@ public class GameWindow extends JFrame {
     private boolean gamePaused;
     private GameView GameView;
     private JButton pauseButton;
+    private GameInfoDAO gameInfoDAO;
 
     public GameWindow() {
         super("Lance of Destiny");
         setSize(1280, 720);
         //setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        GameView = new GameView(getWidth(), getHeight());
+        Database connection = new Database();
+        gameInfoDAO = new GameInfoDAO(connection);
+        GameView = new GameView(getWidth(), getHeight(),new PlayerAccount(), gameInfoDAO);
         add(GameView);
         pauseButton = new JButton("Pause");
         pauseButton.addActionListener(new ActionListener() {
@@ -129,8 +131,7 @@ public class GameWindow extends JFrame {
         pauseButton.setText("Resume");
         GameView.getTimer().stop(); // Stop the game loop using the timer from GameView
         //PauseScreen pauseScreen = new PauseScreen(this); // Pass reference of GameWindow to PauseScreen
-        PauseScreen pauseScreen = new PauseScreen(this, buildingModeController);
-
+        PauseScreen pauseScreen = new PauseScreen(this, buildingModeController, GameView);
         pauseScreen.setVisible(true);
     }
 
@@ -144,8 +145,11 @@ public class GameWindow extends JFrame {
         }
         this.requestFocusInWindow();
     }
-
-
+    public void handleSaveAction() {
+        if (GameView != null) {
+            GameView.saveGameInfo();
+        }
+    }
 
 
 
