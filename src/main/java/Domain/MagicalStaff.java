@@ -7,6 +7,8 @@ import java.awt.event.KeyEvent;
 import javax.swing.*;
 
 public class MagicalStaff {
+    private boolean canonsEquipped;
+    private boolean isFiring;
     private double xPosition, yPosition;
     private double width, height = 20;
     private double angle = 0; // Rotation angle in degrees
@@ -46,7 +48,7 @@ public class MagicalStaff {
             g2d.setColor(Color.BLACK);
             g2d.fillRect((int) -width / 2, (int) -height / 2, (int) width, (int) height);
 
-            g2d.dispose(); // Dispose of this graphics context and release any system resources that it is using
+            g2d.dispose();
         }
     }
 
@@ -108,5 +110,45 @@ public class MagicalStaff {
     public double getX() { return xPosition; }
     public double getY() { return yPosition; }
 
+    public void equipCanons() {
+        canonsEquipped = true;
+        System.out.println("Magical canons equipped to the staff.");
+    }
+
+    public void startFiring() {
+        if (canonsEquipped) {
+            isFiring = true;
+            System.out.println("Magical canons start firing.");
+            // Code to handle the firing logic
+        }
+    }
+
+    public void stopFiring() {
+        if (isFiring) {
+            isFiring = false;
+            System.out.println("Magical canons stop firing.");
+            // Code to handle stopping firing
+        }
+    }
+
+    public boolean isCanonsEquipped() {
+        return canonsEquipped;
+    }
+
+    public void setCanonsEquipped(boolean canonsEquipped) {
+        this.canonsEquipped = canonsEquipped;
+    }
+
+    public boolean isFiring() {
+        return isFiring;
+    }
+
+    public void setFiring(boolean firing) {
+        isFiring = firing;
+    }
+
+    public double getAngle() {
+        return angle;
+    }
 }
 

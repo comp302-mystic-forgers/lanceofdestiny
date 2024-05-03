@@ -60,8 +60,8 @@ public class PlayerAccountDAO {
                 int score = game.getInteger("score");
                 List<String> spellsAcquired = (List<String>) game.get("spellsAcquired");
 
-                GameInfo gameInfo = new GameInfo(simpleBarriersRemaining, reinforcedBarriersRemaining, explosiveBarriersRemaining, rewardingBarriersRemaining, lives, score, spellsAcquired);
-                gameInfos.add(gameInfo);
+                //GameInfo gameInfo = new GameInfo(simpleBarriersRemaining, reinforcedBarriersRemaining, explosiveBarriersRemaining, rewardingBarriersRemaining, lives, score, spellsAcquired);
+                //gameInfos.add(gameInfo);
             }
 
             PlayerAccount playerAccount = new PlayerAccount(document.getString("username"), document.getString("password"));
