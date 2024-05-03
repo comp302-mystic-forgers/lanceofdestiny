@@ -15,7 +15,11 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList; // Import ArrayList class
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class GameView extends JPanel implements ComponentListener, ActionListener {
     private MagicalStaff magicalStaff;
@@ -28,15 +32,22 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     private MagicalStaffExp magicalStaffExp;
     private Timer timer;
     private boolean gameRunning = true;
+
+    private  PauseScreen pauseScreen;
     private BufferedImage background;
     private BufferedImage simpleBarrierImage;
     private BufferedImage firmBarrierImage;
     private BufferedImage explosiveBarrierImage;
     private BufferedImage giftBarrierImage;
     //private GiftTaking giftWindow;
+    private final PlayerAccount playerAccount;
 
-    public GameView(int panelWidth, int panelHeight) {
+    private final GameInfoDAO gameInfoDAO;
+
+    public GameView(int panelWidth, int panelHeight, PlayerAccount playerAccount, GameInfoDAO gameInfoDAO) {
         super();
+        this.playerAccount = playerAccount;
+        this.gameInfoDAO =gameInfoDAO;
         try {
             InputStream inputStream = getClass().getResourceAsStream("Assets/Images/200Background.png");
             if (inputStream == null) {
@@ -80,7 +91,28 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         timer = new Timer(10, this);
         timer.start();
     }
-
+    void saveGameInfo() {
+        GameInfo gameInfo = new GameInfo();
+        playerAccount.setUsername("glbyzbb");
+        gameInfo.setPlayer(playerAccount);
+        gameInfo.setScore(1000);
+        gameInfo.setLives(3);
+        gameInfo.setGameState(GameState.PASSIVE);
+        gameInfo.setLastSaved(new Date());
+        gameInfo.setSpellsAcquired(null);
+        List<Barrier> remainingBarriers = new ArrayList<>();
+        remainingBarriers.addAll(reinforcedBarriers);
+        remainingBarriers.addAll(simpleBarriers);
+        remainingBarriers.addAll(explosiveBarriers);
+        remainingBarriers.addAll(rewardingBarriers);
+        gameInfo.setBarriersRemaining(remainingBarriers);
+        try {
+            gameInfoDAO.saveGameInfo(gameInfo);
+        } catch (Exception e) {
+            System.err.println("Error saving game info: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -103,6 +135,8 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             for (RewardingBarrier rwbarrier : rewardingBarriers) {
                 rwbarrier.draw(g);
             }
+        } else if (pauseScreen.isSaveClicked()) {
+            saveGameInfo();
         }
     }
 
@@ -287,4 +321,6 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     public Timer getTimer() {
         return timer;
     }
+
+
 }

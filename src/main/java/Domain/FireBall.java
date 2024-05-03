@@ -7,8 +7,8 @@ import javax.swing.*;
 public class FireBall {
     private double x, y; // Fireball position
     private final int diameter = 20; // Fireball size
-    private double xVelocity = 3; // Fireball horizontal movement speed
-    private double yVelocity = 2; // Fireball vertical movement speed
+    double xVelocity = 3; // Fireball horizontal movement speed
+    double yVelocity = 2; // Fireball vertical movement speed
     private ImageIcon icon;
 
     public boolean isBallActive = false;

@@ -1,4 +1,4 @@
-package src.main.java.Domain;
+package Domain;
 
 import com.mongodb.client.MongoCollection;
 import org.bson.Document;

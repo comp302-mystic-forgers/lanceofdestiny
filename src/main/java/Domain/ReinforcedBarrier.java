@@ -9,6 +9,8 @@ public class ReinforcedBarrier extends Barrier{
     private int hitsRequired;
     private int hitsReceived;
     private ImageIcon icon;
+    private int xSpeed;
+    private int ySpeed;
 
     public ReinforcedBarrier(int x, int y, int width, int height) {
         super(x, y, width, height);
@@ -48,5 +50,37 @@ public class ReinforcedBarrier extends Barrier{
     public void handleCollisionResponse(FireBall fireBall) {
         fireBall.reverseYDirection();
         decreaseHitsReceived();
+    }
+
+    public int getxSpeed() {
+        return xSpeed;
+    }
+
+    public void setxSpeed(int xSpeed) {
+        this.xSpeed = xSpeed;
+    }
+
+    public int getySpeed() {
+        return ySpeed;
+    }
+
+    public void setySpeed(int ySpeed) {
+        this.ySpeed = ySpeed;
+    }
+
+    public int getHitsRequired() {
+        return hitsRequired;
+    }
+
+    public void setHitsRequired(int hitsRequired) {
+        this.hitsRequired = hitsRequired;
+    }
+
+    public int getHitsReceived() {
+        return hitsReceived;
+    }
+
+    public void setHitsReceived(int hitsReceived) {
+        this.hitsReceived = hitsReceived;
     }
 }
