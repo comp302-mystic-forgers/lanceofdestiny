@@ -21,7 +21,7 @@ public class MagicalStaff {
         this.icon = new ImageIcon("Assets/Images/200Player.png");
     }
 
-    public void setHeight(int height) {
+    public void setHeight(double height) {
         this.height = height;
     }
 
