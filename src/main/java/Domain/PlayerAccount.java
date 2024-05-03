@@ -5,22 +5,20 @@ import java.util.UUID;
 
 public class PlayerAccount {
 
-    private UUID playerId;
+    private String playerId;
     private String username;
     private String password;
     private List<GameInfo> games;
 
     public PlayerAccount(String username, String password) {
-        this.playerId = UUID.randomUUID();
         this.username = username;
         this.password = password;
         this.games = new ArrayList<>();
     }
     public PlayerAccount(){
-        this.playerId = UUID.randomUUID();
     }
-    public PlayerAccount(String username, String password, List<GameInfo> games) {
-        this.playerId = UUID.randomUUID();
+    public PlayerAccount(String playerId, String username, String password, List<GameInfo> games) {
+        this.playerId = playerId;
         this.username = username;
         this.password = password;
         this.games = games;
@@ -53,8 +51,11 @@ public class PlayerAccount {
         this.games = games;
     }
 
-    public UUID getPlayerId() {
+    public String getPlayerId() {
         return playerId;
     }
 
+    public void setPlayerId(String playerId) {
+        this.playerId = playerId;
+    }
 }

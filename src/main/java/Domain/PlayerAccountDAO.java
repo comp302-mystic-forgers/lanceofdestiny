@@ -32,12 +32,13 @@ public class PlayerAccountDAO {
         if (document == null) {
                 return null;
         }
+        String idFromDB = document.getObjectId("_id").toString();
         String usernameFromDB = document.getString("username");
         String passwordFromDB = document.getString("password");
         List<GameInfo> gamesFromDB = new ArrayList<>();
         // Convert the "games" field from the document to a list of GameInfo objects
         // ...
-        PlayerAccount playerAccount = new PlayerAccount(usernameFromDB, passwordFromDB, gamesFromDB);
+        PlayerAccount playerAccount = new PlayerAccount(idFromDB, usernameFromDB, passwordFromDB, gamesFromDB);
         return playerAccount;
     }
 
