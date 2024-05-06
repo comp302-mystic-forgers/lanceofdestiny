@@ -12,8 +12,7 @@ public class HUD extends JPanel {
 
     public HUD() {
         setLayout(new BorderLayout());
-        setPreferredSize(new Dimension(100, 30));
-        setBackground(Color.BLACK);
+        setPreferredSize(new Dimension(300, 100));
 
         JPanel leftPanel = new JPanel();
         livesLabel = new JLabel("Lives: " + GameView.getLives());
