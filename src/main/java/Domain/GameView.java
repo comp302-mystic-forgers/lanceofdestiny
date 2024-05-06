@@ -129,7 +129,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         return "basst";
     }
 
-    public int getScore() {
+    public long getScore() {
         return score.getScoreValue();
     }
 
@@ -226,18 +226,17 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
 
         for (SimpleBarrier barrier : simpleBarriers) {
             if (barrier.collidesWithFireBall(fireball)) {
-                barrier.destroy();
-                long barrierDestroyTime = System.currentTimeMillis(); // Calculate barrier destroy time
-                score.updateScore((int) barrierDestroyTime);
-                hud.updateScore(score.getScoreValue()); // Update the HUD with the new score
-                barrier.handleCollisionResponse(fireball);
                 if(overFireBall.isActivated()){
                     overFireBall.handleCollisionResponse(barrier);
                 }
                 else{
+                    score.updateScore();
+                    hud.updateScore(score.getScoreValue()); // Update the HUD with the new score
+                    repaint();
                     barrier.destroy();
                     barrier.handleCollisionResponse(fireball);
                 }
+
             }
         }
 

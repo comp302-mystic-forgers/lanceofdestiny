@@ -34,7 +34,7 @@ public class HUD extends JPanel {
         livesLabel.setText("Lives: " + GameView.getLives());
     }
 
-    public void updateScore(int score) {
+    public void updateScore(long score) {
         scoreLabel.setText("Score: " + score);
     }
 }
