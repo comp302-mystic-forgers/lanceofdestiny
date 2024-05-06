@@ -1,4 +1,4 @@
-package Domain;
+package src.main.java.Domain;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;

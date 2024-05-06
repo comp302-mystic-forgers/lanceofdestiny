@@ -1,4 +1,4 @@
-package Domain;
+package src.main.java.Domain;
 public class FelixFelicis extends Spell {
 
     private int luckFactor;

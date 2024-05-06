@@ -1,4 +1,4 @@
-package Domain;
+package src.main.java.Domain;
 import java.awt.Graphics;
 import java.awt.Color;
 import java.awt.event.KeyEvent;

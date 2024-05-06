@@ -1,6 +1,4 @@
-package Domain;
-
-import Domain.MagicalStaff;
+package src.main.java.Domain;
 
 public class Hex extends Spell {
 
