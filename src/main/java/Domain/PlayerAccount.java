@@ -1,4 +1,4 @@
-package Domain;
+package src.main.java.Domain;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

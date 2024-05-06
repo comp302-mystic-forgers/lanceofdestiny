@@ -1,4 +1,4 @@
-package Domain;
+package src.main.java.Domain;
 
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;

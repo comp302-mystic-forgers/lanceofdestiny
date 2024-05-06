@@ -1,4 +1,4 @@
-package Domain;
+package src.main.java.Domain;
 import javax.swing.*;
 import java.awt.Color;
 import java.awt.Graphics;

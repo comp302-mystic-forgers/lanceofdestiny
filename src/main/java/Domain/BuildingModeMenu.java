@@ -1,4 +1,4 @@
-package Domain;
+package src.main.java.Domain;
 
 import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;

@@ -1,4 +1,4 @@
-package Domain;
+package src.main.java.Domain;
 import javax.swing.JFrame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
