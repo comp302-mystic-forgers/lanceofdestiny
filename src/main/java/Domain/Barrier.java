@@ -1,4 +1,6 @@
-package src.main.java.Domain;
+package Domain;
+
+
 
 import java.awt.*;
 import java.util.UUID;

@@ -1,4 +1,4 @@
-package src.main.java.Domain;
+package Domain;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
