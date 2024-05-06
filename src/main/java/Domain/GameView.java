@@ -3,17 +3,16 @@ package Domain;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import java.awt.*;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
+import java.awt.event.*;
 import javax.swing.Timer;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList; // Import ArrayList class
+import java.util.Date;
+import java.util.List;
 
 public class GameView extends JPanel implements ComponentListener, ActionListener {
     private MagicalStaff magicalStaff;
@@ -36,12 +35,10 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     private PlayerAccount currentPlayer;
     private  PlayerAccountDAO playerAccountDAO;
     private final GameInfoDAO gameInfoDAO;
-    public GameView(int panelWidth, int panelHeight, GameInfoDAO gameInfoDAO, PlayerAccountDAO playerAccountDAO) {
     private GiftTaking giftWindow;
     private HUD hud;
     private Score score;
-
-    public GameView(int panelWidth, int panelHeight) {
+    public GameView(int panelWidth, int panelHeight, GameInfoDAO gameInfoDAO, PlayerAccountDAO playerAccountDAO) {
         super();
         this.gameInfoDAO =gameInfoDAO;
         this.playerAccountDAO = playerAccountDAO;
