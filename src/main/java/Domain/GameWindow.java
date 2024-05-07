@@ -28,6 +28,7 @@ public class GameWindow extends JFrame {
                     pauseGame();
                 } else {
                     resumeGame();
+                    
                 }
             }
         });
@@ -69,7 +70,10 @@ public class GameWindow extends JFrame {
         pauseButton.setText("Pause");
         GameView.getTimer().start(); // Resume the game loop using the timer from GameView
         if (pauseScreen != null) {
-            pauseScreen.closePauseScreen(); // Close the pause screen if it exists
+            pauseScreen.closePauseScreen();
+            pauseScreen.dispose();
+
+
         }
         this.requestFocusInWindow();
     }
