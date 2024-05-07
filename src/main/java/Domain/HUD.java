@@ -12,10 +12,12 @@ public class HUD {
         livesLabel = new JLabel("Lives: 3");
         livesLabel.setForeground(Color.RED);
         livesLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        //livesLabel.setHorizontalAlignment(JLabel.WEST);
 
         scoreLabel = new JLabel("Score: 0");
         scoreLabel.setForeground(Color.BLACK);
         scoreLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        //scoreLabel.setHorizontalAlignment(JLabel.EAST);
     }
 
     public void updateLives(int lives) {

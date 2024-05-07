@@ -144,6 +144,9 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             fireball.draw(g);
             // Draw all SimpleBarrier objects in the ArrayList
 
+            add(hud.getLivesLabel(), BorderLayout.NORTH);
+            add(hud.getScoreLabel(), BorderLayout.NORTH);
+
             for (SimpleBarrier barrier : simpleBarriers) {
                 barrier.draw(g);
             }
@@ -156,8 +159,6 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             for (RewardingBarrier rwbarrier : rewardingBarriers) {
                 rwbarrier.draw(g);
             }
-            add(hud.getLivesLabel(), BorderLayout.NORTH);
-            add(hud.getScoreLabel(), BorderLayout.NORTH);
         }
     }
 
@@ -217,16 +218,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
 
         // Game Over condition: Fireball falls below the Magical Staff
         if (fireball.getY() + fireball.getDiameter() > magicalStaff.getY() + magicalStaff.getHeight()) {
-            fireball.isBallActive = false;
-            lives--;
-            magicalStaff.updatePosition(getWidth(),getHeight());
-            fireball.updatePosition(((int) magicalStaff.getX() + (int) magicalStaff.getWidth()/3),(int)magicalStaff.getY() -(int) magicalStaff.getHeight()/160);
-            //gameRunning = false;
-            timer.stop(); // Stop the game loop
-            JOptionPane.showMessageDialog(this, "Lives: " + lives, "Watch out!", JOptionPane.INFORMATION_MESSAGE);
-            hud.updateLives(lives); // Update the HUD with the new lives count
-            repaint();
-            timer.start();
+            updateLives();
             // Further actions to reset or end the game can be added here
         }
 
@@ -237,9 +229,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                     overFireBall.handleCollisionResponse(barrier);
                 }
                 else{
-                    score.updateScore();
-                    hud.updateScore(score.getScoreValue()); // Update the HUD with the new score
-                    repaint();
+                    updateScore();
                     barrier.destroy();
                     barrier.handleCollisionResponse(fireball);
                 }
@@ -253,6 +243,9 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                     overFireBall.handleCollisionResponse(rbarrier);
                 }
                 else{
+                    if(rbarrier.isDestroyed()){
+                        updateScore();
+                    }
                     rbarrier.isDestroyed();
                     rbarrier.handleCollisionResponse(fireball);
                 }
@@ -265,6 +258,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                     overFireBall.handleCollisionResponse(ebarrier);
                 }
                 else {
+                    updateScore();
                     ebarrier.destroy();
                     ebarrier.handleCollisionResponse(fireball);
                 }
@@ -272,10 +266,9 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             if(ebarrier.destroyed) {
                 if (ebarrier.getY() + ebarrier.getHeight() > magicalStaff.getY() &&
                         ebarrier.getX() + ebarrier.getWidth() > magicalStaff.getX() &&
-                        ebarrier.getX() < magicalStaff.getX() + magicalStaff.getWidth()) {
-                    gameRunning = false;
-                    timer.stop(); // Stop the game loop
-                    JOptionPane.showMessageDialog(this, "Game Over", "End", JOptionPane.INFORMATION_MESSAGE);
+                        ebarrier.getX() < magicalStaff.getX() + magicalStaff.getWidth() && !ebarrier.isHitStaff()) {
+                    updateLives();
+                    ebarrier.staffHit();
                 }
             }
         }
@@ -286,6 +279,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                     overFireBall.handleCollisionResponse(rwbarrier);
                 }
                 else{
+                    updateScore();
                     rwbarrier.destroy();
                     rwbarrier.handleCollisionResponse(fireball);
                 }
@@ -360,6 +354,31 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     public void componentHidden(ComponentEvent e) {}
     public Timer getTimer() {
         return timer;
+    }
+
+    public void updateScore(){
+        score.updateScore();
+        hud.updateScore(score.getScoreValue()); // Update the HUD with the new score
+        repaint();
+    }
+
+
+    public void updateLives(){
+            fireball.isBallActive = false;
+            lives--;
+            magicalStaff.updatePosition(getWidth(), getHeight());
+            fireball.updatePosition(((int) magicalStaff.getX() + (int) magicalStaff.getWidth() / 3), (int) magicalStaff.getY() - (int) magicalStaff.getHeight() / 160);
+            timer.stop(); // Stop the game loop
+            JOptionPane.showMessageDialog(this, "Lives: " + lives, "Watch out!", JOptionPane.INFORMATION_MESSAGE);
+            hud.updateLives(lives); // Update the HUD with the new lives count
+            repaint();
+            timer.start(); // Continue game loop
+            if (lives < 1){
+                JOptionPane.showMessageDialog(this, "Game Over", "End", JOptionPane.INFORMATION_MESSAGE);
+                fireball.isBallActive = false;
+                gameRunning = false;
+                timer.stop();
+            }
     }
 
 

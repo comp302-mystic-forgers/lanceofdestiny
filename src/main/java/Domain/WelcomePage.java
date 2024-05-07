@@ -39,6 +39,7 @@ public class WelcomePage extends JFrame {
         add(titleLabel, BorderLayout.NORTH);
 
         JButton loginButton = new JButton("Start");
+        JButton exitButton = new JButton("Exit");
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -47,6 +48,18 @@ public class WelcomePage extends JFrame {
             }
         });
         add(loginButton, BorderLayout.SOUTH);
+
+        exitButton.addActionListener(new ActionListener() {
+             @Override
+             public void actionPerformed(ActionEvent e) {
+                 int result = JOptionPane.showConfirmDialog(WelcomePage.this, "Are you sure you want to exit?", "Confirm Exit", JOptionPane.YES_NO_OPTION);
+                 if (result == JOptionPane.YES_OPTION) {
+                     System.exit(0);
+                 }
+             }
+         });
+
+        add(exitButton, BorderLayout.SOUTH);
 
         setLocationRelativeTo(null);
 

@@ -16,7 +16,7 @@ public class Score {
             elapsedTime = 1; // Add a small constant value to prevent division by zero
         }
         if (elapsedTime >= 300) {
-            elapsedTime = elapsedTime/ 1000; // Add a small constant value to prevent division by zero
+            elapsedTime = elapsedTime/ 1000; // Try to keep increasing the score equally
         }
         // Calculate score based on barrier destroy time
         long newScore = (scoreValue + (300 / elapsedTime));
