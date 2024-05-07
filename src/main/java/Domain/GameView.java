@@ -107,7 +107,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         PlayerAccount playerAccount = playerAccountDAO.findPlayerAccountByUsername(currentPlayer.getUsername());
         gameInfo.getPlayer().setPlayerId(playerAccount.getPlayerId());
         gameInfo.getPlayer().setUsername(playerAccount.getUsername());
-        gameInfo.setScore(1000);
+        gameInfo.setScore((int) score.getScoreValue());
         gameInfo.setLives(lives);
         gameInfo.setGameState(GameState.PASSIVE);
         gameInfo.setLastSaved(new Date());
@@ -156,8 +156,8 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             for (RewardingBarrier rwbarrier : rewardingBarriers) {
                 rwbarrier.draw(g);
             }
-            add(hud, BorderLayout.NORTH);
-
+            add(hud.getLivesLabel(), BorderLayout.NORTH);
+            add(hud.getScoreLabel(), BorderLayout.NORTH);
         }
     }
 
@@ -224,6 +224,8 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             //gameRunning = false;
             timer.stop(); // Stop the game loop
             JOptionPane.showMessageDialog(this, "Lives: " + lives, "Watch out!", JOptionPane.INFORMATION_MESSAGE);
+            hud.updateLives(lives); // Update the HUD with the new lives count
+            repaint();
             timer.start();
             // Further actions to reset or end the game can be added here
         }
