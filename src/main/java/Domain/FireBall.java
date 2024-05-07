@@ -76,7 +76,10 @@ public class FireBall {
         return x < staff.getX() + staff.getWidth() && x + diameter > staff.getX() &&
                 y + diameter >= staff.getY() && y < staff.getY() + staff.getHeight();
     }
-
+    public void updatePosition(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
     public void reverseYDirection() {
         yVelocity *= -1;
     }

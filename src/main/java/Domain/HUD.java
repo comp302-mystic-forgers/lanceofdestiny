@@ -15,7 +15,7 @@ public class HUD extends JPanel {
         setPreferredSize(new Dimension(300, 100));
 
         JPanel leftPanel = new JPanel();
-        livesLabel = new JLabel("Lives: " + GameView.getLives());
+        livesLabel = new JLabel("Lives: 3");
         livesLabel.setForeground(Color.GREEN);
         livesLabel.setFont(new Font("Arial", Font.BOLD, 16));
         leftPanel.add(livesLabel);
@@ -30,8 +30,8 @@ public class HUD extends JPanel {
         add(rightPanel, BorderLayout.EAST);
     }
 
-    public void updateLives() {
-        livesLabel.setText("Lives: " + GameView.getLives());
+    public void updateLives(int lives) {
+        livesLabel.setText("Lives: " + lives);
     }
 
     public void updateScore(long score) {

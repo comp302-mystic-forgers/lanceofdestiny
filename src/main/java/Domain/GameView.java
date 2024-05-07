@@ -38,6 +38,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     private GiftTaking giftWindow;
     private HUD hud;
     private Score score;
+    private int lives;
     public GameView(int panelWidth, int panelHeight, GameInfoDAO gameInfoDAO, PlayerAccountDAO playerAccountDAO) {
         super();
         this.gameInfoDAO =gameInfoDAO;
@@ -64,10 +65,10 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         this.rewardingBarriers = new ArrayList<>();
         this.overFireBall = new OverwhelmingFireBall(fireball);
         this.magicalStaffExp = new MagicalStaffExp(magicalStaff);
-        //this.giftWindow = new GiftTaking();
         this.giftWindow = new GiftTaking();
         this.hud = new HUD();
         this.score = new Score();
+        this.lives = 3;
         addComponentListener(this);
 
         int count = GameLayoutPanel.placedBarriers.size();
@@ -107,7 +108,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         gameInfo.getPlayer().setPlayerId(playerAccount.getPlayerId());
         gameInfo.getPlayer().setUsername(playerAccount.getUsername());
         gameInfo.setScore(1000);
-        gameInfo.setLives(3);
+        gameInfo.setLives(lives);
         gameInfo.setGameState(GameState.PASSIVE);
         gameInfo.setLastSaved(new Date());
         gameInfo.setSpellsAcquired(null);
@@ -125,8 +126,8 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         }
     }
 
-    public static String getLives() {
-        return "basst";
+    public int getLives() {
+        return lives;
     }
 
     public long getScore() {
@@ -217,9 +218,13 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         // Game Over condition: Fireball falls below the Magical Staff
         if (fireball.getY() + fireball.getDiameter() > magicalStaff.getY() + magicalStaff.getHeight()) {
             fireball.isBallActive = false;
-            gameRunning = false;
+            lives--;
+            magicalStaff.updatePosition(getWidth(),getHeight());
+            fireball.updatePosition(((int) magicalStaff.getX() + (int) magicalStaff.getWidth()/3),(int)magicalStaff.getY() -(int) magicalStaff.getHeight()/160);
+            //gameRunning = false;
             timer.stop(); // Stop the game loop
-            JOptionPane.showMessageDialog(this, "Game Over", "End", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Lives: " + lives, "Watch out!", JOptionPane.INFORMATION_MESSAGE);
+            timer.start();
             // Further actions to reset or end the game can be added here
         }
 
