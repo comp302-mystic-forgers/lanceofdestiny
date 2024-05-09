@@ -256,9 +256,10 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                 if (rwbarrier.getY() + rwbarrier.getHeight() > magicalStaff.getY() &&
                         rwbarrier.getX() + rwbarrier.getWidth() > magicalStaff.getX() &&
                         rwbarrier.getX() < magicalStaff.getX() + magicalStaff.getWidth()){
+
                     magicalStaffExp.activate();
                     long currentTime = System.currentTimeMillis();
-                    if (currentTime - magicalStaffExp.getTime() > 30 * 10) {
+                    if (currentTime - magicalStaffExp.getTime() > 30 * 100) {
                         magicalStaffExp.deactivate();
                     }
 

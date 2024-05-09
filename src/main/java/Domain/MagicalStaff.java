@@ -1,8 +1,6 @@
 package Domain;
 
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Color;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import javax.swing.*;
 
@@ -13,6 +11,9 @@ public class MagicalStaff {
     private double width, height = 20;
     private double angle = 0; // Rotation angle in degrees
     private ImageIcon icon;
+    private boolean needsRepaint = false;
+    protected int counterPaint = 0;
+    protected int counterRepaint = 0;
 
     public MagicalStaff(double panelWidth, double panelHeight) {
         this.width = panelWidth * 0.1; // Initialize staff width as 10% of panel width
@@ -50,6 +51,7 @@ public class MagicalStaff {
 
             g2d.dispose();
         }
+        needsRepaint = false;
     }
 
     public void move(int keyCode, int panelWidth, int type) {
@@ -139,6 +141,37 @@ public class MagicalStaff {
             // Code to handle stopping firing
         }
     }
+
+    public void setActivatedHeight(){
+        double originalHeight = this.height;
+        this.height *= 2;
+        double scaleFactor = this.height / originalHeight;
+
+        int newWidth = (int) (icon.getIconWidth() * scaleFactor);
+        int newHeight = (int) (icon.getIconHeight());
+
+        Image resizedImage = icon.getImage().getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
+        icon = new ImageIcon(resizedImage);
+
+        needsRepaint = true;
+        counterPaint++;
+    }
+
+    public void setDeactivatedHeight(){
+        double originalHeight = this.height;
+        this.height /= 2;
+        double scaleFactor = this.height / originalHeight;
+
+        int newWidth = (int) (icon.getIconWidth() * scaleFactor);
+        int newHeight = (int) (icon.getIconHeight());
+
+        Image resizedImage = icon.getImage().getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
+        icon = new ImageIcon(resizedImage);
+
+        needsRepaint = true;
+        counterRepaint++;
+    }
+
 
     public boolean isCanonsEquipped() {
         return canonsEquipped;
