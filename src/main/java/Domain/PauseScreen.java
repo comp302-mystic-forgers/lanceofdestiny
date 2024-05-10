@@ -4,7 +4,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
 
 public class PauseScreen extends JFrame {
@@ -16,6 +19,7 @@ public class PauseScreen extends JFrame {
     private boolean isSaveClicked = false;
 
     private  GameView gameView;
+
     private JButton returnMenuButton;
     public PauseScreen(GameWindow gameWindow, BuildingModeController buildingModeController, GameView gameView) {
         super("Pause");
@@ -27,14 +31,14 @@ public class PauseScreen extends JFrame {
         helpButton = new JButton("Help");
         saveButton = new JButton("Save");
         exitButton = new JButton("Exit");
-        returnMenuButton = new JButton("Return to Menu");
+        returnMenuButton = new JButton("Return Menu");
 
 
         helpButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(PauseScreen.this, "Help window will be opened", "Help", JOptionPane.INFORMATION_MESSAGE);
-            }
+                displayHelpFile();
+                }
         });
 
 
@@ -59,8 +63,19 @@ public class PauseScreen extends JFrame {
         returnMenuButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(PauseScreen.this, "Building Mode Menu will be opened", "Menu", JOptionPane.INFORMATION_MESSAGE);
+                 GameController gameController = new GameController();
+                BuildingModeController buildingModeController1 = new BuildingModeController(gameController);
 
+                  //buildingModeController.setCurrentMode("building_mode_menu");
+                //buildingModeController.setCurrentMode("building_mode_menu");
+
+               BuildingModeMenu menu = new BuildingModeMenu(buildingModeController1);
+
+                menu.setVisible(false);
+               // buildingModeController.setCurrentMode("building_mode_menu");
+              //  buildingModeController.switchScreens();
+               gameWindow.dispose();
+               // closePauseScreen();
 
             }
         });
@@ -77,18 +92,39 @@ public class PauseScreen extends JFrame {
 
         setLocationRelativeTo(null);
     }
+    private void displayHelpFile() {
+        JFrame helpFrame = new JFrame("Help Contents");
+        helpFrame.setSize(300, 400);
+        helpFrame.setLocationRelativeTo(this);
+        JTextArea textArea = new JTextArea();
+        textArea.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        helpFrame.add(scrollPane);
+
+        try {
+            File file = new File("Assets/Texts/Help.txt"); // Make sure to provide the correct path to your text file
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            textArea.read(reader, null);
+            reader.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            textArea.setText("Error loading help file!");
+        }
+
+        helpFrame.setVisible(true);
+    }
 
 
     public  void closePauseScreen() {
-        this.dispose(); //
+        this.dispose();
     }
 
     // public static void main(String[] args) {
-    // SwingUtilities.invokeLater(() -> {
-    //    PauseScreen pauseScreen = new PauseScreen();
-    //    pauseScreen.setVisible(true);
+     //SwingUtilities.invokeLater(() -> {
+       // PauseScreen pauseScreen = new PauseScreen();
+      //  pauseScreen.setVisible(true);
     //});
-    // }
+     //}
 
 
 }
