@@ -17,18 +17,18 @@ public class MagicalStaffExp extends Spell{
 
     @Override
     public void activate(){
-        if (!activated) {
+        if (!activated && staff.counterPaint < 1) {
             activated = true;
             activationTime = System.currentTimeMillis();
-            staff.setHeight(staff.getHeight() * 2); // Double the length of the staff
+            staff.setActivatedHeight();
         }
     }
 
     @Override
     public void deactivate() {
-        if (activated) {
+        if (activated && staff.counterRepaint < 1) {
             activated = false;
-            staff.setHeight(staff.getHeight() / 2); // Return to original length
+            staff.setDeactivatedHeight();
         }
     }
 
