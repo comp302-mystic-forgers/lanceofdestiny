@@ -23,6 +23,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     private ArrayList<RewardingBarrier> rewardingBarriers;
     private OverwhelmingFireBall overFireBall;
     private MagicalStaffExp magicalStaffExp;
+    private FelixFelicis felixFelicis;
     private Timer timer;
     private boolean gameRunning = true;
     private  PauseScreen pauseScreen;
@@ -65,6 +66,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         this.rewardingBarriers = new ArrayList<>();
         this.overFireBall = new OverwhelmingFireBall(fireball);
         this.magicalStaffExp = new MagicalStaffExp(magicalStaff);
+        this.felixFelicis = new FelixFelicis();
         this.giftWindow = new GiftTaking();
         this.hud = new HUD();
         this.score = new Score();
@@ -289,13 +291,19 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                         rwbarrier.getX() + rwbarrier.getWidth() > magicalStaff.getX() &&
                         rwbarrier.getX() < magicalStaff.getX() + magicalStaff.getWidth()){
 
-                    magicalStaffExp.activate();
+                        if(!felixFelicis.isActivated()){
+                            felixFelicis.activate();
+                            updateLives();
+                        }
+                        felixFelicis.deactivate();
+
+                    /*magicalStaffExp.activate();
                     long currentTime = System.currentTimeMillis();
                     if (currentTime - magicalStaffExp.getTime() > 30 * 100) {
                         magicalStaffExp.deactivate();
                     }
 
-                    /*overFireBall.activate();
+                    overFireBall.activate();
                     long currentTime = System.currentTimeMillis();
                     if (currentTime - overFireBall.getTime() > 30 * 10) {
                         overFireBall.deactivate();
@@ -363,9 +371,33 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         repaint();
     }
 
+    public void addLife(){
+        if(felixFelicis.isActivated() && lives < 5) {
+            lives++;
+            JOptionPane.showMessageDialog(this, "Lives: " + lives, "You got an extra chance!", JOptionPane.INFORMATION_MESSAGE);
+            felixFelicis.deactivate();
+            hud.updateLives(lives);
+        } else{
+            JOptionPane.showMessageDialog(this, "Lives: " + lives, "You already have 5 lives!", JOptionPane.INFORMATION_MESSAGE);
+            felixFelicis.deactivate();
+        }
+    }
 
-    public void updateLives(){
-            fireball.isBallActive = false;
+
+    public void updateLives() {
+        fireball.isBallActive = false;
+        if (felixFelicis.isActivated() && lives < 5) {
+            lives++;
+            magicalStaff.updatePosition(getWidth(), getHeight());
+            fireball.updatePosition(((int) magicalStaff.getX() + (int) magicalStaff.getWidth() / 3), (int) magicalStaff.getY() - (int) magicalStaff.getHeight() / 160);
+            timer.stop(); // Stop the game loop
+            JOptionPane.showMessageDialog(this, "Lives: " + lives, "You got extra chance!", JOptionPane.INFORMATION_MESSAGE);
+            felixFelicis.deactivate();
+            hud.updateLives(lives); // Update the HUD with the new lives count
+            repaint();
+            timer.start();
+            felixFelicis.deactivate();
+        } else {
             lives--;
             magicalStaff.updatePosition(getWidth(), getHeight());
             fireball.updatePosition(((int) magicalStaff.getX() + (int) magicalStaff.getWidth() / 3), (int) magicalStaff.getY() - (int) magicalStaff.getHeight() / 160);
@@ -374,13 +406,16 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             hud.updateLives(lives); // Update the HUD with the new lives count
             repaint();
             timer.start(); // Continue game loop
-            if (lives < 1){
+            if (lives < 1) {
                 JOptionPane.showMessageDialog(this, "Game Over", "End", JOptionPane.INFORMATION_MESSAGE);
                 fireball.isBallActive = false;
                 gameRunning = false;
                 timer.stop();
             }
+        }
+
     }
+
 
 
     public boolean isGameRunning() {
