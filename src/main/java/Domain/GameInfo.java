@@ -26,6 +26,17 @@ public class GameInfo {
         this.barriersRemaining = new ArrayList<>();
     };
 
+    public GameInfo(UUID gameId, PlayerAccount player, int score, int lives, GameState gameState, Date lastSaved, List<Spell> spellsAcquired, List<Barrier> barriersRemaining) {
+        this.gameId = gameId;
+        this.player = player;
+        this.score = score;
+        this.lives = lives;
+        this.gameState = gameState;
+        this.lastSaved = lastSaved;
+        this.spellsAcquired = spellsAcquired;
+        this.barriersRemaining = barriersRemaining;
+    }
+
     public UUID getGameId() {
         return gameId;
     }
