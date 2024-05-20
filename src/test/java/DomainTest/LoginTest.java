@@ -93,7 +93,12 @@ class LoginTest extends JFrame {
         if (UserSession.getInstance().getCurrentPlayer() != null){
             System.out.println("UserSession has been set, we can continue to play the game. Test successful!");
         }
+        // Undo state change in UserSession, in order for the second GB test to test properly,
+        // when executing Test class at once
+        UserSession.getInstance().setCurrentPlayer(null);
     }
+
+
 
     // 2nd GlassBox-Test: Check if logging in worked with non-existing, incorrect login data,
     // should not work to play the game
