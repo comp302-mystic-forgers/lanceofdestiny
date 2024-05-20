@@ -8,13 +8,16 @@ import java.util.stream.Collectors;
 
 public class GameInfoDAO {
 
-    private MongoCollection<Document> gameInfoCollection;
+    protected MongoCollection<Document> gameInfoCollection;
 
     public GameInfoDAO(Database connection) {
         gameInfoCollection = connection.database.getCollection("Games");
     }
 
     public void saveGameInfo(GameInfo gameInfo) {
+        if (gameInfo.getPlayer() == null) {
+            throw new IllegalArgumentException("Player cannot be null");
+        }
         Document gameDoc = new Document("game_id", gameInfo.getGameId())
                 .append("player", new Document("player_id", gameInfo.getPlayer().getPlayerId())
                         .append("username", gameInfo.getPlayer().getUsername()))
@@ -54,21 +57,21 @@ public class GameInfoDAO {
                                     .append("type", barrier.getClass().getSimpleName());
 
                             if (barrier instanceof SimpleBarrier) {
-                                barrierDoc.append("xSpeed", ((SimpleBarrier) barrier).getxSpeed())
-                                        .append("ySpeed", ((SimpleBarrier) barrier).getySpeed());
+                                barrierDoc.append("x_loc", ((SimpleBarrier) barrier).getX())
+                                        .append("y_loc", ((SimpleBarrier) barrier).getY());
                             } else if (barrier instanceof RewardingBarrier) {
-                                barrierDoc.append("xSpeed", ((RewardingBarrier) barrier).getX())
-                                        .append("ySpeed", ((RewardingBarrier) barrier).getY())
+                                barrierDoc.append("x_loc", ((RewardingBarrier) barrier).getX())
+                                        .append("y_loc", ((RewardingBarrier) barrier).getY())
                                         .append("destroyed", ((RewardingBarrier) barrier).isDestroyed());
                             } else if (barrier instanceof ReinforcedBarrier) {
                                 barrierDoc.append("hitsRequired", ((ReinforcedBarrier) barrier).getHitsRequired())
                                         .append("hitsReceived", ((ReinforcedBarrier) barrier).getHitsReceived())
-                                        .append("xSpeed", ((ReinforcedBarrier) barrier).getxSpeed())
-                                        .append("ySpeed", ((ReinforcedBarrier) barrier).getySpeed());
+                                        .append("x_loc", ((ReinforcedBarrier) barrier).getX())
+                                        .append("y_loc", ((ReinforcedBarrier) barrier).getY());
                             } else if (barrier instanceof ExplosiveBarrier) {
                                 barrierDoc.append("destroyed", ((ExplosiveBarrier) barrier).isDestroyed())
-                                        .append("xSpeed", ((ExplosiveBarrier) barrier).getX())
-                                        .append("ySpeed", ((ExplosiveBarrier) barrier).getY());
+                                        .append("x_loc", ((ExplosiveBarrier) barrier).getX())
+                                        .append("y_loc", ((ExplosiveBarrier) barrier).getY());
                             }
                             return barrierDoc;
                         })
