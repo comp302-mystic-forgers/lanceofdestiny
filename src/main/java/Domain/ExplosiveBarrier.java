@@ -50,6 +50,8 @@ public class ExplosiveBarrier extends Barrier{
     }
     public int getX() { return x; }
     public int getY() { return y; }
+    public int getXSpeed() {return xSpeed;}
+    public int getYSpeed() {return ySpeed;}
     public int getHeight() { return height; }
     public int getWidth() { return width; }
 
