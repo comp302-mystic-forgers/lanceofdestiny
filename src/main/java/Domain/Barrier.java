@@ -1,7 +1,5 @@
 package Domain;
 
-
-
 import java.awt.*;
 import java.util.UUID;
 
@@ -15,6 +13,17 @@ public abstract class Barrier {
     protected int width, height; // Dimensions
     protected boolean destroyed;
 
+    //Representation Invariant:
+    //x and y has to be non-negative
+    //width and height has to be positive
+    //destroyed has to be boolean
+    private void repOK() {
+        assert x >= 0 : "x position non-negative";
+        assert y >= 0 : "y position non-negative";
+        assert width > 0 : "width positive";
+        assert height > 0 : "height positive";
+    }
+
     public Barrier(int x, int y, int width, int height) {
         this.barrierId = UUID.randomUUID();
         this.x = x;
@@ -22,11 +31,13 @@ public abstract class Barrier {
         this.width = width;
         this.height = height;
         this.destroyed = false;
+        repOK();
     }
     public abstract void draw(Graphics g);
 
     public void destroy(){
         this.destroyed = true;
+        repOK();
     }
 
     public boolean isDestroyed() {

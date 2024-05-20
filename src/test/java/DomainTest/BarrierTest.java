@@ -3,6 +3,7 @@ package DomainTest;
 import Domain.Barrier;
 import Domain.ExplosiveBarrier;
 import Domain.SimpleBarrier;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,4 +21,10 @@ class BarrierTest {
         }
     }
 
+    @Test
+    public void testDestroy() {
+        Barrier barrier = new SimpleBarrier(0, 0, 10, 10);
+        barrier.destroy();
+        assertTrue(barrier.isDestroyed(), "Barrier destroyed after calling destroy()");
+    }
 }
