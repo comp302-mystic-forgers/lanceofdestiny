@@ -27,4 +27,15 @@ class BarrierTest {
         barrier.destroy();
         assertTrue(barrier.isDestroyed(), "Barrier destroyed after calling destroy()");
     }
+    @Test
+    //Black-Box test: Check if the barrier could initialize in the constructor correctly.
+    public void testBarrierInitialization() {
+        Barrier barrier;
+        barrier = new SimpleBarrier(2, 1, 10, 10);
+        assertEquals(2, barrier.getX());
+        assertEquals(1, barrier.getY());
+        assertEquals(10, barrier.getWidth());
+        assertEquals(10, barrier.getHeight());
+
+    }
 }
