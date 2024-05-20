@@ -32,6 +32,10 @@ public class GameController {
         return currentMode;
     }
 
+    public BuildingModeController getBuildingModeController() {
+        return buildingModeController;
+    }
+
     public static void main(String[] args){
         new GameController();
     }
