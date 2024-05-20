@@ -1,5 +1,7 @@
 package Domain;
 
+import com.mongodb.MongoConfigurationException;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -103,7 +105,7 @@ public class Login extends JFrame implements ActionListener {
                 userNameField.setText("");
                 passwordField.setText("");
             } else {
-                JOptionPane.showMessageDialog(this, "Username or password too short. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Username or password too short/ of same length. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -116,7 +118,7 @@ public class Login extends JFrame implements ActionListener {
      * @return True if the sign-up credentials are meet the requirements, false otherwise.
      */
     private boolean isValidLogin(String username, String password) {
-        return username.length() > 5 && password.length() > 6;
+        return username.length() > 5 && password.length() > 6 && !username.equals(password);
     }
 
     public JTextField getUserNameField() {
