@@ -5,6 +5,10 @@ package Domain;
 import java.awt.*;
 import java.util.UUID;
 
+// Abstract Function: The Barrier class provides a way to represent a barrier in a graphical environment
+// and render it on the screen using the draw method. It also allows the barrier to be destroyed
+// and checks if it is already destroyed. It is an obstacle that needs to be destroyed by the player
+// in order to win the game. For this it needs to be hit by a fireball a certain amount of times.
 public abstract class Barrier {
     private UUID barrierId;
     protected int x, y; // Position
@@ -32,6 +36,10 @@ public abstract class Barrier {
 
     public UUID getBarrierId() {
         return barrierId;
+    }
+
+    public void move(){
+
     }
 
 }
