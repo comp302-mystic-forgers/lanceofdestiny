@@ -3,6 +3,7 @@ package DomainTest;
 import static org.junit.jupiter.api.Assertions.*;
 
 import Domain.Barrier;
+import Domain.ExplosiveBarrier;
 import Domain.FireBall;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -71,57 +72,5 @@ public class ExplosiveBarrierTest {
         assertEquals(5, explosiveBarrier.getYSpeed(), "ySpeed should be 5");
     }
 
-    //GlassBox Test: check for expected
-    private void handleCollisionResponse(FireBall fireBall) {
-        fireBall.reverseYDirection();
-        explosiveBarrier.setDestroyed(true);
-        explosiveBarrier.setXSpeed((int) (Math.random() * 8));
-        explosiveBarrier.setYSpeed(5);
-    }
 }
 
-class ExplosiveBarrier extends Barrier {
-    private int xSpeed;
-    private int ySpeed;
-    private boolean hitStaff;
-
-    public ExplosiveBarrier(int x, int y, int width, int height) {
-        super(x, y, width, height);
-        this.xSpeed = 0;
-        this.ySpeed = 0;
-        this.hitStaff = false;
-    }
-
-    @Override
-    public void draw(Graphics g) {
-
-    }
-
-    public void handleCollisionResponse(FireBall fireBall) {
-        fireBall.reverseYDirection();
-        destroyed = true;
-        xSpeed = (int) (Math.random() * 8);
-        ySpeed = 5;
-    }
-
-    public int getXSpeed() {
-        return xSpeed;
-    }
-
-    public int getYSpeed() {
-        return ySpeed;
-    }
-
-    public void setDestroyed(boolean destroyed) {
-        this.destroyed = destroyed;
-    }
-
-    public void setXSpeed(int xSpeed) {
-        this.xSpeed = xSpeed;
-    }
-
-    public void setYSpeed(int ySpeed) {
-        this.ySpeed = ySpeed;
-    }
-
-}
