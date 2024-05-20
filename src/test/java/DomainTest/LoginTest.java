@@ -19,7 +19,8 @@ class LoginTest extends JFrame {
     // BB-Tests: Create PlayerAccounts with (in-)correct username and password
     // GB-Tests: Starting game with (non-)existing PlayerAccount credentials, possibility to move on to play game
 
-    // 1st BlackBox-Test: Check if signing up worked with the right input, by searching for PlayerAccount in Database
+    // 1st BlackBox-Test: Check if signing up worked with the right input,
+    // by searching for PlayerAccount in Database
     @Test
     void testValidSignUp() {
         // Initializing GameController in order to construct a Login object
@@ -37,7 +38,8 @@ class LoginTest extends JFrame {
     }
 
 
-    // 2nd BlackBox-Test: Check if signing up worked with the wrong input (case: values too short), by searching for UserAccount in Database
+    // 2nd BlackBox-Test: Check if signing up worked with the wrong input (case: values too short),
+    // by searching for UserAccount in Database
     @Test
     void testInvalidShortSignUp() {
         // Initializing GameController in order to construct a Login object
@@ -54,7 +56,8 @@ class LoginTest extends JFrame {
         }
     }
 
-    // 2nd BlackBox-Test: Check if signing up worked with the wrong input (case: same values), by searching for UserAccount in Database
+    // 2nd BlackBox-Test: Check if signing up worked with the wrong input (case: same values),
+    // by searching for UserAccount in Database
     @Test
     void testInvalidSameSignUp() {
         // Initializing GameController in order to construct a Login object
@@ -72,7 +75,8 @@ class LoginTest extends JFrame {
     }
 
 
-    // 1st GlassBox-Test: Check if logging in worked with login data for existing PlayerAccount and if we can continue to play the game
+    // 1st GlassBox-Test: Check if logging in worked with login data for existing PlayerAccount
+    // and if we can continue to play the game
     @Test
     void testValidLogin() {
         // Initializing GameController in order to construct a Login object
@@ -91,7 +95,8 @@ class LoginTest extends JFrame {
         }
     }
 
-    // 2nd GlassBox-Test: Check if logging in worked with non-existing, incorrect login data, should not work to play the game
+    // 2nd GlassBox-Test: Check if logging in worked with non-existing, incorrect login data,
+    // should not work to play the game
     @Test
     void testInvalidLogin() {
         // Initializing GameController in order to construct a Login object
