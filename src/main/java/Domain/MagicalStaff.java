@@ -170,11 +170,15 @@ public class MagicalStaff {
             double rightCanonX = xPosition + width / 2 + 5 * Math.cos(Math.toRadians(angle));
             double rightCanonY = yPosition + height / 2 + 5 * Math.sin(Math.toRadians(angle)) - height / 2 - 10;
 
-            FireBall leftHex = new FireBall(leftCanonX, leftCanonY);
-            FireBall rightHex = new FireBall(rightCanonX, rightCanonY);
+            FireBall leftHex = new FireBall(leftCanonX, leftCanonY, Color.YELLOW);
+            FireBall rightHex = new FireBall(rightCanonX, rightCanonY, Color.YELLOW);
 
-            leftHex.setVelocity(3, 2);
-            rightHex.setVelocity(3, 2);
+            double speed = Math.hypot(leftHex.xVelocity, leftHex.yVelocity);
+            double angle1 = Math.toRadians(Math.random() * 360);
+            double angle2 = Math.toRadians(Math.random() * 360);
+
+            leftHex.setVelocity(speed * Math.cos(angle1), speed * Math.sin(angle1));
+            rightHex.setVelocity(speed * Math.cos(angle2), speed * Math.sin(angle2));
 
             hexes.add(leftHex);
             hexes.add(rightHex);
