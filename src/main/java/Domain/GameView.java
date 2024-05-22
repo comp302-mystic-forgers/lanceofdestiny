@@ -301,8 +301,6 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                          felixFelicis.activate();
                          updateLives();
                       }
-                      felixFelicis.deactivate();
-
                     /*magicalStaffExp.activate();
                     long currentTime = System.currentTimeMillis();
                     if (currentTime - magicalStaffExp.getTime() > 30 * 100) {
@@ -485,49 +483,34 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         repaint();
     }
 
-    public void addLife(){
-        if(felixFelicis.isActivated() && lives < 5) {
-            lives++;
-            JOptionPane.showMessageDialog(this, "Lives: " + lives, "You got an extra chance!", JOptionPane.INFORMATION_MESSAGE);
-            felixFelicis.deactivate();
-            hud.updateLives(lives);
-        } else{
-            JOptionPane.showMessageDialog(this, "Lives: " + lives, "You already have 5 lives!", JOptionPane.INFORMATION_MESSAGE);
-            felixFelicis.deactivate();
-        }
-    }
-
 
     public void updateLives() {
         fireball.isBallActive = false;
+        boolean felixFelicisActivation = false;
         if (felixFelicis.isActivated() && lives < 5) {
             lives++;
-            magicalStaff.updatePosition(getWidth(), getHeight());
-            fireball.updatePosition(((int) magicalStaff.getX() + (int) magicalStaff.getWidth() / 3), (int) magicalStaff.getY() - (int) magicalStaff.getHeight() / 160);
-            timer.stop(); // Stop the game loop
-            JOptionPane.showMessageDialog(this, "Lives: " + lives, "You got extra chance!", JOptionPane.INFORMATION_MESSAGE);
             felixFelicis.deactivate();
-            hud.updateLives(lives); // Update the HUD with the new lives count
-            repaint();
-            timer.start();
-            felixFelicis.deactivate();
-        } else {
-            lives--;
-            magicalStaff.updatePosition(getWidth(), getHeight());
-            fireball.updatePosition(((int) magicalStaff.getX() + (int) magicalStaff.getWidth() / 3), (int) magicalStaff.getY() - (int) magicalStaff.getHeight() / 160);
-            timer.stop(); // Stop the game loop
-            JOptionPane.showMessageDialog(this, "Lives: " + lives, "Watch out!", JOptionPane.INFORMATION_MESSAGE);
-            hud.updateLives(lives); // Update the HUD with the new lives count
-            repaint();
-            timer.start(); // Continue game loop
-            if (lives < 1) {
-                JOptionPane.showMessageDialog(this, "Game Over", "End", JOptionPane.INFORMATION_MESSAGE);
-                fireball.isBallActive = false;
-                gameRunning = false;
-                timer.stop();
-            }
+            felixFelicisActivation = true;
         }
 
+        if (!felixFelicisActivation) {
+            lives--;
+        }
+
+        if (lives <= 0) {
+            gameRunning = false;
+            JOptionPane.showMessageDialog(this, "Game Over", "End", JOptionPane.INFORMATION_MESSAGE);
+            fireball.isBallActive = false;
+            timer.stop();
+        } else {
+            JOptionPane.showMessageDialog(this, "Lives: " + lives, "Watch out!", JOptionPane.INFORMATION_MESSAGE);
+            hud.updateLives(lives);
+            magicalStaff.updatePosition(getWidth(), getHeight());
+            fireball.updatePosition((int) (magicalStaff.getX() + magicalStaff.getWidth() / 3), (int) (magicalStaff.getY() - magicalStaff.getHeight() / 2)); // Adjust the position to be above the staff
+            fireball.isBallActive = false; // Ensure fireball is inactive until the player throws it again
+            repaint();
+            timer.start();
+        }
     }
 
 

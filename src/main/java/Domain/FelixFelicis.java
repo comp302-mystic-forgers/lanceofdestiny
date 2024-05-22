@@ -3,6 +3,7 @@ public class FelixFelicis extends Spell {
 
     private int luckFactor;
     private boolean activated;
+
     public FelixFelicis() {
         this.activated = false;
         this.luckFactor = 1;
