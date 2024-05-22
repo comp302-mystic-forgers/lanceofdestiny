@@ -61,7 +61,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             System.err.println("Error loading background image: " + e.getMessage());
         }
         this.magicalStaff = new MagicalStaff(panelWidth, panelHeight - 100); // Position MagicalStaff towards the bottom
-        this.fireball = new FireBall(magicalStaff.getX() + magicalStaff.getWidth()/3,magicalStaff.getY() - magicalStaff.getHeight()/160); // Start Fireball from the top middle
+        this.fireball = new FireBall(magicalStaff.getX() + magicalStaff.getWidth()/3,magicalStaff.getY() - magicalStaff.getHeight()/160, null); // Start Fireball from the top middle
         this.simpleBarriers = new ArrayList<>(); // Initialize the ArrayList
         this.reinforcedBarriers = new ArrayList<>();
         this.explosiveBarriers = new ArrayList<>();
@@ -296,11 +296,11 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                         rwbarrier.getX() + rwbarrier.getWidth() > magicalStaff.getX() &&
                         rwbarrier.getX() < magicalStaff.getX() + magicalStaff.getWidth()){
 
-                    //hexSpell.activate();
-                    if(!felixFelicis.isActivated()){
+                    hexSpell.activate();
+                    /*if(!felixFelicis.isActivated()){
                          felixFelicis.activate();
                          updateLives();
-                      }
+                      }*/
                     /*magicalStaffExp.activate();
                     long currentTime = System.currentTimeMillis();
                     if (currentTime - magicalStaffExp.getTime() > 30 * 100) {

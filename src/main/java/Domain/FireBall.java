@@ -10,13 +10,15 @@ public class FireBall {
     double xVelocity = 3; // Fireball horizontal movement speed
     double yVelocity = 2; // Fireball vertical movement speed
     private ImageIcon icon;
+    private Color color;
 
     public boolean isBallActive = false;
 
-    public FireBall(double startX, double startY) {
+    public FireBall(double startX, double startY, Color color) {
         this.x = startX;
         this.y = startY;
         this.icon = new ImageIcon("Assets/Images/200FireBall.png");
+        this.color = color;
     }
     public void setVelocity(double xVel, double yVel) {
         this.xVelocity = xVel;
@@ -63,9 +65,15 @@ public class FireBall {
     }
 
     public void draw(Graphics g) {
-        if (icon!= null) {
+        if (color != null) {
+            // Draw hex as colored oval
+            g.setColor(color);
+            g.fillOval((int) x, (int) y, diameter, diameter);
+        } else if (icon != null) {
+            // Draw normal fireball as image
             g.drawImage(icon.getImage(), (int) x, (int) y, diameter, diameter, null);
         } else {
+            // Fallback in case the image is missing
             g.setColor(Color.RED);
             g.fillOval((int) x, (int) y, diameter, diameter);
         }
