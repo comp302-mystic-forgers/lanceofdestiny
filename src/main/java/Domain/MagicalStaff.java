@@ -1,8 +1,11 @@
 package Domain;
 
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import javax.swing.*;
+import java.awt.event.ActionEvent;
 
 public class MagicalStaff {
     private boolean canonsEquipped;
@@ -14,6 +17,9 @@ public class MagicalStaff {
     private boolean needsRepaint = false;
     protected int counterPaint = 0;
     protected int counterRepaint = 0;
+    private ArrayList<FireBall> hexes =  new ArrayList<>();
+    private Timer firingTimer;
+    private final int FIRE_INTERVAL = 2000;
 
     public MagicalStaff(double panelWidth, double panelHeight) {
         this.width = panelWidth * 0.1; // Initialize staff width as 10% of panel width
@@ -48,6 +54,12 @@ public class MagicalStaff {
             // Translate back and draw the staff
             g2d.setColor(Color.BLACK);
             g2d.fillRect((int) -width / 2, (int) -height / 2, (int) width, (int) height);
+
+            if(canonsEquipped){
+                g2d.setColor(Color.BLUE);
+                g2d.fillRect(-5, -((int) height / 2) - 10, 10, 20); // Left canon
+                g2d.fillRect(-5, ((int) height / 2) - 10, 10, 20); // Right canon
+            }
 
             g2d.dispose();
         }
@@ -129,17 +141,52 @@ public class MagicalStaff {
     public void startFiring() {
         if (canonsEquipped) {
             isFiring = true;
-            System.out.println("Magical canons start firing.");
-            // Code to handle the firing logic
+            if (firingTimer == null) {
+                firingTimer = new Timer(FIRE_INTERVAL, new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        fireHexes();
+                    }
+                });
+            }
+            firingTimer.start();
         }
+
     }
 
     public void stopFiring() {
         if (isFiring) {
             isFiring = false;
-            System.out.println("Magical canons stop firing.");
-            // Code to handle stopping firing
+            if (firingTimer != null) {
+                firingTimer.stop();
+            }
         }
+    }
+
+    private void fireHexes() {
+        if (isFiring) {
+            double leftCanonX = xPosition + width / 2 - 5 * Math.cos(Math.toRadians(angle));
+            double leftCanonY = yPosition + height / 2 - 5 * Math.sin(Math.toRadians(angle)) - height / 2 - 10;
+            double rightCanonX = xPosition + width / 2 + 5 * Math.cos(Math.toRadians(angle));
+            double rightCanonY = yPosition + height / 2 + 5 * Math.sin(Math.toRadians(angle)) - height / 2 - 10;
+
+            FireBall leftHex = new FireBall(leftCanonX, leftCanonY, Color.YELLOW);
+            FireBall rightHex = new FireBall(rightCanonX, rightCanonY, Color.YELLOW);
+
+            double speed = Math.hypot(leftHex.xVelocity, leftHex.yVelocity);
+            double angle1 = Math.toRadians(Math.random() * 360);
+            double angle2 = Math.toRadians(Math.random() * 360);
+
+            leftHex.setVelocity(speed * Math.cos(angle1), speed * Math.sin(angle1));
+            rightHex.setVelocity(speed * Math.cos(angle2), speed * Math.sin(angle2));
+
+            hexes.add(leftHex);
+            hexes.add(rightHex);
+        }
+    }
+
+    public ArrayList<FireBall> getHexes() {
+        return hexes;
     }
 
     public void setActivatedHeight(){

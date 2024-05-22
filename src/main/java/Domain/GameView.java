@@ -23,6 +23,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     private ArrayList<RewardingBarrier> rewardingBarriers;
     private OverwhelmingFireBall overFireBall;
     private MagicalStaffExp magicalStaffExp;
+    private FelixFelicis felixFelicis;
     private Timer timer;
     private boolean gameRunning = true;
     private  PauseScreen pauseScreen;
@@ -39,6 +40,8 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     private HUD hud;
     private Score score;
     private int lives;
+    private Hex hexSpell;
+
     public GameView(int panelWidth, int panelHeight, GameInfoDAO gameInfoDAO, PlayerAccountDAO playerAccountDAO) {
         super();
         this.gameInfoDAO =gameInfoDAO;
@@ -58,13 +61,15 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             System.err.println("Error loading background image: " + e.getMessage());
         }
         this.magicalStaff = new MagicalStaff(panelWidth, panelHeight - 100); // Position MagicalStaff towards the bottom
-        this.fireball = new FireBall(magicalStaff.getX() + magicalStaff.getWidth()/3,magicalStaff.getY() - magicalStaff.getHeight()/160); // Start Fireball from the top middle
+        this.fireball = new FireBall(magicalStaff.getX() + magicalStaff.getWidth()/3,magicalStaff.getY() - magicalStaff.getHeight()/160, null); // Start Fireball from the top middle
         this.simpleBarriers = new ArrayList<>(); // Initialize the ArrayList
         this.reinforcedBarriers = new ArrayList<>();
         this.explosiveBarriers = new ArrayList<>();
         this.rewardingBarriers = new ArrayList<>();
         this.overFireBall = new OverwhelmingFireBall(fireball);
         this.magicalStaffExp = new MagicalStaffExp(magicalStaff);
+        this.felixFelicis = new FelixFelicis();
+        this.hexSpell = new Hex(magicalStaff);
         this.giftWindow = new GiftTaking();
         this.hud = new HUD();
         this.score = new Score();
@@ -144,6 +149,9 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             fireball.draw(g);
             // Draw all SimpleBarrier objects in the ArrayList
 
+            for (FireBall hex : magicalStaff.getHexes()) {
+                hex.draw(g);
+            }
             add(hud.getLivesLabel(), BorderLayout.NORTH);
             add(hud.getScoreLabel(), BorderLayout.NORTH);
 
@@ -169,6 +177,9 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                 fireball.move(getWidth(), getHeight());
                 checkCollisions();
                 repaint();
+            }
+            for (FireBall hex : magicalStaff.getHexes()) {
+                hex.move(getWidth(), getHeight());
             }
         }
     }
@@ -211,10 +222,6 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             // Ensure the fireball bounces away from the staff correctly
             fireball.yVelocity = -Math.abs(fireball.yVelocity); // This ensures it always moves away from the staff
         }
-
-
-
-
 
         // Game Over condition: Fireball falls below the Magical Staff
         if (fireball.getY() + fireball.getDiameter() > magicalStaff.getY() + magicalStaff.getHeight()) {
@@ -289,13 +296,18 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                         rwbarrier.getX() + rwbarrier.getWidth() > magicalStaff.getX() &&
                         rwbarrier.getX() < magicalStaff.getX() + magicalStaff.getWidth()){
 
-                    magicalStaffExp.activate();
+                    hexSpell.activate();
+                    /*if(!felixFelicis.isActivated()){
+                         felixFelicis.activate();
+                         updateLives();
+                      }*/
+                    /*magicalStaffExp.activate();
                     long currentTime = System.currentTimeMillis();
                     if (currentTime - magicalStaffExp.getTime() > 30 * 100) {
                         magicalStaffExp.deactivate();
                     }
 
-                    /*overFireBall.activate();
+                    overFireBall.activate();
                     long currentTime = System.currentTimeMillis();
                     if (currentTime - overFireBall.getTime() > 30 * 10) {
                         overFireBall.deactivate();
@@ -303,7 +315,115 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                 }
             }
         }
+
+        ArrayList<FireBall> hexes = magicalStaff.getHexes();
+
+        for (int i = 0; i < hexes.size(); i++) {
+            FireBall hex = hexes.get(i);
+
+            if (hex.getX() <= 0 || hex.getX() + hex.getDiameter() >= getWidth()) {
+                hex.reverseXDirection();
+            }
+
+            if (hex.getY() <= 0) {
+                hex.reverseYDirection();
+            }
+
+            if(hex.collidesWithMagicalStaff(magicalStaff)) {
+                double speed = Math.hypot(hex.xVelocity, hex.yVelocity);
+
+                double staffAngleRadians = Math.toRadians(magicalStaff.getAngle());
+
+                double normalX = Math.cos(Math.PI / 2 + staffAngleRadians);
+                double normalY = Math.sin(Math.PI / 2 + staffAngleRadians);
+
+                double incidentX = hex.xVelocity;
+                double incidentY = hex.yVelocity;
+
+                double dotProduct = incidentX * normalX + incidentY * normalY;
+
+                // Reflection vector calculation
+                double reflectionX = incidentX - 2 * dotProduct * normalX;
+                double reflectionY = incidentY - 2 * dotProduct * normalY;
+
+                // Normalize the reflection vector and scale it by the original speed
+                double reflectionMagnitude = Math.hypot(reflectionX, reflectionY);
+                hex.xVelocity = (reflectionX / reflectionMagnitude) * speed;
+                hex.yVelocity = (reflectionY / reflectionMagnitude) * speed;
+
+                // Ensure the fireball bounces away from the staff correctly
+                hex.yVelocity = -Math.abs(hex.yVelocity);
+            }
+
+            if (hex.getY() + hex.getDiameter() > magicalStaff.getY() + magicalStaff.getHeight()) {
+                magicalStaff.getHexes().remove(hex);
+            }
+
+            for (SimpleBarrier barrier : simpleBarriers) {
+                if (barrier.collidesWithFireBall(hex)) {
+                    hexes.remove(i);
+                    i--; // Adjust index after removal
+                    if (overFireBall.isActivated()) {
+                        overFireBall.handleCollisionResponse(barrier);
+                    } else {
+                        updateScore();
+                        barrier.destroy();
+                        barrier.handleCollisionResponse(hex);
+                    }
+                    break;
+                }
+            }
+
+            for (ReinforcedBarrier rbarrier : reinforcedBarriers) {
+                if (rbarrier.collidesWithFireBall(hex)) {
+                    hexes.remove(i);
+                    i--; // Adjust index after removal
+                    if (overFireBall.isActivated()) {
+                        overFireBall.handleCollisionResponse(rbarrier);
+                    } else {
+                        if (rbarrier.isDestroyed()) {
+                            updateScore();
+                        }
+                        rbarrier.isDestroyed();
+                        rbarrier.handleCollisionResponse(hex);
+                    }
+                    break;
+                }
+            }
+
+            for (ExplosiveBarrier ebarrier : explosiveBarriers) {
+                if (ebarrier.collidesWithFireBall(hex)) {
+                    hexes.remove(i);
+                    i--; // Adjust index after removal
+                    if (overFireBall.isActivated()) {
+                        overFireBall.handleCollisionResponse(ebarrier);
+                    } else {
+                        updateScore();
+                        ebarrier.destroy();
+                        ebarrier.handleCollisionResponse(hex);
+                    }
+                    break;
+                }
+            }
+
+            for (RewardingBarrier rwbarrier : rewardingBarriers) {
+                if (rwbarrier.collidesWithFireBall(hex)) {
+                    hexes.remove(i);
+                    i--; // Adjust index after removal
+                    if (overFireBall.isActivated()) {
+                        overFireBall.handleCollisionResponse(rwbarrier);
+                    } else {
+                        updateScore();
+                        rwbarrier.destroy();
+                        rwbarrier.handleCollisionResponse(hex);
+                    }
+                    break;
+                }
+            }
+        }
     }
+
+
 
     public void moveStaff(int keyCode, int type) {
         if (gameRunning && fireball.isBallActive) {
@@ -364,23 +484,35 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     }
 
 
-    public void updateLives(){
-            fireball.isBallActive = false;
+    public void updateLives() {
+        fireball.isBallActive = false;
+        boolean felixFelicisActivation = false;
+        if (felixFelicis.isActivated() && lives < 5) {
+            lives++;
+            felixFelicis.deactivate();
+            felixFelicisActivation = true;
+        }
+
+        if (!felixFelicisActivation) {
             lives--;
-            magicalStaff.updatePosition(getWidth(), getHeight());
-            fireball.updatePosition(((int) magicalStaff.getX() + (int) magicalStaff.getWidth() / 3), (int) magicalStaff.getY() - (int) magicalStaff.getHeight() / 160);
-            timer.stop(); // Stop the game loop
+        }
+
+        if (lives <= 0) {
+            gameRunning = false;
+            JOptionPane.showMessageDialog(this, "Game Over", "End", JOptionPane.INFORMATION_MESSAGE);
+            fireball.isBallActive = false;
+            timer.stop();
+        } else {
             JOptionPane.showMessageDialog(this, "Lives: " + lives, "Watch out!", JOptionPane.INFORMATION_MESSAGE);
-            hud.updateLives(lives); // Update the HUD with the new lives count
+            hud.updateLives(lives);
+            magicalStaff.updatePosition(getWidth(), getHeight());
+            fireball.updatePosition((int) (magicalStaff.getX() + magicalStaff.getWidth() / 3), (int) (magicalStaff.getY() - magicalStaff.getHeight() / 2)); // Adjust the position to be above the staff
+            fireball.isBallActive = false; // Ensure fireball is inactive until the player throws it again
             repaint();
-            timer.start(); // Continue game loop
-            if (lives < 1){
-                JOptionPane.showMessageDialog(this, "Game Over", "End", JOptionPane.INFORMATION_MESSAGE);
-                fireball.isBallActive = false;
-                gameRunning = false;
-                timer.stop();
-            }
+            timer.start();
+        }
     }
+
 
 
     public boolean isGameRunning() {
