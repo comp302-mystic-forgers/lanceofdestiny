@@ -239,5 +239,8 @@ public class MagicalStaff {
     public double getAngle() {
         return angle;
     }
+    public void setWidth(double width) {
+        this.width = width;
+    }
 }
 

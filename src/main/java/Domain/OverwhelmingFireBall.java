@@ -21,7 +21,6 @@ public class OverwhelmingFireBall extends Spell{
         }
     }
 
-    @Override
     public void deactivate() {
         activated = false;
     }

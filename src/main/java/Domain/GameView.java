@@ -535,7 +535,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             JOptionPane.showMessageDialog(this, "Lives: " + lives, "Watch out!", JOptionPane.INFORMATION_MESSAGE);
             hud.updateLives(lives);
             magicalStaff.updatePosition(getWidth(), getHeight());
-            fireball.updatePosition((int) (magicalStaff.getX() + magicalStaff.getWidth() / 3), (int) (magicalStaff.getY() - magicalStaff.getHeight() / 2)); // Adjust the position to be above the staff
+            fireball.updatePosition(magicalStaff.getX() + magicalStaff.getWidth() / 3 + 10, (int) (magicalStaff.getY() - magicalStaff.getHeight() / 2) - 50); // Adjust the position to be above the staff
             fireball.isBallActive = false; // Ensure fireball is inactive until the player throws it again
             repaint();
             timer.start();
