@@ -33,14 +33,13 @@ public class GameInfoDAO {
                                     .append("type", spell.getClass().getSimpleName());
                             if (spell instanceof Hex) {
                                 spellDoc.append("staff_equipped", ((Hex) spell).getStaff().isCanonsEquipped());
+                                spellDoc.append("activated", ((Hex) spell).isActivated());
                             } else if (spell instanceof OverwhelmingFireBall) {
-                                spellDoc.append("activated", ((OverwhelmingFireBall) spell).isActivated())
-                                        .append("activation_time", ((OverwhelmingFireBall) spell).getTime());
+                                spellDoc.append("activated", ((OverwhelmingFireBall) spell).isActivated());
                             } else if (spell instanceof MagicalStaffExp) {
-                                spellDoc.append("activated", ((MagicalStaffExp) spell).isActivated())
-                                        .append("activation_time", ((MagicalStaffExp) spell).getTime());
+                                spellDoc.append("activated", ((MagicalStaffExp) spell).isActivated());
                             } else if (spell instanceof FelixFelicis) {
-                                spellDoc.append("luck_factor", ((FelixFelicis) spell).getLuckFactor());
+                                spellDoc.append("activated", ((FelixFelicis) spell).isActivated());
                             }
                             return spellDoc;
                         })
