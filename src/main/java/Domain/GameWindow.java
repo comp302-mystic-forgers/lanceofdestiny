@@ -83,6 +83,15 @@ public class GameWindow extends JFrame {
                 actionTimer.start();
             }  else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
                 GameView.throwBall(e.getKeyCode());
+            }else if (e.getKeyCode() == KeyEvent.VK_T) {
+                System.out.println("T key pressed - Trying to activate MagicalStaffExp spell");
+                GameView.activateSpell(MagicalStaffExp.class);
+            } else if (e.getKeyCode() == KeyEvent.VK_H) {
+                System.out.println("H key pressed - Trying to activate Hex spell");
+                GameView.activateSpell(Hex.class);
+            } else if (e.getKeyCode() == KeyEvent.VK_F) {
+                System.out.println("F key pressed - Trying to activate OverwhelmingFireBall spell");
+                GameView.activateSpell(OverwhelmingFireBall.class);
             }
         }
 

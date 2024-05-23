@@ -436,6 +436,21 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                 break;
         }
     }
+    public void activateSpell(Class<? extends Spell> spellClass) {
+        boolean spellFound = false;
+        for (Spell spell : collectedSpells) {
+            if (spellClass.isInstance(spell)) {
+                spell.activate();
+                collectedSpells.remove(spell);
+                System.out.println(spellClass.getSimpleName() + " activated");
+                spellFound = true;
+                break;
+            }
+        }
+        if (!spellFound) {
+            System.out.println(spellClass.getSimpleName() + " not found in collectedSpells");
+        }
+    }
     public void moveStaff(int keyCode, int type) {
         if (gameRunning && fireball.isBallActive) {
             magicalStaff.move(keyCode, getWidth(), type);
