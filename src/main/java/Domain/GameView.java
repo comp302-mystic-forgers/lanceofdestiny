@@ -429,10 +429,13 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             case FELIX_FELICIS:
                 break;
             case MAGICAL_STAFF_EXPANSION:
+                collectedSpells.add(new MagicalStaffExp(magicalStaff));
                 break;
             case HEX:
+                collectedSpells.add(new Hex(magicalStaff));
                 break;
             case OVERWHELMING_FIRE_BALL:
+                collectedSpells.add(new OverwhelmingFireBall(fireball));
                 break;
         }
     }
