@@ -25,6 +25,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     private OverwhelmingFireBall overFireBall;
     private MagicalStaffExp magicalStaffExp;
     private FelixFelicis felixFelicis;
+    private OverwhelmingFireBall overwhelmingFireBall;
     private Timer timer;
     private boolean gameRunning = true;
     private  PauseScreen pauseScreen;
@@ -60,6 +61,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         this.magicalStaff = new MagicalStaff(panelWidth, panelHeight - 100); // Position MagicalStaff towards the bottom
         this.fireball = new FireBall(magicalStaff.getX() + magicalStaff.getWidth()/3,magicalStaff.getY() - magicalStaff.getHeight()/160, null); // Start Fireball from the top middle
         this.felixFelicis = new FelixFelicis(currentPlayer);
+        this.overwhelmingFireBall = new OverwhelmingFireBall(fireball);
         this.simpleBarriers = new ArrayList<>(); // Initialize the ArrayList
         this.reinforcedBarriers = new ArrayList<>();
         this.explosiveBarriers = new ArrayList<>();
@@ -223,25 +225,24 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
 
         for (SimpleBarrier barrier : simpleBarriers) {
             if (barrier.collidesWithFireBall(fireball)) {
-                if(overFireBall.isActivated()){
-                    overFireBall.handleCollisionResponse(barrier);
-                }
-                else{
+                if (fireball.isOverwhelming()) {
+                    updateScore();
+                    barrier.destroy();
+                } else {
                     updateScore();
                     barrier.destroy();
                     barrier.handleCollisionResponse(fireball);
                 }
-
             }
         }
 
         for (ReinforcedBarrier rbarrier : reinforcedBarriers) {
             if (rbarrier.collidesWithFireBall(fireball)) {
-                if(overFireBall.isActivated()){
-                    overFireBall.handleCollisionResponse(rbarrier);
-                }
-                else{
-                    if(rbarrier.isDestroyed()){
+                if (fireball.isOverwhelming()) {
+                    updateScore();
+                    rbarrier.destroy();
+                } else {
+                    if (rbarrier.isDestroyed()) {
                         updateScore();
                     }
                     rbarrier.isDestroyed();
@@ -252,14 +253,14 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
 
         for (ExplosiveBarrier ebarrier : explosiveBarriers) {
             if (ebarrier.collidesWithFireBall(fireball)) {
-                if(overFireBall.isActivated()){
-                    overFireBall.handleCollisionResponse(ebarrier);
-                }
-                else {
+                if (fireball.isOverwhelming()) {
                     updateScore();
                     ebarrier.destroy();
-                    ebarrier.handleCollisionResponse(fireball);
+                } else {
+                    updateScore();
+                    ebarrier.destroy();
                 }
+                ebarrier.handleCollisionResponse(fireball);
             }
             if(ebarrier.destroyed) {
                 if (ebarrier.getY() + ebarrier.getHeight() > magicalStaff.getY() &&
@@ -273,10 +274,10 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
 
         for (RewardingBarrier rwbarrier : rewardingBarriers) {
             if (rwbarrier.collidesWithFireBall(fireball)) {
-                if (overFireBall.isActivated()){
-                    overFireBall.handleCollisionResponse(rwbarrier);
-                }
-                else{
+                if (fireball.isOverwhelming()) {
+                    updateScore();
+                    rwbarrier.destroy();
+                } else {
                     updateScore();
                     rwbarrier.destroy();
                     rwbarrier.handleCollisionResponse(fireball);
@@ -354,8 +355,9 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                 if (barrier.collidesWithFireBall(hex)) {
                     hexes.remove(i);
                     i--; // Adjust index after removal
-                    if (overFireBall.isActivated()) {
-                        overFireBall.handleCollisionResponse(barrier);
+                    if (fireball.isOverwhelming()) {
+                        updateScore();
+                        barrier.destroy();
                     } else {
                         updateScore();
                         barrier.destroy();
@@ -369,8 +371,9 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                 if (rbarrier.collidesWithFireBall(hex)) {
                     hexes.remove(i);
                     i--; // Adjust index after removal
-                    if (overFireBall.isActivated()) {
-                        overFireBall.handleCollisionResponse(rbarrier);
+                    if (fireball.isOverwhelming()) {
+                        updateScore();
+                        rbarrier.destroy();
                     } else {
                         if (rbarrier.isDestroyed()) {
                             updateScore();
@@ -386,8 +389,9 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                 if (ebarrier.collidesWithFireBall(hex)) {
                     hexes.remove(i);
                     i--; // Adjust index after removal
-                    if (overFireBall.isActivated()) {
-                        overFireBall.handleCollisionResponse(ebarrier);
+                    if (fireball.isOverwhelming()) {
+                        updateScore();
+                        ebarrier.destroy();
                     } else {
                         updateScore();
                         ebarrier.destroy();
@@ -401,8 +405,9 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                 if (rwbarrier.collidesWithFireBall(hex)) {
                     hexes.remove(i);
                     i--; // Adjust index after removal
-                    if (overFireBall.isActivated()) {
-                        overFireBall.handleCollisionResponse(rwbarrier);
+                    if (fireball.isOverwhelming()) {
+                        updateScore();
+                        rwbarrier.destroy();
                     } else {
                         updateScore();
                         rwbarrier.destroy();

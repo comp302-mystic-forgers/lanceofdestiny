@@ -11,14 +11,15 @@ public class FireBall {
     public double yVelocity = 2; // Fireball vertical movement speed
     private ImageIcon icon;
     private Color color;
-
     public boolean isBallActive = false;
+    private boolean overwhelming;
 
     public FireBall(double startX, double startY, Color color) {
         this.x = startX;
         this.y = startY;
         this.icon = new ImageIcon("Assets/Images/200FireBall.png");
         this.color = color;
+        this.overwhelming = false;
     }
     public void setVelocity(double xVel, double yVel) {
         this.xVelocity = xVel;
@@ -98,4 +99,11 @@ public class FireBall {
     public double getX() { return x; }
     public double getY() { return y; }
     public int getDiameter() { return diameter; }
+    public boolean isOverwhelming() {
+        return overwhelming;
+    }
+
+    public void setOverwhelming(boolean overwhelming) {
+        this.overwhelming = overwhelming;
+    }
 }

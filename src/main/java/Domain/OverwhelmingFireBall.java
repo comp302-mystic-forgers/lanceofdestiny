@@ -1,40 +1,35 @@
 package Domain;
 
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 public class OverwhelmingFireBall extends Spell{
     private FireBall fireBall;
-    private boolean activated;
-    private long activationTime;
-
+    private Timer timer;
     public OverwhelmingFireBall(FireBall fireBall) {
+        super("Overwhelming Fire Ball", "Upgrades the Fire Ball to destroy any barrier for 30 seconds.");
         this.fireBall = fireBall;
-    }
-
-    public long getTime(){
-        return activationTime;
     }
 
     @Override
     public void activate() {
-        if (!activated) {
-            activated = true;
-            activationTime = System.currentTimeMillis();
+        if (!isActivated()) {
+            setActivated(true);
+            fireBall.setOverwhelming(true);
+            timer = new Timer(30000, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    deactivate();
+                }
+            });
         }
     }
 
     public void deactivate() {
-        activated = false;
+        fireBall.setOverwhelming(false);
+        setActivated(false);
     }
 
-
-    public boolean isActivated() {
-        return activated;
-    }
-
-
-    public void handleCollisionResponse(Barrier barrier) {
-        if (barrier != null && activated) {
-            barrier.destroy(); // Destroy the barrier
-        }
-    }
 }
 
