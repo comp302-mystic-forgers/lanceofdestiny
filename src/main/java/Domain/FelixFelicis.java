@@ -1,39 +1,20 @@
 package Domain;
 public class FelixFelicis extends Spell {
 
-    private int luckFactor;
-    private boolean activated;
+    private PlayerAccount player;
 
-    public FelixFelicis() {
-        this.activated = false;
-        this.luckFactor = 1;
+    public FelixFelicis(PlayerAccount player) {
+        super("Felix Felicis", "Increases the player's chances by 1.");
+        this.player = player;
     }
-
+    public FelixFelicis(String name, String description) {
+        super(name, description);
+    }
     @Override
     public void activate() {
-        activated = true;
-        System.out.println("Felix Felicis activated: Luck increased by " + luckFactor);
+        player.increaseChances();
+        System.out.println("Felix Felicis is activated");
     }
-
-    @Override
-    public void deactivate() {
-        activated = false;
-        System.out.println("Felix Felicis deactivated: Luck normalized");
-
-    }
-
-    public int getLuckFactor() {
-        return luckFactor;
-    }
-
-    public void setLuckFactor(int luckFactor) {
-        this.luckFactor = luckFactor;
-    }
-
-    public boolean isActivated() {
-        return activated;
-    }
-
 }
 
 
