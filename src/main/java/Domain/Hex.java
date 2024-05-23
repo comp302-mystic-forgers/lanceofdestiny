@@ -33,7 +33,6 @@ public class Hex extends Spell {
         hexTimer.start();
     }
 
-    @Override
     public void deactivate() {
         System.out.println("Hex deactivated: Magical canons stopped firing");
         staff.stopFiring();

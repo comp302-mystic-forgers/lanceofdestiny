@@ -97,4 +97,7 @@ public class GameInfo {
         this.barriersRemaining = barriersRemaining;
     }
 
+    public void setGameId(UUID gameId) {
+        this.gameId = gameId;
+    }
 }
