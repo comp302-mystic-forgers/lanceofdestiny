@@ -33,19 +33,17 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     private BufferedImage firmBarrierImage;
     private BufferedImage explosiveBarrierImage;
     private BufferedImage giftBarrierImage;
-    private PlayerAccount currentPlayer;
+    private PlayerAccount currentPlayer = UserSession.getInstance().getCurrentPlayer();
     private  PlayerAccountDAO playerAccountDAO;
     private final GameInfoDAO gameInfoDAO;
     private HUD hud;
     private Score score;
-    private int lives;
     private Hex hexSpell;
 
     public GameView(int panelWidth, int panelHeight, GameInfoDAO gameInfoDAO, PlayerAccountDAO playerAccountDAO) {
         super();
         this.gameInfoDAO =gameInfoDAO;
         this.playerAccountDAO = playerAccountDAO;
-        this.currentPlayer = UserSession.getInstance().getCurrentPlayer();
         try {
             InputStream inputStream = getClass().getResourceAsStream("Assets/Images/200Background.png");
             if (inputStream == null) {
@@ -61,6 +59,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         }
         this.magicalStaff = new MagicalStaff(panelWidth, panelHeight - 100); // Position MagicalStaff towards the bottom
         this.fireball = new FireBall(magicalStaff.getX() + magicalStaff.getWidth()/3,magicalStaff.getY() - magicalStaff.getHeight()/160, null); // Start Fireball from the top middle
+        this.felixFelicis = new FelixFelicis(currentPlayer);
         this.simpleBarriers = new ArrayList<>(); // Initialize the ArrayList
         this.reinforcedBarriers = new ArrayList<>();
         this.explosiveBarriers = new ArrayList<>();
@@ -68,11 +67,10 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         this.collectedSpells = new ArrayList<>();
         this.overFireBall = new OverwhelmingFireBall(fireball);
         this.magicalStaffExp = new MagicalStaffExp(magicalStaff);
-        this.felixFelicis = new FelixFelicis();
+        this.felixFelicis = new FelixFelicis(currentPlayer);
         this.hexSpell = new Hex(magicalStaff);
         this.hud = new HUD();
         this.score = new Score();
-        this.lives = 3;
         addComponentListener(this);
 
         int count = GameLayoutPanel.placedBarriers.size();
@@ -112,7 +110,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         gameInfo.getPlayer().setPlayerId(playerAccount.getPlayerId());
         gameInfo.getPlayer().setUsername(playerAccount.getUsername());
         gameInfo.setScore((int) score.getScoreValue());
-        gameInfo.setLives(lives);
+        gameInfo.setLives(currentPlayer.getChances());
         gameInfo.setGameState(GameState.PASSIVE);
         gameInfo.setLastSaved(new Date());
         gameInfo.setSpellsAcquired(null);
@@ -128,10 +126,6 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             System.err.println("Error saving game info: " + e.getMessage());
             e.printStackTrace();
         }
-    }
-
-    public int getLives() {
-        return lives;
     }
 
     public long getScore() {
@@ -427,6 +421,8 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     private void collectGift(Gift gift) {
         switch (gift.getSpellType()) {
             case FELIX_FELICIS:
+                this.felixFelicis.activate();
+                hud.updateLives(currentPlayer.getChances());
                 break;
             case MAGICAL_STAFF_EXPANSION:
                 collectedSpells.add(new MagicalStaffExp(magicalStaff));
@@ -513,36 +509,24 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     }
 
 
-    public void updateLives() {
+    public void updateLives(){
         fireball.isBallActive = false;
-        boolean felixFelicisActivation = false;
-        if (felixFelicis.isActivated() && lives < 5) {
-            lives++;
-            felixFelicis.deactivate();
-            felixFelicisActivation = true;
-        }
-
-        if (!felixFelicisActivation) {
-            lives--;
-        }
-
-        if (lives <= 0) {
-            gameRunning = false;
+        currentPlayer.decreaseChances();
+        magicalStaff.updatePosition(getWidth(), getHeight());
+        fireball.updatePosition(magicalStaff.getX() + magicalStaff.getWidth() / 3 + 10,  magicalStaff.getY() -  magicalStaff.getHeight() / 160 - 50);
+        timer.stop(); // Stop the game loop
+        JOptionPane.showMessageDialog(this, "Lives: " + currentPlayer.getChances(), "Watch out!", JOptionPane.INFORMATION_MESSAGE);
+        hud.updateLives(currentPlayer.getChances()); // Update the HUD with the new lives count
+        repaint();
+        timer.start(); // Continue game loop
+        if (currentPlayer.getChances() < 1){
             JOptionPane.showMessageDialog(this, "Game Over", "End", JOptionPane.INFORMATION_MESSAGE);
+            System.out.println(collectedSpells);
             fireball.isBallActive = false;
+            gameRunning = false;
             timer.stop();
-        } else {
-            JOptionPane.showMessageDialog(this, "Lives: " + lives, "Watch out!", JOptionPane.INFORMATION_MESSAGE);
-            hud.updateLives(lives);
-            magicalStaff.updatePosition(getWidth(), getHeight());
-            fireball.updatePosition(magicalStaff.getX() + magicalStaff.getWidth() / 3 + 10, (int) (magicalStaff.getY() - magicalStaff.getHeight() / 2) - 50); // Adjust the position to be above the staff
-            fireball.isBallActive = false; // Ensure fireball is inactive until the player throws it again
-            repaint();
-            timer.start();
         }
     }
-
-
 
     public boolean isGameRunning() {
         return gameRunning;
