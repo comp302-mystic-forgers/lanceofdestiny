@@ -15,8 +15,6 @@ public class RewardingBarrier extends Barrier{
         super(x, y, width, height);
         this.icon = new ImageIcon("Assets/Images/200Greengem.png");
         this.icon2 = new ImageIcon("Assets/Images/giftbox.png");
-        this.xSpeed = 0;
-        this.ySpeed = 0;
         this.collected = false;
     }
 
@@ -24,10 +22,8 @@ public class RewardingBarrier extends Barrier{
     public void draw(Graphics g) {
         if (!destroyed) {
             g.drawImage(icon.getImage(), x, y, width, height, null);
-        } else {
-            g.drawImage(icon2.getImage(), x, y, width, height * 2, null);
-            y += ySpeed;
-            x += xSpeed;
+        } else if (!collected && gift != null) {
+            g.drawImage(icon2.getImage(), gift.getX(), gift.getY(), width, height * 2, null);
         }
     }
     public void update() {

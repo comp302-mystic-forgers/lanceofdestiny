@@ -67,9 +67,6 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         this.explosiveBarriers = new ArrayList<>();
         this.rewardingBarriers = new ArrayList<>();
         this.collectedSpells = new ArrayList<>();
-        this.overFireBall = new OverwhelmingFireBall(fireball);
-        this.magicalStaffExp = new MagicalStaffExp(magicalStaff);
-        this.felixFelicis = new FelixFelicis(currentPlayer);
         this.hexSpell = new Hex(magicalStaff);
         this.hud = new HUD();
         this.score = new Score();
@@ -283,12 +280,11 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                     rwbarrier.handleCollisionResponse(fireball);
                 }
             }
-            if(rwbarrier.destroyed) {
-                if (rwbarrier.getY() + rwbarrier.getHeight() > magicalStaff.getY() &&
-                        rwbarrier.getX() + rwbarrier.getWidth() > magicalStaff.getX() &&
-                        rwbarrier.getX() < magicalStaff.getX() + magicalStaff.getWidth()){
-
-                    hexSpell.activate();
+            if (rwbarrier.getGift() != null && rwbarrier.collidesWithMagicalStaff(magicalStaff)) {
+                collectGift(rwbarrier.getGift());
+                System.out.println("Gift taken: " + rwbarrier.getGift().getSpellType());
+                rwbarrier.setCollected(true);
+                hexSpell.activate();
                     /*if(!felixFelicis.isActivated()){
                          felixFelicis.activate();
                          updateLives();
@@ -304,7 +300,6 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                     if (currentTime - overFireBall.getTime() > 30 * 10) {
                         overFireBall.deactivate();
                     }*/
-                }
             }
         }
 
