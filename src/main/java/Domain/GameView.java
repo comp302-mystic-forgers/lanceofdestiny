@@ -21,6 +21,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     private ArrayList<ReinforcedBarrier> reinforcedBarriers;
     private ArrayList<ExplosiveBarrier> explosiveBarriers;
     private ArrayList<RewardingBarrier> rewardingBarriers;
+    private List<Spell> collectedSpells;
     private OverwhelmingFireBall overFireBall;
     private MagicalStaffExp magicalStaffExp;
     private FelixFelicis felixFelicis;
@@ -32,11 +33,9 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     private BufferedImage firmBarrierImage;
     private BufferedImage explosiveBarrierImage;
     private BufferedImage giftBarrierImage;
-    //private GiftTaking giftWindow;
     private PlayerAccount currentPlayer;
     private  PlayerAccountDAO playerAccountDAO;
     private final GameInfoDAO gameInfoDAO;
-    private GiftTaking giftWindow;
     private HUD hud;
     private Score score;
     private int lives;
@@ -66,11 +65,11 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         this.reinforcedBarriers = new ArrayList<>();
         this.explosiveBarriers = new ArrayList<>();
         this.rewardingBarriers = new ArrayList<>();
+        this.collectedSpells = new ArrayList<>();
         this.overFireBall = new OverwhelmingFireBall(fireball);
         this.magicalStaffExp = new MagicalStaffExp(magicalStaff);
         this.felixFelicis = new FelixFelicis();
         this.hexSpell = new Hex(magicalStaff);
-        this.giftWindow = new GiftTaking();
         this.hud = new HUD();
         this.score = new Score();
         this.lives = 3;
@@ -176,10 +175,8 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             if (fireball.isBallActive) {
                 fireball.move(getWidth(), getHeight());
                 checkCollisions();
+                updateGifts();
                 repaint();
-            }
-            for (FireBall hex : magicalStaff.getHexes()) {
-                hex.move(getWidth(), getHeight());
             }
         }
     }
@@ -422,9 +419,38 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             }
         }
     }
-
-
-
+    private void updateGifts() {
+        for (RewardingBarrier rwbarrier : rewardingBarriers) {
+            rwbarrier.update();
+        }
+    }
+    private void collectGift(Gift gift) {
+        switch (gift.getSpellType()) {
+            case FELIX_FELICIS:
+                break;
+            case MAGICAL_STAFF_EXPANSION:
+                break;
+            case HEX:
+                break;
+            case OVERWHELMING_FIRE_BALL:
+                break;
+        }
+    }
+    public void activateSpell(Class<? extends Spell> spellClass) {
+        boolean spellFound = false;
+        for (Spell spell : collectedSpells) {
+            if (spellClass.isInstance(spell)) {
+                spell.activate();
+                collectedSpells.remove(spell);
+                System.out.println(spellClass.getSimpleName() + " activated");
+                spellFound = true;
+                break;
+            }
+        }
+        if (!spellFound) {
+            System.out.println(spellClass.getSimpleName() + " not found in collectedSpells");
+        }
+    }
     public void moveStaff(int keyCode, int type) {
         if (gameRunning && fireball.isBallActive) {
             magicalStaff.move(keyCode, getWidth(), type);

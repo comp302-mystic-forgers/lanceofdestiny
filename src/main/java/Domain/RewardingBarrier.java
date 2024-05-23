@@ -8,6 +8,8 @@ public class RewardingBarrier extends Barrier{
     private ImageIcon icon2;
     private int xSpeed; //DO WE NEED IT TO MOVE IT HORIZONTALY?
     private int ySpeed;
+    private boolean collected;
+    private Gift gift;
 
     public RewardingBarrier(int x, int y, int width, int height) {
         super(x, y, width, height);
@@ -15,6 +17,7 @@ public class RewardingBarrier extends Barrier{
         this.icon2 = new ImageIcon("Assets/Images/giftbox.png");
         this.xSpeed = 0;
         this.ySpeed = 0;
+        this.collected = false;
     }
 
     @Override
@@ -27,31 +30,44 @@ public class RewardingBarrier extends Barrier{
             x += xSpeed;
         }
     }
-
+    public void update() {
+        if (destroyed && !collected && gift != null) {
+            gift.updatePosition();
+        }
+    }
     public boolean collidesWithMagicalStaff(MagicalStaff magicalStaff) {
-        return !destroyed && x < magicalStaff.getX() + magicalStaff.getWidth() && x + width > magicalStaff.getX() &&
-                y + height >= magicalStaff.getY() && y < magicalStaff.getY() + magicalStaff.getHeight();
+        if (gift == null) return false;
+        Rectangle giftBounds = new Rectangle(gift.getX(), gift.getY(), width, height);
+        Rectangle staffBounds = new Rectangle((int)magicalStaff.getX(), (int) magicalStaff.getY(), (int) magicalStaff.getWidth(), (int) magicalStaff.getHeight());
+        return !collected && giftBounds.intersects(staffBounds);
     }
 
     public boolean collidesWithFireBall(FireBall fireBall) {
-        return !destroyed && fireBall.getX() + fireBall.getDiameter() >= x &&
-                fireBall.getX() <= x + width && fireBall.getY() + fireBall.getDiameter() >= y &&
-                fireBall.getY() <= y + height;
+        Rectangle barrierBounds = new Rectangle(x, y, width, height);
+        Rectangle ballBounds = new Rectangle((int)fireBall.getX(), (int)fireBall.getY(), fireBall.getDiameter(), fireBall.getDiameter());
+        return !destroyed && barrierBounds.intersects(ballBounds);
     }
 
     public void destroy() {
         destroyed = true;
-        xSpeed = (int) (Math.random() * 5) - 2;
-        ySpeed = 5; // Vertical speed towards the Magical Staff
+        gift = new Gift(x, y);
     }
-
+    public Gift getGift() {
+        return gift;
+    }
     public void handleCollisionResponse(FireBall fireBall) {
         fireBall.reverseYDirection();
         destroy();
     }
-
     public int getX() { return x; }
     public int getY() { return y; }
     public int getHeight() { return height; }
     public int getWidth() { return width; }
+    public boolean isCollected() {
+        return collected;
+    }
+
+    public void setCollected(boolean collected) {
+        this.collected = collected;
+    }
 }
