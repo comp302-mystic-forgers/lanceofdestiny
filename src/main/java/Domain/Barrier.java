@@ -49,6 +49,7 @@ public abstract class Barrier {
         return barrierId;
     }
 
+    // The movement speed of the moving barriers is L/4 per second.
     public void move(){
 
     }
