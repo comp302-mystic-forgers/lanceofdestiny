@@ -9,7 +9,6 @@ import javax.swing.JOptionPane;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList; // Import ArrayList class
 import java.util.Date;
 import java.util.List;
@@ -46,11 +45,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         this.gameInfoDAO =gameInfoDAO;
         this.playerAccountDAO = playerAccountDAO;
         try {
-            InputStream inputStream = getClass().getResourceAsStream("Assets/Images/200Background.png");
-            if (inputStream == null) {
-                throw new IOException("Image not found.");
-            }
-            background = ImageIO.read(inputStream);
+            background = ImageIO.read(new File("Assets/Images/200Background.png"));
             simpleBarrierImage = ImageIO.read(new File("Assets/Images/200Bluegem.png"));
             firmBarrierImage = ImageIO.read(new File("Assets/Images/200Firm.png"));
             explosiveBarrierImage = ImageIO.read(new File("Assets/Images/200Redgem.png"));
@@ -59,7 +54,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             System.err.println("Error loading background image: " + e.getMessage());
         }
         this.magicalStaff = new MagicalStaff(panelWidth, panelHeight - 100); // Position MagicalStaff towards the bottom
-        this.fireball = new FireBall(magicalStaff.getX() + magicalStaff.getWidth()/3,magicalStaff.getY() - magicalStaff.getHeight()/160, null); // Start Fireball from the top middle
+        this.fireball = new FireBall(magicalStaff.getX() + magicalStaff.getWidth() / 2 - 8, magicalStaff.getY() - 16, null); // Start Fireball from the top middle
         this.felixFelicis = new FelixFelicis(currentPlayer);
         this.overwhelmingFireBall = new OverwhelmingFireBall(fireball);
         this.simpleBarriers = new ArrayList<>(); // Initialize the ArrayList
@@ -140,10 +135,6 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
 
             fireball.draw(g);
             // Draw all SimpleBarrier objects in the ArrayList
-
-            for (FireBall hex : magicalStaff.getHexes()) {
-                hex.draw(g);
-            }
             add(hud.getLivesLabel(), BorderLayout.NORTH);
             add(hud.getScoreLabel(), BorderLayout.NORTH);
 
@@ -159,6 +150,9 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             for (RewardingBarrier rwbarrier : rewardingBarriers) {
                 rwbarrier.draw(g);
             }
+            for (FireBall hex : magicalStaff.getHexes()) {
+                hex.draw(g);
+            }
         }
     }
 
@@ -169,8 +163,9 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                 fireball.move(getWidth(), getHeight());
                 checkCollisions();
                 updateGifts();
-                repaint();
             }
+            magicalStaff.moveHexes(getWidth(), getHeight()); // Update hex positions
+            repaint();
         }
     }
 
@@ -219,6 +214,82 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             // Further actions to reset or end the game can be added here
         }
 
+        ArrayList<FireBall> hexes = magicalStaff.getHexes();
+        ArrayList<FireBall> hexesToRemove = new ArrayList<>();
+        for (FireBall hex : hexes) {
+            for (SimpleBarrier barrier : simpleBarriers) {
+                if (barrier.collidesWithFireBall(hex)) {
+                    if (hex.isOverwhelming()) {
+                        updateScore();
+                        barrier.destroy();
+                        hexesToRemove.add(hex);
+                    } else {
+                        updateScore();
+                        barrier.destroy();
+                        barrier.handleCollisionResponse(hex);
+                        hexesToRemove.add(hex);
+                    }
+                }
+            }
+            for (ReinforcedBarrier rbarrier : reinforcedBarriers) {
+                if (rbarrier.collidesWithFireBall(hex)) {
+                    if (hex.isOverwhelming()) {
+                        updateScore();
+                        rbarrier.destroy();
+                        hexesToRemove.add(hex);
+                    } else {
+                        if (rbarrier.isDestroyed()) {
+                            updateScore();
+                        }
+                        rbarrier.isDestroyed();
+                        rbarrier.handleCollisionResponse(hex);
+                        hexesToRemove.add(hex);
+                    }
+                }
+            }
+            for (ExplosiveBarrier ebarrier : explosiveBarriers) {
+                if (ebarrier.collidesWithFireBall(hex)) {
+                    if (hex.isOverwhelming()) {
+                        updateScore();
+                        ebarrier.destroy();
+                        hexesToRemove.add(hex);
+                    } else {
+                        updateScore();
+                        ebarrier.destroy();
+                    }
+                    ebarrier.handleCollisionResponse(hex);
+                    hexesToRemove.add(hex);
+                }
+                if (ebarrier.destroyed) {
+                    if (ebarrier.collidesWithMagicalStaff(magicalStaff)) {
+                        updateLives();
+                        ebarrier.staffHit();
+                    }
+                }
+            }
+            for (RewardingBarrier rwbarrier : rewardingBarriers) {
+                if (rwbarrier.collidesWithFireBall(hex)) {
+                    if (hex.isOverwhelming()) {
+                        updateScore();
+                        rwbarrier.destroy();
+                        hexesToRemove.add(hex);
+                    } else {
+                        updateScore();
+                        rwbarrier.destroy();
+                        rwbarrier.handleCollisionResponse(hex);
+                        hexesToRemove.add(hex);
+                    }
+                }
+                if (rwbarrier.getGift() != null && rwbarrier.collidesWithMagicalStaff(magicalStaff)) {
+                    collectGift(rwbarrier.getGift());
+                    System.out.println("Gift taken: " + rwbarrier.getGift().getSpellType());
+                    rwbarrier.setCollected(true);
+                    break;
+                }
+            }
+        }
+
+        hexes.removeAll(hexesToRemove);
 
         for (SimpleBarrier barrier : simpleBarriers) {
             if (barrier.collidesWithFireBall(fireball)) {
@@ -260,9 +331,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                 ebarrier.handleCollisionResponse(fireball);
             }
             if(ebarrier.destroyed) {
-                if (ebarrier.getY() + ebarrier.getHeight() > magicalStaff.getY() &&
-                        ebarrier.getX() + ebarrier.getWidth() > magicalStaff.getX() &&
-                        ebarrier.getX() < magicalStaff.getX() + magicalStaff.getWidth() && !ebarrier.isHitStaff()) {
+                if (ebarrier.collidesWithMagicalStaff(magicalStaff)) {
                     updateLives();
                     ebarrier.staffHit();
                 }
@@ -284,132 +353,6 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                 collectGift(rwbarrier.getGift());
                 System.out.println("Gift taken: " + rwbarrier.getGift().getSpellType());
                 rwbarrier.setCollected(true);
-                hexSpell.activate();
-                    /*if(!felixFelicis.isActivated()){
-                         felixFelicis.activate();
-                         updateLives();
-                      }*/
-                    /*magicalStaffExp.activate();
-                    long currentTime = System.currentTimeMillis();
-                    if (currentTime - magicalStaffExp.getTime() > 30 * 100) {
-                        magicalStaffExp.deactivate();
-                    }
-
-                    overFireBall.activate();
-                    long currentTime = System.currentTimeMillis();
-                    if (currentTime - overFireBall.getTime() > 30 * 10) {
-                        overFireBall.deactivate();
-                    }*/
-            }
-        }
-
-        ArrayList<FireBall> hexes = magicalStaff.getHexes();
-
-        for (int i = 0; i < hexes.size(); i++) {
-            FireBall hex = hexes.get(i);
-
-            if (hex.getX() <= 0 || hex.getX() + hex.getDiameter() >= getWidth()) {
-                hex.reverseXDirection();
-            }
-
-            if (hex.getY() <= 0) {
-                hex.reverseYDirection();
-            }
-
-            if(hex.collidesWithMagicalStaff(magicalStaff)) {
-                double speed = Math.hypot(hex.xVelocity, hex.yVelocity);
-
-                double staffAngleRadians = Math.toRadians(magicalStaff.getAngle());
-
-                double normalX = Math.cos(Math.PI / 2 + staffAngleRadians);
-                double normalY = Math.sin(Math.PI / 2 + staffAngleRadians);
-
-                double incidentX = hex.xVelocity;
-                double incidentY = hex.yVelocity;
-
-                double dotProduct = incidentX * normalX + incidentY * normalY;
-
-                // Reflection vector calculation
-                double reflectionX = incidentX - 2 * dotProduct * normalX;
-                double reflectionY = incidentY - 2 * dotProduct * normalY;
-
-                // Normalize the reflection vector and scale it by the original speed
-                double reflectionMagnitude = Math.hypot(reflectionX, reflectionY);
-                hex.xVelocity = (reflectionX / reflectionMagnitude) * speed;
-                hex.yVelocity = (reflectionY / reflectionMagnitude) * speed;
-
-                // Ensure the fireball bounces away from the staff correctly
-                hex.yVelocity = -Math.abs(hex.yVelocity);
-            }
-
-            if (hex.getY() + hex.getDiameter() > magicalStaff.getY() + magicalStaff.getHeight()) {
-                magicalStaff.getHexes().remove(hex);
-            }
-
-            for (SimpleBarrier barrier : simpleBarriers) {
-                if (barrier.collidesWithFireBall(hex)) {
-                    hexes.remove(i);
-                    i--; // Adjust index after removal
-                    if (fireball.isOverwhelming()) {
-                        updateScore();
-                        barrier.destroy();
-                    } else {
-                        updateScore();
-                        barrier.destroy();
-                        barrier.handleCollisionResponse(hex);
-                    }
-                    break;
-                }
-            }
-
-            for (ReinforcedBarrier rbarrier : reinforcedBarriers) {
-                if (rbarrier.collidesWithFireBall(hex)) {
-                    hexes.remove(i);
-                    i--; // Adjust index after removal
-                    if (fireball.isOverwhelming()) {
-                        updateScore();
-                        rbarrier.destroy();
-                    } else {
-                        if (rbarrier.isDestroyed()) {
-                            updateScore();
-                        }
-                        rbarrier.isDestroyed();
-                        rbarrier.handleCollisionResponse(hex);
-                    }
-                    break;
-                }
-            }
-
-            for (ExplosiveBarrier ebarrier : explosiveBarriers) {
-                if (ebarrier.collidesWithFireBall(hex)) {
-                    hexes.remove(i);
-                    i--; // Adjust index after removal
-                    if (fireball.isOverwhelming()) {
-                        updateScore();
-                        ebarrier.destroy();
-                    } else {
-                        updateScore();
-                        ebarrier.destroy();
-                        ebarrier.handleCollisionResponse(hex);
-                    }
-                    break;
-                }
-            }
-
-            for (RewardingBarrier rwbarrier : rewardingBarriers) {
-                if (rwbarrier.collidesWithFireBall(hex)) {
-                    hexes.remove(i);
-                    i--; // Adjust index after removal
-                    if (fireball.isOverwhelming()) {
-                        updateScore();
-                        rwbarrier.destroy();
-                    } else {
-                        updateScore();
-                        rwbarrier.destroy();
-                        rwbarrier.handleCollisionResponse(hex);
-                    }
-                    break;
-                }
             }
         }
     }
@@ -513,13 +456,14 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         fireball.isBallActive = false;
         currentPlayer.decreaseChances();
         magicalStaff.updatePosition(getWidth(), getHeight());
-        fireball.updatePosition(magicalStaff.getX() + magicalStaff.getWidth() / 3 + 10,  magicalStaff.getY() -  magicalStaff.getHeight() / 160 - 50);
+        fireball.updatePosition(magicalStaff.getX() + magicalStaff.getWidth() / 2 - 8, magicalStaff.getY() - 16);
         timer.stop(); // Stop the game loop
         JOptionPane.showMessageDialog(this, "Lives: " + currentPlayer.getChances(), "Watch out!", JOptionPane.INFORMATION_MESSAGE);
         hud.updateLives(currentPlayer.getChances()); // Update the HUD with the new lives count
         repaint();
         timer.start(); // Continue game loop
         if (currentPlayer.getChances() < 1){
+            magicalStaff.stopFiring();
             JOptionPane.showMessageDialog(this, "Game Over", "End", JOptionPane.INFORMATION_MESSAGE);
             System.out.println(collectedSpells);
             fireball.isBallActive = false;
