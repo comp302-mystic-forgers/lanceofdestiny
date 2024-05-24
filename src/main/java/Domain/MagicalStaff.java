@@ -57,8 +57,8 @@ public class MagicalStaff {
 
             if(canonsEquipped){
                 g2d.setColor(Color.BLUE);
-                g2d.fillRect(-5, -((int) height / 2) - 10, 10, 20); // Left canon
-                g2d.fillRect(-5, ((int) height / 2) - 10, 10, 20); // Right canon
+                g2d.fillRect((int) (width / 2 - 5), (int) (-height / 2 - 10), 10, 20); // Left canon
+                g2d.fillRect((int) (width / 2 - 5), (int) (height / 2 - 10), 10, 20); // Right canon
             }
 
             g2d.dispose();
@@ -91,6 +91,16 @@ public class MagicalStaff {
         }
     }
 
+    public void moveHexes(int panelWidth, int panelHeight) {
+        ArrayList<FireBall> hexesToRemove = new ArrayList<>();
+        for (FireBall hex : hexes) {
+            hex.move(panelWidth, panelHeight);
+            if (hex.getY() <= 0) {
+                hexesToRemove.add(hex); // Remove hexes that move out of bounds
+            }
+        }
+        hexes.removeAll(hexesToRemove);
+    }
 
     public void rotate(int keyCode) {
         if (keyCode == KeyEvent.VK_A) {
@@ -151,34 +161,29 @@ public class MagicalStaff {
             }
             firingTimer.start();
         }
-
     }
-
     public void stopFiring() {
         if (isFiring) {
             isFiring = false;
             if (firingTimer != null) {
                 firingTimer.stop();
             }
+            hexes.clear(); // Clear the list of hexes
         }
     }
 
     private void fireHexes() {
         if (isFiring) {
-            double leftCanonX = xPosition + width / 2 - 5 * Math.cos(Math.toRadians(angle));
-            double leftCanonY = yPosition + height / 2 - 5 * Math.sin(Math.toRadians(angle)) - height / 2 - 10;
-            double rightCanonX = xPosition + width / 2 + 5 * Math.cos(Math.toRadians(angle));
-            double rightCanonY = yPosition + height / 2 + 5 * Math.sin(Math.toRadians(angle)) - height / 2 - 10;
+            double leftCanonX = xPosition + width / 2 - width / 2 * Math.cos(Math.toRadians(angle)) - 5 * Math.cos(Math.toRadians(angle));
+            double leftCanonY = yPosition + height / 2 - height / 2 * Math.sin(Math.toRadians(angle)) - 5 * Math.sin(Math.toRadians(angle));
+            double rightCanonX = xPosition + width / 2 + width / 2 * Math.cos(Math.toRadians(angle)) - 5 * Math.cos(Math.toRadians(angle));
+            double rightCanonY = yPosition + height / 2 + height / 2 * Math.sin(Math.toRadians(angle)) - 5 * Math.sin(Math.toRadians(angle));
 
             FireBall leftHex = new FireBall(leftCanonX, leftCanonY, Color.YELLOW);
             FireBall rightHex = new FireBall(rightCanonX, rightCanonY, Color.YELLOW);
 
-            double speed = Math.hypot(leftHex.xVelocity, leftHex.yVelocity);
-            double angle1 = Math.toRadians(Math.random() * 360);
-            double angle2 = Math.toRadians(Math.random() * 360);
-
-            leftHex.setVelocity(speed * Math.cos(angle1), speed * Math.sin(angle1));
-            rightHex.setVelocity(speed * Math.cos(angle2), speed * Math.sin(angle2));
+            leftHex.setVelocity(-5 * Math.sin(Math.toRadians(angle)), -5 * Math.cos(Math.toRadians(angle))); // Set upward velocity relative to rotation
+            rightHex.setVelocity(-5 * Math.sin(Math.toRadians(angle)), -5 * Math.cos(Math.toRadians(angle))); // Set upward velocity relative to rotation
 
             hexes.add(leftHex);
             hexes.add(rightHex);
