@@ -1,35 +1,47 @@
 package Domain;
 
+import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class MagicalStaffExp extends Spell{
     private MagicalStaff staff;
     private boolean activated;
-    private long activationTime;
+    private double originalWidth;
+    private Timer timer;
 
-    public MagicalStaffExp(MagicalStaff staff) {
-        this.staff = staff;
-    }
-
-    public long getTime(){
-        return activationTime;
+    public MagicalStaffExp(MagicalStaff magicalStaff) {
+        super("Magical Staff Expansion", "Doubles the length of the Magical Staff for 30 seconds.");
+        this.staff = magicalStaff;
+        this.activated = false;
+        this.originalWidth = magicalStaff.getWidth();
     }
 
     @Override
-    public void activate(){
-        if (!activated && staff.counterPaint < 1) {
+    public void activate() {
+        if (!activated) {
+            staff.setWidth(originalWidth * 2);
+            staff.setActivatedHeight(); // Ensure the staff is repainted after changing width
+            System.out.println("Magical Staff Expansion activated");
+
+            timer = new Timer(30000, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    deactivate();
+                }
+            });
+            timer.setRepeats(false);
+            timer.start();
             activated = true;
-            activationTime = System.currentTimeMillis();
-            staff.setActivatedHeight();
         }
     }
 
-    @Override
     public void deactivate() {
-        if (activated && staff.counterRepaint < 1) {
-            activated = false;
-            staff.setDeactivatedHeight();
-        }
+        staff.setWidth(originalWidth);
+        staff.setDeactivatedHeight(); // Ensure the staff is repainted after reverting width
+        System.out.println("Magical Staff Expansion deactivated");
+        activated = false;
     }
 
     public boolean isActivated() {

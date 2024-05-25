@@ -9,6 +9,7 @@ public class PlayerAccount {
     private String username;
     private String password;
     private List<GameInfo> games;
+    private int chances = 3;
 
     public PlayerAccount(String username, String password) {
         this.username = username;
@@ -24,6 +25,12 @@ public class PlayerAccount {
         this.games = games;
     }
 
+    public void increaseChances(){
+        this.chances++;
+    }
+    public void decreaseChances(){
+        this.chances--;
+    }
 
     // ... Getters and setters for the attributes
 
@@ -57,5 +64,13 @@ public class PlayerAccount {
 
     public void setPlayerId(String playerId) {
         this.playerId = playerId;
+    }
+
+    public int getChances() {
+        return chances;
+    }
+
+    public void setChances(int chances) {
+        this.chances = chances;
     }
 }

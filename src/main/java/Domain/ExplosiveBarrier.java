@@ -31,11 +31,15 @@ public class ExplosiveBarrier extends Barrier{
             }
         }
     }
-
     public boolean collidesWithFireBall(FireBall fireBall) {
-        return  !destroyed && fireBall.getX() + fireBall.getDiameter() >= x &&
-                fireBall.getX() <= x + width && fireBall.getY() + fireBall.getDiameter() >= y &&
-                fireBall.getY() <= y + height;
+        Rectangle barrierBounds = new Rectangle(x, y, width, height);
+        Rectangle ballBounds = new Rectangle((int)fireBall.getX(), (int)fireBall.getY(), fireBall.getDiameter(), fireBall.getDiameter());
+        return !destroyed && barrierBounds.intersects(ballBounds);
+    }
+    public boolean collidesWithMagicalStaff(MagicalStaff magicalStaff) {
+        Rectangle barrierBounds = new Rectangle(x, y, width, height);
+        Rectangle staffBounds = new Rectangle((int)magicalStaff.getX(), (int) magicalStaff.getY(), (int) magicalStaff.getWidth(), (int) magicalStaff.getHeight());
+        return !this.isHitStaff() && barrierBounds.intersects(staffBounds);
     }
 
     public void handleCollisionResponse(FireBall fireBall) {

@@ -10,6 +10,7 @@ public class Hex extends Spell {
     private Timer hexTimer;
 
     public Hex(MagicalStaff staff) {
+        super("Hex", "Equips the Magical Staff with two magical cannons for 30 seconds.");
         this.staff = staff;
         this.staff.equipCanons();// Attaching two magical canons to the staff
         startTimer();
@@ -33,7 +34,6 @@ public class Hex extends Spell {
         hexTimer.start();
     }
 
-    @Override
     public void deactivate() {
         System.out.println("Hex deactivated: Magical canons stopped firing");
         staff.stopFiring();
