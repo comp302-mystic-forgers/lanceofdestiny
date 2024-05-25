@@ -15,7 +15,7 @@ public class HUD {
         //livesLabel.setHorizontalAlignment(JLabel.WEST);
 
         scoreLabel = new JLabel("Score: 0");
-        scoreLabel.setForeground(Color.BLACK);
+        scoreLabel.setForeground(Color.WHITE);
         scoreLabel.setFont(new Font("Arial", Font.BOLD, 16));
         //scoreLabel.setHorizontalAlignment(JLabel.EAST);
     }
