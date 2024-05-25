@@ -12,8 +12,8 @@ public abstract class Barrier {
     protected int x, y; // Position
     protected int width, height; // Dimensions
 
-    protected int xSpeed;
-    protected int ySpeed;
+    protected double xSpeed; // Barrier horizontal movement speed
+    protected double ySpeed; // Barrier vertical movement speed
     protected boolean destroyed;
 
     // probability of moving horizontally or in circle
@@ -74,6 +74,49 @@ public abstract class Barrier {
         }
     }
 
+    // almost same as move method in FireBall for borders
+    protected void dontCollideWithBorders(int panelWidth, int panelHeight){
+        x += xSpeed;
+        y += ySpeed;
+
+        // Check for collision with left and right borders
+        if (x <= 0 || x + width >= panelWidth) {
+            // Reverse x velocity
+            xSpeed = -xSpeed;
+            // Adjust position to ensure Barrier stays within bounds
+            x = Math.max(0, Math.min(x, panelWidth - width));
+        }
+
+        // Check for collision with top and bottom borders
+        if (y <= 0 || y + height >= panelHeight) {
+            // Reverse y velocity
+            ySpeed = -ySpeed;
+            // Adjust position to ensure FireBall stays within bounds
+            y = Math.max(0, Math.min(y, panelHeight - width));
+        }
+
+        // Check for collision with left and right borders
+        if (x <= 0 || x + width >= panelWidth || y <= 0 || y + height >= panelHeight) {
+            // Reverse both x and y velocity (for corners)
+            if (x <= 0 || x + width >= panelWidth) {
+                xSpeed = -xSpeed;
+            }
+            if (y <= 0 || y + height >= panelHeight) {
+                ySpeed = -ySpeed;
+            }
+        }
+    }
+
+    protected void dontCollideWithBarriers(){
+        x += xSpeed;
+        y += ySpeed;
+        // Check for collision with left and right neighbours
+
+        //  Check for collision with top and bottom neighbours
+    }
+
+
+
     public boolean isDestroyed() {
         return destroyed;
     }
@@ -86,6 +129,11 @@ public abstract class Barrier {
     // The movement speed of the moving barriers is L/4 per second.
     public void move(){
 
+    }
+
+    public void setSpeed(double xVel, double yVel) {
+        this.xSpeed = xVel;
+        this.ySpeed = yVel;
     }
     public int getX() {
         return x;
