@@ -2,6 +2,8 @@ package Domain;
 import javax.swing.*;
 import java.awt.*;
 
+import static Domain.BuildingModePage.READY_FOR_GAME;
+
 public class GameController {
 
     private BuildingModeController buildingModeController;
@@ -17,7 +19,7 @@ public class GameController {
     }
 
     public void switchModes() {
-        if(buildingModeController.getCurrentMode() == "readyForGame"){
+        if(buildingModeController.getCurrentMode() == READY_FOR_GAME){
             setCurrentMode("running");
             gameWindow = new GameWindow();
             gameWindow.setVisible(true);

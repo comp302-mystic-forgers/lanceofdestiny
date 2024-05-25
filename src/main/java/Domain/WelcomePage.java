@@ -11,6 +11,8 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 
+import static Domain.BuildingModePage.LOGIN;
+
 
 public class WelcomePage extends JFrame {
     private BuildingModeController buildingModeController;
@@ -43,7 +45,7 @@ public class WelcomePage extends JFrame {
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                buildingModeController.setCurrentMode("login");
+                buildingModeController.setCurrentMode(LOGIN);
                 buildingModeController.switchScreens();
             }
         });

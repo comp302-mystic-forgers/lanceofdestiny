@@ -11,6 +11,8 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 
+import static Domain.BuildingModePage.ASSEMBLY_MENU;
+
 public class BuildingModeMenu extends JFrame {
 
     private BuildingModeController buildingModeController;
@@ -44,7 +46,7 @@ public class BuildingModeMenu extends JFrame {
         newGameButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                buildingModeController.setCurrentMode("assembly_menu");
+                buildingModeController.setCurrentMode(ASSEMBLY_MENU);
                 buildingModeController.switchScreens();
             }
         });

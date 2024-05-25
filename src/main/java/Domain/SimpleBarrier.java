@@ -37,6 +37,8 @@ public class SimpleBarrier extends Barrier {
     @Override
     public void move() {
         moveHorizontally();
+        dontCollideWithBarriers();
+        //dontCollideWithBorders();
     }
 
 
