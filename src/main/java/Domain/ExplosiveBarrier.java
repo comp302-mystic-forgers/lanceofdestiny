@@ -51,8 +51,8 @@ public class ExplosiveBarrier extends Barrier{
     // (x1,y1) where x1 is the x coordinate of the center of the explosive barrier
     // and y1 is the y coordinate of the barrier minus 1.5*L.
     @Override
-    public void move(){
-
+    public void move() {
+        moveInCircle();
     }
 
     public void staffHit(){

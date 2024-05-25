@@ -11,7 +11,14 @@ public abstract class Barrier {
     private UUID barrierId;
     protected int x, y; // Position
     protected int width, height; // Dimensions
+
+    protected int xSpeed;
+    protected int ySpeed;
     protected boolean destroyed;
+
+    // probability of moving horizontally or in circle
+    private static final double probHoriz = 0.2;
+    private static final double probCircle = 0.2;
 
     //Representation Invariant:
     //x and y has to be non-negative
@@ -32,12 +39,39 @@ public abstract class Barrier {
         this.height = height;
         this.destroyed = false;
         repOK();
+        move();
     }
     public abstract void draw(Graphics g);
 
     public void destroy(){
         this.destroyed = true;
         repOK();
+    }
+
+    protected void moveHorizontally() {
+        if (Math.random() < probHoriz) {
+            xSpeed = (int) (Math.random() * 4) - 2;
+            ySpeed = 0;
+        } else {
+            xSpeed = 0;
+            ySpeed = 0;
+        }
+        // add check for collision with borders of map & with other barriers (as extra method that
+        // move method calls)
+    }
+
+    protected void moveInCircle() {
+        if (Math.random() < probCircle) {
+            xSpeed = (int) (Math.random() * 8) - 4;
+            ySpeed = (int) (Math.random() * 8) - 4;
+            double distance = Math.sqrt(xSpeed * xSpeed + ySpeed * ySpeed);
+            double scale = 1.5 * width;
+            xSpeed = (int) (xSpeed * scale / distance);
+            ySpeed = (int) (ySpeed * scale / distance);
+        } else {
+            xSpeed = 0;
+            ySpeed = 0;
+        }
     }
 
     public boolean isDestroyed() {

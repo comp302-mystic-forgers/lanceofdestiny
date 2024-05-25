@@ -35,8 +35,8 @@ public class SimpleBarrier extends Barrier {
     // a probability of 0.8. It will of course move in its free space, meaning
     // that if it is about to collide with another barrier it will reverse its direction.
     @Override
-    public void move(){
-
+    public void move() {
+        moveHorizontally();
     }
 
 
