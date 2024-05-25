@@ -18,6 +18,7 @@ public class ReinforcedBarrier extends Barrier{
         this.hitsRequired = random.nextInt(5) + 1;
         this.hitsReceived = hitsRequired;
         this.icon = new ImageIcon("Assets/Images/200Firm.png");
+        moveHorizontally();
     }
 
     @Override
@@ -56,10 +57,11 @@ public class ReinforcedBarrier extends Barrier{
     // Might be moving back and forth with a probability of 0.2, or stiff with
     // a probability of 0.8. It will of course move in its free space, meaning
     // that if it is about to collide with another barrier it will reverse its direction.
-    @Override
-    public void move() {
-        moveHorizontally();
+    /**@Override
+    public void move(int panelWidth, int panelHeight) {
+
     }
+     **/
 
     public int getxSpeed() {
         return xSpeed;

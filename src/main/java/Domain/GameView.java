@@ -42,6 +42,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
 
     public GameView(int panelWidth, int panelHeight, GameInfoDAO gameInfoDAO, PlayerAccountDAO playerAccountDAO) {
         super();
+        // initialize all attributes and establish connections to the images
         this.gameInfoDAO =gameInfoDAO;
         this.playerAccountDAO = playerAccountDAO;
         try {
@@ -69,6 +70,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
 
         int count = GameLayoutPanel.placedBarriers.size();
 
+        // place all barriers
         for (int i = 0; i < count; i++) {
             Rectangle rectangle = GameLayoutPanel.placedBarriers.get(i);
             Integer type = GameLayoutPanel.placedBarrierTypes.get(i);
@@ -122,10 +124,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         }
     }
 
-    public long getScore() {
-        return score.getScoreValue();
-    }
-
+    // paint all components
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -156,11 +155,21 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         }
     }
 
+    // starts the game
     @Override
     public void actionPerformed(ActionEvent e) {
         if (gameRunning) {
             if (fireball.isBallActive) {
                 fireball.move(getWidth(), getHeight());
+                for (SimpleBarrier barrier : simpleBarriers) {
+                    barrier.move(getWidth(), getHeight());
+                }
+                for (ReinforcedBarrier rbarrier : reinforcedBarriers) {
+                    rbarrier.move(getWidth(), getHeight());
+                }
+                for (ExplosiveBarrier ebarrier : explosiveBarriers) {
+                    ebarrier.move(getWidth(), getHeight());
+                }
                 checkCollisions();
                 updateGifts();
             }
@@ -170,6 +179,8 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     }
 
     private void checkCollisions() {
+
+        // checks correct FireBall bouncing off borders
         if (fireball.getX() <= 0 || fireball.getX() + fireball.getDiameter() >= getWidth()) {
             fireball.reverseXDirection();
         }
@@ -178,6 +189,37 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             fireball.reverseYDirection();
         }
 
+        // checks correct Barriers bouncing off borders
+        for (SimpleBarrier barrier : simpleBarriers) {
+            if (barrier.getX() <= 0 || barrier.getX() + barrier.getWidth() >= getWidth()) {
+                barrier.reverseXDirection();
+            }
+
+            if (barrier.getY() <= 0) {
+                barrier.reverseYDirection();
+            }
+        }
+        for (ReinforcedBarrier rbarrier : reinforcedBarriers) {
+            if (rbarrier.getX() <= 0 || rbarrier.getX() + rbarrier.getWidth() >= getWidth()) {
+                rbarrier.reverseXDirection();
+            }
+
+            if (rbarrier.getY() <= 0) {
+                rbarrier.reverseYDirection();
+            }
+        }
+        for (ExplosiveBarrier ebarrier : explosiveBarriers) {
+            if (ebarrier.getX() <= 0 || ebarrier.getX() + ebarrier.getWidth() >= getWidth()) {
+                ebarrier.reverseXDirection();
+            }
+
+            if (ebarrier.getY() <= 0) {
+                ebarrier.reverseYDirection();
+            }
+        }
+
+
+        // checks correct FireBall bouncing off staff
         if (fireball.collidesWithMagicalStaff(magicalStaff)) {
             double speed = Math.hypot(fireball.xVelocity, fireball.yVelocity);
 
@@ -214,6 +256,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             // Further actions to reset or end the game can be added here
         }
 
+        // check if Barriers hit by Hex
         ArrayList<FireBall> hexes = magicalStaff.getHexes();
         ArrayList<FireBall> hexesToRemove = new ArrayList<>();
         for (FireBall hex : hexes) {
@@ -291,6 +334,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
 
         hexes.removeAll(hexesToRemove);
 
+        // check if Barriers hit by Fireball or OverwhelmingFireBall
         for (SimpleBarrier barrier : simpleBarriers) {
             if (barrier.collidesWithFireBall(fireball)) {
                 if (fireball.isOverwhelming()) {
@@ -450,7 +494,6 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         hud.updateScore(score.getScoreValue()); // Update the HUD with the new score
         repaint();
     }
-
 
     public void updateLives(){
         fireball.isBallActive = false;

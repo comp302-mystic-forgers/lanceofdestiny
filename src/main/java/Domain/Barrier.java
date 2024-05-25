@@ -12,13 +12,14 @@ public abstract class Barrier {
     protected int x, y; // Position
     protected int width, height; // Dimensions
 
-    protected double xSpeed; // Barrier horizontal movement speed
-    protected double ySpeed; // Barrier vertical movement speed
+    public double xSpeed; // Barrier horizontal movement speed
+    public double ySpeed; // Barrier vertical movement speed
     protected boolean destroyed;
 
+    protected boolean moves;
+
     // probability of moving horizontally or in circle
-    private static final double probHoriz = 0.2;
-    private static final double probCircle = 0.2;
+    private static final double probMovable = 0.2;
 
     //Representation Invariant:
     //x and y has to be non-negative
@@ -38,8 +39,9 @@ public abstract class Barrier {
         this.width = width;
         this.height = height;
         this.destroyed = false;
+        this.moves = false;
+        moveable();
         repOK();
-        move();
     }
     public abstract void draw(Graphics g);
 
@@ -48,26 +50,30 @@ public abstract class Barrier {
         repOK();
     }
 
+    protected void moveable(){
+        if (Math.random() < probMovable){
+            moves = true;
+        }
+    }
+
     protected void moveHorizontally() {
-        if (Math.random() < probHoriz) {
-            xSpeed = (int) (Math.random() * 4) - 2;
+        if (moves) {
+            xSpeed = (getWidth()/4)/15;
             ySpeed = 0;
         } else {
             xSpeed = 0;
             ySpeed = 0;
         }
-        // add check for collision with borders of map & with other barriers (as extra method that
-        // move method calls)
     }
 
-    protected void moveInCircle() {
-        if (Math.random() < probCircle) {
-            xSpeed = (int) (Math.random() * 8) - 4;
-            ySpeed = (int) (Math.random() * 8) - 4;
+    protected void moveInCircle(int panelWidth, int panelHeight) {
+        if (moves) {
+            xSpeed = (Math.random() * 8) - 4;
+            ySpeed = (Math.random() * 8) - 4;
             double distance = Math.sqrt(xSpeed * xSpeed + ySpeed * ySpeed);
             double scale = 1.5 * width;
-            xSpeed = (int) (xSpeed * scale / distance);
-            ySpeed = (int) (ySpeed * scale / distance);
+            xSpeed = (xSpeed * scale / distance);
+            ySpeed = (ySpeed * scale / distance);
         } else {
             xSpeed = 0;
             ySpeed = 0;
@@ -107,15 +113,20 @@ public abstract class Barrier {
         }
     }
 
-    protected void dontCollideWithBarriers(){
-        x += xSpeed;
-        y += ySpeed;
+    public void dontCollideWithBarriers(){
+        //x += xSpeed;
+        //y += ySpeed;
         // Check for collision with left and right neighbours
 
         //  Check for collision with top and bottom neighbours
     }
 
-
+    public void reverseYDirection() {
+        ySpeed *= -1;
+    }
+    public void reverseXDirection() {
+        xSpeed *= -1;
+    }
 
     public boolean isDestroyed() {
         return destroyed;
@@ -127,8 +138,9 @@ public abstract class Barrier {
     }
 
     // The movement speed of the moving barriers is L/4 per second.
-    public void move(){
-
+    public void move(int panelWidth, int panelHeight){
+        dontCollideWithBarriers();
+        dontCollideWithBorders(panelWidth, panelHeight);
     }
 
     public void setSpeed(double xVel, double yVel) {

@@ -1,6 +1,4 @@
 package Domain;
-import javax.swing.*;
-import java.awt.*;
 
 import static Domain.BuildingModePage.READY_FOR_GAME;
 
