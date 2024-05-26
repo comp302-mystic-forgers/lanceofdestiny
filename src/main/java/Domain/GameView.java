@@ -39,6 +39,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     private HUD hud;
     private Score score;
     private Hex hexSpell;
+    private Ymir ymir;
 
     public GameView(int panelWidth, int panelHeight, GameInfoDAO gameInfoDAO, PlayerAccountDAO playerAccountDAO) {
         super();
@@ -65,6 +66,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         this.hexSpell = new Hex(magicalStaff);
         this.hud = new HUD();
         this.score = new Score();
+        this.ymir = new Ymir(fireball);
         addComponentListener(this);
 
         int count = GameLayoutPanel.placedBarriers.size();
@@ -93,7 +95,6 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
 //        explosiveBarriers.add(new ExplosiveBarrier(600, 100, 50, 15));
 //        rewardingBarriers.add(new RewardingBarrier(700, 100, 50, 20));
 //        rewardingBarriers.add(new RewardingBarrier(800, 100, 50, 20));
-
 
         timer = new Timer(10, this);
         timer.start();
