@@ -22,6 +22,12 @@ public class ExplosiveBarrier extends Barrier{
     public void draw(Graphics g) {
         if (!destroyed) {
             g.drawImage(icon.getImage(), x, y, width, height, null);
+            if(isFrozen()) {
+                g.drawImage(icon.getImage(), x, y, width, height, null);
+                g.setColor(Color.BLACK);
+                g.setFont(new Font("Arial", Font.BOLD, 15));
+                g.drawString("FROZEN", x + width / 4, y + height / 2);
+            }
         }
         else {
             if (!hitStaff) {

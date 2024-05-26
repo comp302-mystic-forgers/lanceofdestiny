@@ -23,18 +23,24 @@ public class ReinforcedBarrier extends Barrier{
     @Override
     public void draw(Graphics g) {
         if(!destroyed){
-            if (hitsReceived > 0) {
+            if (hitsReceived > 0 && !isFrozen()) {
                 g.drawImage(icon.getImage(), x, y, width, height, null);
                 g.setColor(Color.WHITE);
                 g.setFont(new Font("Arial", Font.BOLD, 15));
                 g.drawString(String.valueOf(hitsReceived), x + 20, y + 17);
+            }
+            else if(hitsReceived > 0 && isFrozen()){
+                g.drawImage(icon.getImage(), x, y, width, height, null);
+                g.setColor(Color.BLACK);
+                g.setFont(new Font("Arial", Font.BOLD, 15));
+                g.drawString("FROZEN", x + width / 4, y + height / 2);
             }
         }
     }
 
     // Method to handle collision with FireBall
     public boolean collidesWithFireBall(FireBall fireBall) {
-        return !isDestroyed() && fireBall.getX() + fireBall.getDiameter() >= x &&
+        return !isDestroyed() && !isFrozen() && fireBall.getX() + fireBall.getDiameter() >= x &&
                 fireBall.getX() <= x + width && fireBall.getY() + fireBall.getDiameter() >= y &&
                 fireBall.getY() <= y + height;
     }

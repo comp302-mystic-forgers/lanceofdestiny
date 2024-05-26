@@ -21,6 +21,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     private ArrayList<ExplosiveBarrier> explosiveBarriers;
     private ArrayList<RewardingBarrier> rewardingBarriers;
     private List<Spell> collectedSpells;
+    private ArrayList<Barrier> allBarriers;
     private OverwhelmingFireBall overFireBall;
     private MagicalStaffExp magicalStaffExp;
     private FelixFelicis felixFelicis;
@@ -62,11 +63,11 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         this.reinforcedBarriers = new ArrayList<>();
         this.explosiveBarriers = new ArrayList<>();
         this.rewardingBarriers = new ArrayList<>();
+        this.allBarriers = new ArrayList<>();
         this.collectedSpells = new ArrayList<>();
         this.hexSpell = new Hex(magicalStaff);
         this.hud = new HUD();
         this.score = new Score();
-        this.ymir = new Ymir(fireball);
         addComponentListener(this);
 
         int count = GameLayoutPanel.placedBarriers.size();
@@ -75,15 +76,21 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             Rectangle rectangle = GameLayoutPanel.placedBarriers.get(i);
             Integer type = GameLayoutPanel.placedBarrierTypes.get(i);
 
+            Barrier barrier;
             if (type == 1) {
+                barrier = new SimpleBarrier((int) rectangle.getX() / 6 * 8, (int) rectangle.getY() / 6 * 8, (int) rectangle.getWidth() / 6 * 8, (int) rectangle.getHeight() / 6 * 8);
                 simpleBarriers.add(new SimpleBarrier((int) rectangle.getX()/6*8, (int) rectangle.getY()/6*8, (int) rectangle.getWidth()/6*8, (int) rectangle.getHeight()/6*8));
             } else if (type == 2) {
+                barrier = new ReinforcedBarrier((int) rectangle.getX() / 6 * 8, (int) rectangle.getY() / 6 * 8, (int) rectangle.getWidth() / 6 * 8, (int) rectangle.getHeight() / 6 * 8);
                 reinforcedBarriers.add(new ReinforcedBarrier((int) rectangle.getX()/6*8, (int) rectangle.getY()/6*8, (int) rectangle.getWidth()/6*8, (int) rectangle.getHeight()/6*8));
             } else if (type == 3) {
+                barrier = new ReinforcedBarrier((int) rectangle.getX() / 6 * 8, (int) rectangle.getY() / 6 * 8, (int) rectangle.getWidth() / 6 * 8, (int) rectangle.getHeight() / 6 * 8);
                 explosiveBarriers.add(new ExplosiveBarrier((int) rectangle.getX()/6*8, (int) rectangle.getY()/6*8, (int) rectangle.getWidth()/6*8, (int) rectangle.getHeight()/6*8));
             } else {
+                barrier = new RewardingBarrier((int) rectangle.getX() / 6 * 8, (int) rectangle.getY() / 6 * 8, (int) rectangle.getWidth() / 6 * 8, (int) rectangle.getHeight() / 6 * 8);
                 rewardingBarriers.add(new RewardingBarrier((int) rectangle.getX()/6*8, (int) rectangle.getY()/6*8, (int) rectangle.getWidth()/6*8, (int) rectangle.getHeight()/6*8));
             }
+            allBarriers.add(barrier);
         }
 
         // Create multiple SimpleBarrier objects and add them to the ArrayList
@@ -95,7 +102,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
 //        explosiveBarriers.add(new ExplosiveBarrier(600, 100, 50, 15));
 //        rewardingBarriers.add(new RewardingBarrier(700, 100, 50, 20));
 //        rewardingBarriers.add(new RewardingBarrier(800, 100, 50, 20));
-
+        this.ymir = new Ymir(fireball, allBarriers);
         timer = new Timer(10, this);
         timer.start();
     }

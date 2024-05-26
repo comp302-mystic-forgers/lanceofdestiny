@@ -12,6 +12,7 @@ public abstract class Barrier {
     protected int x, y; // Position
     protected int width, height; // Dimensions
     protected boolean destroyed;
+    private boolean frozen;
 
     //Representation Invariant:
     //x and y has to be non-negative
@@ -31,12 +32,15 @@ public abstract class Barrier {
         this.width = width;
         this.height = height;
         this.destroyed = false;
+        this.frozen = false;
         repOK();
     }
     public abstract void draw(Graphics g);
 
     public void destroy(){
-        this.destroyed = true;
+        if(!frozen){
+            this.destroyed = true;
+        }
         repOK();
     }
 
@@ -44,14 +48,21 @@ public abstract class Barrier {
         return destroyed;
     }
 
+    public boolean isFrozen() {
+        return frozen;
+    }
+
+    public void setFrozen(boolean frozen) {
+        this.frozen = frozen;
+    }
 
     public UUID getBarrierId() {
         return barrierId;
     }
 
     public void move(){
-
     }
+
     public int getX() {
         return x;
     }
@@ -67,7 +78,6 @@ public abstract class Barrier {
     public int getHeight() {
         return height;
     }
-
 }
 
 

@@ -1,6 +1,6 @@
 package Domain;
 import javax.swing.*;
-import java.awt.Graphics;
+import java.awt.*;
 
 public class SimpleBarrier extends Barrier {
     private ImageIcon icon;
@@ -17,11 +17,17 @@ public class SimpleBarrier extends Barrier {
     public void draw(Graphics g) {
         if (!destroyed) {
             g.drawImage(icon.getImage(), x, y, width, height, null);
+            if (isFrozen()) {
+                g.drawImage(icon.getImage(), x, y, width, height, null);
+                g.setColor(Color.BLACK);
+                g.setFont(new Font("Arial", Font.BOLD, 15));
+                g.drawString("FROZEN", x + width / 4, y + height / 2);
+            }
         }
     }
 
     public boolean collidesWithFireBall(FireBall fireBall) {
-        return !destroyed && fireBall.getX() + fireBall.getDiameter() >= x &&
+        return !destroyed && !isFrozen() && fireBall.getX() + fireBall.getDiameter() >= x &&
                 fireBall.getX() <= x + width && fireBall.getY() + fireBall.getDiameter() >= y &&
                 fireBall.getY() <= y + height;
     }
