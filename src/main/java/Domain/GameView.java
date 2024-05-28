@@ -16,13 +16,11 @@ import java.util.List;
 public class GameView extends JPanel implements ComponentListener, ActionListener {
     private MagicalStaff magicalStaff;
     private FireBall fireball;
-    private ArrayList<SimpleBarrier> simpleBarriers; // ArrayList to hold SimpleBarrier objects
-    private ArrayList<ReinforcedBarrier> reinforcedBarriers;
-    private ArrayList<ExplosiveBarrier> explosiveBarriers;
-    private ArrayList<RewardingBarrier> rewardingBarriers;
+    private List<SimpleBarrier> simpleBarriers; // ArrayList to hold SimpleBarrier objects
+    private List<ReinforcedBarrier> reinforcedBarriers;
+    private List<ExplosiveBarrier> explosiveBarriers;
+    private List<RewardingBarrier> rewardingBarriers;
     private List<Spell> collectedSpells;
-    private OverwhelmingFireBall overFireBall;
-    private MagicalStaffExp magicalStaffExp;
     private FelixFelicis felixFelicis;
     private OverwhelmingFireBall overwhelmingFireBall;
     private Timer timer;
@@ -39,8 +37,8 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     private HUD hud;
     private Score score;
     private Hex hexSpell;
-
-    public GameView(int panelWidth, int panelHeight, GameInfoDAO gameInfoDAO, PlayerAccountDAO playerAccountDAO) {
+    private GameInfo gameInfo;
+    public GameView(int panelWidth, int panelHeight, GameInfoDAO gameInfoDAO, PlayerAccountDAO playerAccountDAO, GameInfo gameInfo) {
         super();
         this.gameInfoDAO =gameInfoDAO;
         this.playerAccountDAO = playerAccountDAO;
@@ -57,33 +55,45 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         this.fireball = new FireBall(magicalStaff.getX() + magicalStaff.getWidth() / 2 - 8, magicalStaff.getY() - 16, null); // Start Fireball from the top middle
         this.felixFelicis = new FelixFelicis(currentPlayer);
         this.overwhelmingFireBall = new OverwhelmingFireBall(fireball);
-        this.simpleBarriers = new ArrayList<>(); // Initialize the ArrayList
-        this.reinforcedBarriers = new ArrayList<>();
-        this.explosiveBarriers = new ArrayList<>();
-        this.rewardingBarriers = new ArrayList<>();
-        this.collectedSpells = new ArrayList<>();
         this.hexSpell = new Hex(magicalStaff);
         this.hud = new HUD();
         this.score = new Score();
-        addComponentListener(this);
+        if (gameInfo != null){
+            this.gameInfo = gameInfo;
+            this.simpleBarriers = gameInfo.getSimpleBarrierList();
+            this.reinforcedBarriers = gameInfo.getReinforcedBarrierList();
+            this.rewardingBarriers = gameInfo.getRewardingBarrierList();
+            this.explosiveBarriers = gameInfo.getExplosiveBarrierList();
+            System.out.println("spells: " + gameInfo.getSpellsAcquired());
+            this.collectedSpells = gameInfo.getSpellsAcquired();
+            System.out.println("collected spells: " + collectedSpells);
+            hud.updateLives(gameInfo.getLives());
+            score.setScoreValue(gameInfo.getScore());
+        } else {
+            this.simpleBarriers = new ArrayList<>(); // Initialize the ArrayList
+            this.reinforcedBarriers = new ArrayList<>();
+            this.explosiveBarriers = new ArrayList<>();
+            this.rewardingBarriers = new ArrayList<>();
+            this.collectedSpells = new ArrayList<>();
+            addComponentListener(this);
 
-        int count = GameLayoutPanel.placedBarriers.size();
+            int count = GameLayoutPanel.placedBarriers.size();
 
-        for (int i = 0; i < count; i++) {
-            Rectangle rectangle = GameLayoutPanel.placedBarriers.get(i);
-            Integer type = GameLayoutPanel.placedBarrierTypes.get(i);
+            for (int i = 0; i < count; i++) {
+                Rectangle rectangle = GameLayoutPanel.placedBarriers.get(i);
+                Integer type = GameLayoutPanel.placedBarrierTypes.get(i);
 
-            if (type == 1) {
-                simpleBarriers.add(new SimpleBarrier((int) rectangle.getX()/6*8, (int) rectangle.getY()/6*8, (int) rectangle.getWidth()/6*8, (int) rectangle.getHeight()/6*8));
-            } else if (type == 2) {
-                reinforcedBarriers.add(new ReinforcedBarrier((int) rectangle.getX()/6*8, (int) rectangle.getY()/6*8, (int) rectangle.getWidth()/6*8, (int) rectangle.getHeight()/6*8));
-            } else if (type == 3) {
-                explosiveBarriers.add(new ExplosiveBarrier((int) rectangle.getX()/6*8, (int) rectangle.getY()/6*8, (int) rectangle.getWidth()/6*8, (int) rectangle.getHeight()/6*8));
-            } else {
-                rewardingBarriers.add(new RewardingBarrier((int) rectangle.getX()/6*8, (int) rectangle.getY()/6*8, (int) rectangle.getWidth()/6*8, (int) rectangle.getHeight()/6*8));
+                if (type == 1) {
+                    simpleBarriers.add(new SimpleBarrier((int) rectangle.getX() / 6 * 8, (int) rectangle.getY() / 6 * 8, (int) rectangle.getWidth() / 6 * 8, (int) rectangle.getHeight() / 6 * 8));
+                } else if (type == 2) {
+                    reinforcedBarriers.add(new ReinforcedBarrier((int) rectangle.getX() / 6 * 8, (int) rectangle.getY() / 6 * 8, (int) rectangle.getWidth() / 6 * 8, (int) rectangle.getHeight() / 6 * 8));
+                } else if (type == 3) {
+                    explosiveBarriers.add(new ExplosiveBarrier((int) rectangle.getX() / 6 * 8, (int) rectangle.getY() / 6 * 8, (int) rectangle.getWidth() / 6 * 8, (int) rectangle.getHeight() / 6 * 8));
+                } else {
+                    rewardingBarriers.add(new RewardingBarrier((int) rectangle.getX() / 6 * 8, (int) rectangle.getY() / 6 * 8, (int) rectangle.getWidth() / 6 * 8, (int) rectangle.getHeight() / 6 * 8));
+                }
             }
         }
-
         // Create multiple SimpleBarrier objects and add them to the ArrayList
 //        simpleBarriers.add(new SimpleBarrier(100, 200, 50, 20));
 //        simpleBarriers.add(new SimpleBarrier(300, 150, 50, 20));
@@ -99,21 +109,33 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         timer.start();
     }
     void saveGameInfo() {
-        GameInfo gameInfo = new GameInfo();
-        PlayerAccount playerAccount = playerAccountDAO.findPlayerAccountByUsername(currentPlayer.getUsername());
-        gameInfo.getPlayer().setPlayerId(playerAccount.getPlayerId());
-        gameInfo.getPlayer().setUsername(playerAccount.getUsername());
-        gameInfo.setScore((int) score.getScoreValue());
-        gameInfo.setLives(currentPlayer.getChances());
-        gameInfo.setGameState(GameState.PASSIVE);
-        gameInfo.setLastSaved(new Date());
-        gameInfo.setSpellsAcquired(null);
-        List<Barrier> remainingBarriers = new ArrayList<>();
-        remainingBarriers.addAll(reinforcedBarriers);
-        remainingBarriers.addAll(simpleBarriers);
-        remainingBarriers.addAll(explosiveBarriers);
-        remainingBarriers.addAll(rewardingBarriers);
-        gameInfo.setBarriersRemaining(remainingBarriers);
+        GameInfo gameInfo;
+        if (this.gameInfo != null){
+            gameInfo = this.gameInfo;
+            gameInfo.setPlayerId(gameInfo.getPlayerId());
+            gameInfo.setScore((int) score.getScoreValue());
+            gameInfo.setLives(currentPlayer.getChances());
+            gameInfo.setGameState(GameState.PASSIVE);
+            gameInfo.setLastSaved(new Date());
+            gameInfo.setSpellsAcquired(collectedSpells);
+            gameInfo.setSimpleBarrierList(simpleBarriers);
+            gameInfo.setReinforcedBarrierList(reinforcedBarriers);
+            gameInfo.setRewardingBarrierList(rewardingBarriers);
+            gameInfo.setExplosiveBarrierList(explosiveBarriers);
+        } else {
+            gameInfo = new GameInfo();
+            PlayerAccount playerAccount = playerAccountDAO.findPlayerAccountByUsername(currentPlayer.getUsername());
+            gameInfo.setPlayerId(playerAccount.getPlayerId());
+            gameInfo.setScore((int) score.getScoreValue());
+            gameInfo.setLives(currentPlayer.getChances());
+            gameInfo.setGameState(GameState.PASSIVE);
+            gameInfo.setLastSaved(new Date());
+            gameInfo.setSpellsAcquired(collectedSpells);
+            gameInfo.setSimpleBarrierList(simpleBarriers);
+            gameInfo.setReinforcedBarrierList(reinforcedBarriers);
+            gameInfo.setRewardingBarrierList(rewardingBarriers);
+            gameInfo.setExplosiveBarrierList(explosiveBarriers);
+        }
         try {
             gameInfoDAO.saveGameInfo(gameInfo);
         } catch (Exception e) {
@@ -144,11 +166,11 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             for (ReinforcedBarrier rbarrier : reinforcedBarriers) {
                 rbarrier.draw(g);
             }
-            for (ExplosiveBarrier ebarrier : explosiveBarriers) {
-                ebarrier.draw(g);
-            }
             for (RewardingBarrier rwbarrier : rewardingBarriers) {
                 rwbarrier.draw(g);
+            }
+            for (ExplosiveBarrier ebarrier : explosiveBarriers) {
+                ebarrier.draw(g);
             }
             for (FireBall hex : magicalStaff.getHexes()) {
                 hex.draw(g);

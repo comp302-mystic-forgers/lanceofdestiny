@@ -37,6 +37,10 @@ public class Score {
         score.updateScore();score.updateScore();
 
     }
+
+    public void setScoreValue(long scoreValue) {
+        this.scoreValue = scoreValue;
+    }
 }
 
 

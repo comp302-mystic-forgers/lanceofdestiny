@@ -6,15 +6,15 @@ import java.util.UUID;
 public abstract class Spell {
 
     private UUID spellId;
-    private String name;
     private String description;
     private boolean activated;
+    private SpellType spellType;
 
     public Spell() {
         this.spellId = UUID.randomUUID();
     }
-    public Spell(String name, String description) {
-        this.name = name;
+    public Spell(SpellType spellType, String description) {
+        this.spellType = spellType;
         this.description = description;
         this.activated = false;
         this.spellId = UUID.randomUUID();
@@ -25,11 +25,7 @@ public abstract class Spell {
     }
 
     public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+        return this.spellType.getName();
     }
 
     public String getDescription() {
@@ -46,5 +42,8 @@ public abstract class Spell {
 
     public void setActivated(boolean activated) {
         this.activated = activated;
+    }
+    public SpellType getSpellType() {
+        return spellType;
     }
 }

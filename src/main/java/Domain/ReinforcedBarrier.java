@@ -32,6 +32,11 @@ public class ReinforcedBarrier extends Barrier{
         }
     }
 
+    @Override
+    public void destroy() {
+        super.destroy();
+    }
+
     // Method to handle collision with FireBall
     public boolean collidesWithFireBall(FireBall fireBall) {
         return !isDestroyed() && fireBall.getX() + fireBall.getDiameter() >= x &&
