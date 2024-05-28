@@ -2,6 +2,7 @@ package Domain;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class ExplosiveBarrier extends Barrier{
     private ImageIcon icon;
@@ -55,7 +56,7 @@ public class ExplosiveBarrier extends Barrier{
     // (x1,y1) where x1 is the x coordinate of the center of the explosive barrier
     // and y1 is the y coordinate of the barrier minus 1.5*L.
     @Override
-    public void move(int panelWidth, int panelHeight) {
+    public void move(int panelWidth, int panelHeight, ArrayList<Barrier> allBarriers) {
 
         //moveInCircle(panelWidth, panelHeight);
     }

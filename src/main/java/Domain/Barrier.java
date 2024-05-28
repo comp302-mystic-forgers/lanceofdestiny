@@ -1,6 +1,7 @@
 package Domain;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.UUID;
 
 // Abstract Function: The Barrier class provides a way to represent a barrier in a graphical environment
@@ -80,45 +81,56 @@ public abstract class Barrier {
         }
     }
 
-    // almost same as move method in FireBall for borders
-    protected void dontCollideWithBorders(int panelWidth, int panelHeight){
+    // The movement speed of the moving barriers is L/4 per second.
+    public void move(int panelWidth, int panelHeight, ArrayList<Barrier> allBarriers){
+        dontCollide(panelWidth, panelHeight, allBarriers);
+    }
+
+    // almost same as move method in FireBall for borders for border detection
+    protected void dontCollide(int panelWidth, int panelHeight, ArrayList<Barrier> allBarriers){
         x += xSpeed;
         y += ySpeed;
-
-        // Check for collision with left and right borders
-        if (x <= 0 || x + width >= panelWidth) {
-            // Reverse x velocity
-            xSpeed = -xSpeed;
-            // Adjust position to ensure Barrier stays within bounds
-            x = Math.max(0, Math.min(x, panelWidth - width));
+        if (x < 0 || x + width > panelWidth || y < 0 || y + height > panelHeight) {
+                // Reverse both x and y velocity (for corners) and reposition to stay in bounds
+                reverseXDirection();
+                x = Math.max(0, Math.min(x, panelWidth - width));
+                reverseYDirection();
+                y = Math.max(0, Math.min(y, panelHeight - width));
         }
-
-        // Check for collision with top and bottom borders
-        if (y <= 0 || y + height >= panelHeight) {
-            // Reverse y velocity
-            ySpeed = -ySpeed;
-            // Adjust position to ensure FireBall stays within bounds
-            y = Math.max(0, Math.min(y, panelHeight - width));
-        }
-
-        // Check for collision with left and right borders
-        if (x <= 0 || x + width >= panelWidth || y <= 0 || y + height >= panelHeight) {
-            // Reverse both x and y velocity (for corners)
-            if (x <= 0 || x + width >= panelWidth) {
-                xSpeed = -xSpeed;
+        else{
+            // check collision with other barriers
+            for (Barrier one : allBarriers){
+                if (this.intersects(one) && one != this) {
+                    reverseXDirection();
+                    //reverseYDirection();
+                    break;
+                }
             }
-            if (y <= 0 || y + height >= panelHeight) {
+
+        }
+        // Check for collision with left and right borders
+    }
+
+    public void dontCollideWithBarriers(ArrayList<Barrier> allBarriers){
+        // gtk: one object can be part of more arrays, change to that one in one array , changes it as
+        // a whole -->
+        // PLAN: assign all moveing to move array (done, all loaded even thoguh of different subclass type!! WOHHOOO),
+        // check if collides with all other except itself
+        // use a function for that check comparing the positions (can use GPT w/ clear prob description)
+        //x += xSpeed;
+        //y += ySpeed;
+        /** Check for collision with left and right neighbours
+        for (Barrier one : allBarriers){
+            if (this.intersects(one) && one != this){
+                xSpeed = -xSpeed;
                 ySpeed = -ySpeed;
             }
         }
+        **/  //Check for collision with top and bottom neighbours
     }
 
-    public void dontCollideWithBarriers(){
-        //x += xSpeed;
-        //y += ySpeed;
-        // Check for collision with left and right neighbours
-
-        //  Check for collision with top and bottom neighbours
+    public boolean intersects (Barrier other){
+        return !(x + width < other.x || x > other.x + other.width || y + height < other.y || y > other.y + other.height);
     }
 
     public void reverseYDirection() {
@@ -132,15 +144,8 @@ public abstract class Barrier {
         return destroyed;
     }
 
-
     public UUID getBarrierId() {
         return barrierId;
-    }
-
-    // The movement speed of the moving barriers is L/4 per second.
-    public void move(int panelWidth, int panelHeight){
-        dontCollideWithBarriers();
-        dontCollideWithBorders(panelWidth, panelHeight);
     }
 
     public void setSpeed(double xVel, double yVel) {
