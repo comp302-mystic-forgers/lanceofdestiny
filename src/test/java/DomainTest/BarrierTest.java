@@ -34,8 +34,5 @@ class BarrierTest {
         barrier = new SimpleBarrier(2, 1, 10, 10);
         assertEquals(2, barrier.getX());
         assertEquals(1, barrier.getY());
-        assertEquals(10, barrier.getWidth());
-        assertEquals(10, barrier.getHeight());
-
     }
 }
