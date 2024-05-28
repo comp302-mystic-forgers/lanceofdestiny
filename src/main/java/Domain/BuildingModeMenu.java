@@ -37,8 +37,14 @@ public class BuildingModeMenu extends JFrame {
         buttonPanel.setOpaque(false); // Make panel transparent to show the background image
 
         JButton loadGameButton = new JButton("Load Game");
-        loadGameButton.addActionListener(e -> System.out.println("Load game action"));
-
+        //loadGameButton.addActionListener(e -> System.out.println("Load game action"));
+        loadGameButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                buildingModeController.setCurrentMode("load_game");
+                buildingModeController.switchScreens();
+            }
+        });
 
         JButton newGameButton = new JButton("New Game");
         newGameButton.addActionListener(new ActionListener() {

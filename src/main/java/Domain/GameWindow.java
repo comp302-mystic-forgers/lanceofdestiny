@@ -17,7 +17,8 @@ public class GameWindow extends JFrame {
     private GameInfoDAO gameInfoDAO;
     private PlayerAccountDAO playerAccountDAO;
     private boolean isGameSaved = false;
-    public GameWindow() {
+    private GameInfo gameInfo;
+    public GameWindow(BuildingModeController buildingModeController, GameInfo gameInfo) {
         super("Lance of Destiny");
         setSize(1280, 720);
         //setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -25,7 +26,9 @@ public class GameWindow extends JFrame {
         Database connection = new Database();
         gameInfoDAO = new GameInfoDAO(connection);
         playerAccountDAO = new PlayerAccountDAO(connection);
-        GameView = new GameView(getWidth(), getHeight(), gameInfoDAO, playerAccountDAO);
+        this.gameInfo = gameInfo;
+        this.buildingModeController = buildingModeController;
+        GameView = new GameView(getWidth(), getHeight(), gameInfoDAO, playerAccountDAO, gameInfo);
         add(GameView);
         pauseButton = new JButton("Pause");
         pauseButton.addActionListener(new ActionListener() {
@@ -170,8 +173,5 @@ public class GameWindow extends JFrame {
         return isGameSaved;
     }
 
-    public static void main(String[] args) {
-        new GameWindow();
-    }
 }
 

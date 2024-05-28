@@ -10,7 +10,6 @@ public class GameController {
     private String currentMode;
 
 
-
     public GameController() {
         buildingModeController = new BuildingModeController(this);
         currentMode = "building_mode";
@@ -19,7 +18,7 @@ public class GameController {
     public void switchModes() {
         if(buildingModeController.getCurrentMode() == "readyForGame"){
             setCurrentMode("running");
-            gameWindow = new GameWindow();
+            gameWindow = new GameWindow(buildingModeController, buildingModeController.getGameInfo());
             gameWindow.setVisible(true);
         }
     }

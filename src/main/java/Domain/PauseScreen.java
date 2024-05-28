@@ -63,19 +63,10 @@ public class PauseScreen extends JFrame {
         returnMenuButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                 GameController gameController = new GameController();
-                BuildingModeController buildingModeController1 = new BuildingModeController(gameController);
-
-                  //buildingModeController.setCurrentMode("building_mode_menu");
-                //buildingModeController.setCurrentMode("building_mode_menu");
-
-               BuildingModeMenu menu = new BuildingModeMenu(buildingModeController1);
-
-                menu.setVisible(false);
-               // buildingModeController.setCurrentMode("building_mode_menu");
-              //  buildingModeController.switchScreens();
+               buildingModeController.setCurrentMode("building_mode_menu");
+               buildingModeController.switchScreens();
                gameWindow.dispose();
-               // closePauseScreen();
+               closePauseScreen();
 
             }
         });
