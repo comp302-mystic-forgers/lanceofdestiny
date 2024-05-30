@@ -20,7 +20,7 @@ public class ExplosiveBarrierTest {
     @BeforeEach
     public void setUp() {
         explosiveBarrier = new ExplosiveBarrier(50, 50, 100, 100);
-        fireBall = new FireBall(60, 60);
+        fireBall = new FireBall(60, 60, Color.RED);
     }
 
     //GlassBox Test
@@ -59,7 +59,7 @@ public class ExplosiveBarrierTest {
     public void testxSpeed() {
         explosiveBarrier.handleCollisionResponse(fireBall);
 
-        int xSpeed = explosiveBarrier.getXSpeed();
+        double xSpeed = explosiveBarrier.xSpeed;
         assertTrue(xSpeed >= 0 && xSpeed < 8, "xSpeed should be between 0 and 7");
 
     }
@@ -69,7 +69,7 @@ public class ExplosiveBarrierTest {
     public void testySpeed() {
         explosiveBarrier.handleCollisionResponse(fireBall);
 
-        assertEquals(5, explosiveBarrier.getYSpeed(), "ySpeed should be 5");
+        assertEquals(5, explosiveBarrier.ySpeed, "ySpeed should be 5");
     }
 
 }

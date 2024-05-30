@@ -3,6 +3,8 @@ package DomainTest;
 import Domain.FireBall;
 import org.junit.jupiter.api.Test;
 
+import java.awt.*;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FireBallTest {
@@ -12,7 +14,7 @@ public class FireBallTest {
     // Glass Box Tests
     @Test
     void testMoveWithinBounds() {
-        FireBall fireBall = new FireBall(50, 50);
+        FireBall fireBall = new FireBall(50, 50, Color.RED);
         fireBall.setVelocity(3, 2);
         fireBall.move(200, 200);
         assertEquals(53, fireBall.getX(), 0.01);
@@ -21,7 +23,7 @@ public class FireBallTest {
 
     @Test
     void testCollisionWithLeftBorder() {
-        FireBall fireBall = new FireBall(0, 50);
+        FireBall fireBall = new FireBall(0, 50, Color.RED);
         fireBall.setVelocity(-3, 2);
         fireBall.move(200, 200);
         assertEquals(0, fireBall.getX(), 0.01);
@@ -31,7 +33,7 @@ public class FireBallTest {
 
     @Test
     void testCollisionWithRightBorder() {
-        FireBall fireBall = new FireBall(180, 50);
+        FireBall fireBall = new FireBall(180, 50, Color.RED);
         fireBall.setVelocity(3, 2);
         fireBall.move(200, 200);
         assertEquals(180, fireBall.getX(), 0.01);
@@ -41,7 +43,7 @@ public class FireBallTest {
 
     @Test
     void testCollisionWithTopBorder() {
-        FireBall fireBall = new FireBall(50, 0);
+        FireBall fireBall = new FireBall(50, 0, Color.RED);
         fireBall.setVelocity(3, -2);
         fireBall.move(200, 200);
         assertEquals(53, fireBall.getX(), 0.01);
@@ -51,7 +53,7 @@ public class FireBallTest {
 
     @Test
     void testCollisionWithBottomBorder() {
-        FireBall fireBall = new FireBall(50, 180);
+        FireBall fireBall = new FireBall(50, 180, Color.RED);
         fireBall.setVelocity(3, 2);
         fireBall.move(200, 200);
         assertEquals(53, fireBall.getX(), 0.01);
@@ -61,7 +63,7 @@ public class FireBallTest {
 
     @Test
     void testCollisionWithCorner1() {
-        FireBall fireBall = new FireBall(0, 0);
+        FireBall fireBall = new FireBall(0, 0, Color.RED);
         fireBall.setVelocity(-3, -2);
         fireBall.move(200, 200);
         assertEquals(0, fireBall.getX(), 0.01);
@@ -73,7 +75,7 @@ public class FireBallTest {
     // Black Box Tests
     @Test
     void testBasicMovement() {
-        FireBall fireBall = new FireBall(100, 100);
+        FireBall fireBall = new FireBall(100, 100, Color.RED);
         fireBall.setVelocity(5, 5);
         fireBall.move(300, 300);
         assertEquals(105, fireBall.getX(), 0.01);
@@ -82,7 +84,7 @@ public class FireBallTest {
 
     @Test
     void testCollisionWithVerticalBorderLeft() {
-        FireBall fireBall = new FireBall(0, 100);
+        FireBall fireBall = new FireBall(0, 100, Color.RED);
         fireBall.setVelocity(-5, 5);
         fireBall.move(300, 300);
         assertEquals(0, fireBall.getX(), 0.01);
@@ -92,7 +94,7 @@ public class FireBallTest {
 
     @Test
     void testCollisionWithHorizontalBorderTop() {
-        FireBall fireBall = new FireBall(100, 0);
+        FireBall fireBall = new FireBall(100, 0, Color.RED);
         fireBall.setVelocity(5, -5);
         fireBall.move(300, 300);
         assertEquals(105, fireBall.getX(), 0.01);
@@ -102,7 +104,7 @@ public class FireBallTest {
 
     @Test
     void testCollisionWithCorner() {
-        FireBall fireBall = new FireBall(0, 0);
+        FireBall fireBall = new FireBall(0, 0, Color.RED);
         fireBall.setVelocity(-5, -5);
         fireBall.move(300, 300);
         assertEquals(0, fireBall.getX(), 0.01);
@@ -112,7 +114,7 @@ public class FireBallTest {
     }
     @Test
     void testLargePanelNoCollision() {
-        FireBall fireBall = new FireBall(100, 100);
+        FireBall fireBall = new FireBall(100, 100, Color.RED);
         fireBall.setVelocity(20, 15);
         fireBall.move(1000, 1000);
         assertEquals(120, fireBall.getX(), 0.01);
