@@ -20,6 +20,7 @@ public class ReinforcedBarrier extends Barrier{
         this.hitsRequired = random.nextInt(5) + 1;
         this.hitsReceived = hitsRequired;
         this.icon = new ImageIcon("Assets/Images/200Firm.png");
+        moveable();
         moveHorizontally();
     }
 

@@ -18,6 +18,8 @@ public class GameWindow extends JFrame {
     private PlayerAccountDAO playerAccountDAO;
     private boolean isGameSaved = false;
     private GameInfo gameInfo;
+    private String backgroundImagePath = "Assets/Images/BuildingModeStartBackground.png";
+
     public GameWindow(BuildingModeController buildingModeController, GameInfo gameInfo) {
         super("Lance of Destiny");
         setSize(1280, 720);
@@ -31,6 +33,7 @@ public class GameWindow extends JFrame {
         GameView = new GameView(getWidth(), getHeight(), gameInfoDAO, playerAccountDAO, gameInfo);
         add(GameView);
         pauseButton = new JButton("Pause");
+
         pauseButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (!gamePaused) {
@@ -155,8 +158,6 @@ public class GameWindow extends JFrame {
         if (pauseScreen != null) {
             pauseScreen.closePauseScreen();
             pauseScreen.dispose();
-
-
         }
         this.requestFocusInWindow();
         isGameSaved = false;
@@ -168,10 +169,11 @@ public class GameWindow extends JFrame {
         }
     }
 
-
     public boolean isGameSaved() {
         return isGameSaved;
     }
+
+
 
 }
 

@@ -1,11 +1,9 @@
 package Domain;
 
 import javax.imageio.ImageIO;
-import javax.swing.JPanel;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import javax.swing.Timer;
-import javax.swing.JOptionPane;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -42,6 +40,8 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     private Score score;
     private Hex hexSpell;
     private GameInfo gameInfo;
+    private BufferedImage winBackgroundImage;
+    private BufferedImage looseBackgroundImage;
     public GameView(int panelWidth, int panelHeight, GameInfoDAO gameInfoDAO, PlayerAccountDAO playerAccountDAO, GameInfo gameInfo) {
         super();
         // initialize all attributes and establish connections to the images
@@ -53,6 +53,8 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             firmBarrierImage = ImageIO.read(new File("Assets/Images/200Firm.png"));
             explosiveBarrierImage = ImageIO.read(new File("Assets/Images/200Redgem.png"));
             giftBarrierImage = ImageIO.read(new File("Assets/Images/200Greengem.png"));
+            looseBackgroundImage = ImageIO.read(new File("Assets/Images/GameOverBackground.png"));
+            winBackgroundImage = ImageIO.read(new File("Assets/Images/WinBackground.png"));
         } catch (IOException e) {
             System.err.println("Error loading background image: " + e.getMessage());
         }
@@ -178,10 +180,10 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             magicalStaff.draw(g);
 
             fireball.draw(g);
-            // Draw all SimpleBarrier objects in the ArrayList
+
             add(hud.getLivesLabel(), BorderLayout.NORTH);
             add(hud.getScoreLabel(), BorderLayout.NORTH);
-
+            // Draw all SimpleBarrier objects in the ArrayList
             for (SimpleBarrier barrier : simpleBarriers) {
                 barrier.draw(g);
             }
@@ -197,6 +199,14 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             for (FireBall hex : magicalStaff.getHexes()) {
                 hex.draw(g);
             }
+        }
+        if (currentPlayer.getChances()<=0){
+            g.drawImage(looseBackgroundImage, 0, 0, getWidth(), getHeight(), this);
+            remove(hud.getLivesLabel());
+            remove(hud.getScoreLabel());
+        }
+        if (allBarriers.size() < 1){
+            g.drawImage(winBackgroundImage, 0, 0, getWidth(), getHeight(), this);
         }
     }
 
@@ -294,6 +304,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                         }
                         allToRemove.add(barrier);
                     }
+                    allToRemove.add(barrier);
                 }
             }
             for (ReinforcedBarrier rbarrier : reinforcedBarriers) {
@@ -317,7 +328,9 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                         rbarrier.isDestroyed();
                         rbarrier.handleCollisionResponse(hex);
                         hexesToRemove.add(hex);
+                        allToRemove.add(rbarrier);
                     }
+                    allToRemove.add(rbarrier);
                 }
             }
             for (ExplosiveBarrier ebarrier : explosiveBarriers) {
@@ -340,40 +353,42 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                     }
                     ebarrier.handleCollisionResponse(hex);
                     hexesToRemove.add(hex);
+                    allToRemove.add(ebarrier);
                 }
                 if (ebarrier.destroyed) {
                     if (ebarrier.collidesWithMagicalStaff(magicalStaff)) {
                         updateLives();
                         ebarrier.staffHit();
+                        allToRemove.add(ebarrier);
                     }
                 }
             }
             for (RewardingBarrier rwbarrier : rewardingBarriers) {
                 if (rwbarrier.collidesWithFireBall(hex)) {
                     if (hex.isOverwhelming()) {
-                        updateScore();
+                        if(!rwbarrier.destroyed){
+                            updateScore();
+                        };
                         rwbarrier.destroy();
                         hexesToRemove.add(hex);
-                        if(rwbarrier.moves){
-                            movingToRemove.add(rwbarrier);
-                        }
                         allToRemove.add(rwbarrier);
                     } else {
-                        updateScore();
+                        if(!rwbarrier.destroyed){
+                            updateScore();
+                        };
                         rwbarrier.destroy();
                         rwbarrier.handleCollisionResponse(hex);
                         hexesToRemove.add(hex);
-                        if(rwbarrier.moves){
-                            movingToRemove.add(rwbarrier);
-                        }
                         allToRemove.add(rwbarrier);
                     }
+                    allToRemove.add(rwbarrier);
                 }
                 if (rwbarrier.getGift() != null && rwbarrier.collidesWithMagicalStaff(magicalStaff)) {
                     collectGift(rwbarrier.getGift());
                     System.out.println("Gift taken: " + rwbarrier.getGift().getSpellType());
                     rwbarrier.setCollected(true);
-                    break;
+                    allToRemove.add(rwbarrier);
+                    //break;
                 }
             }
         }
@@ -399,6 +414,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                     }
                     allToRemove.add(barrier);
                 }
+                allToRemove.add(barrier);
             }
         }
 
@@ -421,6 +437,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                     }
                     rbarrier.handleCollisionResponse(fireball);
                 }
+                allToRemove.add(rbarrier);
             }
         }
 
@@ -442,11 +459,13 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                     allToRemove.add(ebarrier);
                 }
                 ebarrier.handleCollisionResponse(fireball);
+                allToRemove.add(ebarrier);
             }
             if(ebarrier.destroyed) {
                 if (ebarrier.collidesWithMagicalStaff(magicalStaff)) {
                     updateLives();
                     ebarrier.staffHit();
+                    allToRemove.add(ebarrier);
                 }
             }
         }
@@ -454,26 +473,26 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         for (RewardingBarrier rwbarrier : rewardingBarriers) {
             if (rwbarrier.collidesWithFireBall(fireball)) {
                 if (fireball.isOverwhelming()) {
-                    updateScore();
-                    rwbarrier.destroy();
-                    if(rwbarrier.moves){
-                        movingToRemove.add(rwbarrier);
+                    if(!rwbarrier.destroyed){
+                        updateScore();
                     }
+                    rwbarrier.destroy();
                     allToRemove.add(rwbarrier);
                 } else {
-                    updateScore();
+                    if(!rwbarrier.destroyed){
+                        updateScore();
+                    }
                     rwbarrier.destroy();
                     rwbarrier.handleCollisionResponse(fireball);
-                    if(rwbarrier.moves){
-                        movingToRemove.add(rwbarrier);
-                    }
                     allToRemove.add(rwbarrier);
                 }
+                allToRemove.add(rwbarrier);
             }
             if (rwbarrier.getGift() != null && rwbarrier.collidesWithMagicalStaff(magicalStaff)) {
                 collectGift(rwbarrier.getGift());
                 System.out.println("Gift taken: " + rwbarrier.getGift().getSpellType());
                 rwbarrier.setCollected(true);
+                allToRemove.add(rwbarrier);
             }
         }
 
@@ -481,6 +500,14 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         allBarriers.removeAll(allToRemove);
         System.out.println("movingBarriers size is: "+ movingBarriers.size());
         System.out.println("allBarriers size is: "+ allBarriers.size());
+        if (allBarriers.size() < 1){
+            magicalStaff.stopFiring();
+            JOptionPane.showMessageDialog(this, "You have received the lance of destiny! All power is yours! Click Pause to quit or go back to Menu.", "End", JOptionPane.INFORMATION_MESSAGE);
+            System.out.println(collectedSpells);
+            fireball.isBallActive = false;
+            gameRunning = false;
+            timer.stop();
+        }
     }
     private void updateGifts() {
         for (RewardingBarrier rwbarrier : rewardingBarriers) {
@@ -589,7 +616,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         timer.start(); // Continue game loop
         if (currentPlayer.getChances() < 1){
             magicalStaff.stopFiring();
-            JOptionPane.showMessageDialog(this, "Game Over", "End", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "You have been defeated. You are unworthy of the lance of destiny. Click Pause to go back or quit.", "End", JOptionPane.INFORMATION_MESSAGE);
             System.out.println(collectedSpells);
             fireball.isBallActive = false;
             gameRunning = false;
@@ -600,4 +627,6 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     public boolean isGameRunning() {
         return gameRunning;
     }
+
+
 }

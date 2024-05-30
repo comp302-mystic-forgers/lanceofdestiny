@@ -41,7 +41,6 @@ public abstract class Barrier {
         this.height = height;
         this.destroyed = false;
         this.moves = false;
-        moveable();
         repOK();
     }
     public abstract void draw(Graphics g);
