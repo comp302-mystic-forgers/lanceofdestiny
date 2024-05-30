@@ -6,8 +6,6 @@ import java.awt.*;
 public class RewardingBarrier extends Barrier{
     private ImageIcon icon;
     private ImageIcon icon2;
-    private int xSpeed; //DO WE NEED IT TO MOVE IT HORIZONTALY?
-    private int ySpeed;
     private boolean collected;
     private Gift gift;
 

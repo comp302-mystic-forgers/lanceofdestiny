@@ -67,20 +67,6 @@ public abstract class Barrier {
         }
     }
 
-    protected void moveInCircle(int panelWidth, int panelHeight) {
-        if (moves) {
-            xSpeed = (Math.random() * 8) - 4;
-            ySpeed = (Math.random() * 8) - 4;
-            double distance = Math.sqrt(xSpeed * xSpeed + ySpeed * ySpeed);
-            double scale = 1.5 * width;
-            xSpeed = (xSpeed * scale / distance);
-            ySpeed = (ySpeed * scale / distance);
-        } else {
-            xSpeed = 0;
-            ySpeed = 0;
-        }
-    }
-
     // The movement speed of the moving barriers is L/4 per second.
     public void move(int panelWidth, int panelHeight, ArrayList<Barrier> allBarriers){
         dontCollide(panelWidth, panelHeight, allBarriers);
@@ -91,42 +77,23 @@ public abstract class Barrier {
         x += xSpeed;
         y += ySpeed;
         if (x < 0 || x + width > panelWidth || y < 0 || y + height > panelHeight) {
-                // Reverse both x and y velocity (for corners) and reposition to stay in bounds
-                reverseXDirection();
-                x = Math.max(0, Math.min(x, panelWidth - width));
-                reverseYDirection();
-                y = Math.max(0, Math.min(y, panelHeight - width));
+            // Reverse both x and y velocity (for corners) and reposition to stay in bounds
+            reverseXDirection();
+            x = Math.max(0, Math.min(x, panelWidth - width));
+            reverseYDirection();
+            y = Math.max(0, Math.min(y, panelHeight - width));
         }
         else{
             // check collision with other barriers
             for (Barrier one : allBarriers){
                 if (this.intersects(one) && one != this) {
                     reverseXDirection();
-                    //reverseYDirection();
+                    reverseYDirection();
                     break;
                 }
             }
 
         }
-        // Check for collision with left and right borders
-    }
-
-    public void dontCollideWithBarriers(ArrayList<Barrier> allBarriers){
-        // gtk: one object can be part of more arrays, change to that one in one array , changes it as
-        // a whole -->
-        // PLAN: assign all moveing to move array (done, all loaded even thoguh of different subclass type!! WOHHOOO),
-        // check if collides with all other except itself
-        // use a function for that check comparing the positions (can use GPT w/ clear prob description)
-        //x += xSpeed;
-        //y += ySpeed;
-        /** Check for collision with left and right neighbours
-        for (Barrier one : allBarriers){
-            if (this.intersects(one) && one != this){
-                xSpeed = -xSpeed;
-                ySpeed = -ySpeed;
-            }
-        }
-        **/  //Check for collision with top and bottom neighbours
     }
 
     public boolean intersects (Barrier other){
