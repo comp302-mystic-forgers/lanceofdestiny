@@ -1,6 +1,7 @@
 package Domain;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.UUID;
 
 // Abstract Function: The Barrier class provides a way to represent a barrier in a graphical environment
@@ -11,8 +12,16 @@ public abstract class Barrier {
     private UUID barrierId;
     protected int x, y; // Position
     protected int width, height; // Dimensions
+
+    public double xSpeed; // Barrier horizontal movement speed
+    public double ySpeed; // Barrier vertical movement speed
     protected boolean destroyed;
     private boolean frozen;
+
+    protected boolean moves;
+
+    // probability of moving horizontally or in circle
+    private static final double probMovable = 0.2;
 
     //Representation Invariant:
     //x and y has to be non-negative
@@ -33,6 +42,8 @@ public abstract class Barrier {
         this.height = height;
         this.destroyed = false;
         this.frozen = false;
+        this.moves = false;
+        moveable();
         repOK();
     }
     public abstract void draw(Graphics g);
@@ -42,6 +53,62 @@ public abstract class Barrier {
             this.destroyed = true;
         }
         repOK();
+    }
+
+    protected void moveable(){
+        if (Math.random() < probMovable){
+            moves = true;
+        }
+    }
+
+    protected void moveHorizontally() {
+        if (moves) {
+            xSpeed = (getWidth()/4)/15;
+            ySpeed = 0;
+        } else {
+            xSpeed = 0;
+            ySpeed = 0;
+        }
+    }
+
+    // The movement speed of the moving barriers is L/4 per second.
+    public void move(int panelWidth, int panelHeight, ArrayList<Barrier> allBarriers){
+        dontCollide(panelWidth, panelHeight, allBarriers);
+    }
+
+    // almost same as move method in FireBall for borders for border detection
+    protected void dontCollide(int panelWidth, int panelHeight, ArrayList<Barrier> allBarriers){
+        x += xSpeed;
+        y += ySpeed;
+        if (x < 0 || x + width > panelWidth || y < 0 || y + height > panelHeight) {
+            // Reverse both x and y velocity (for corners) and reposition to stay in bounds
+            reverseXDirection();
+            x = Math.max(0, Math.min(x, panelWidth - width));
+            reverseYDirection();
+            y = Math.max(0, Math.min(y, panelHeight - width));
+        }
+        else{
+            // check collision with other barriers
+            for (Barrier one : allBarriers){
+                if (this.intersects(one) && one != this) {
+                    reverseXDirection();
+                    reverseYDirection();
+                    break;
+                }
+            }
+
+        }
+    }
+
+    public boolean intersects (Barrier other){
+        return !(x + width < other.x || x > other.x + other.width || y + height < other.y || y > other.y + other.height);
+    }
+
+    public void reverseYDirection() {
+        ySpeed *= -1;
+    }
+    public void reverseXDirection() {
+        xSpeed *= -1;
     }
 
     public boolean isDestroyed() {
@@ -60,6 +127,11 @@ public abstract class Barrier {
         return barrierId;
     }
 
+    public void setSpeed(double xVel, double yVel) {
+        this.xSpeed = xVel;
+        this.ySpeed = yVel;
+    }
+
     public void move(){
     }
 
@@ -70,6 +142,15 @@ public abstract class Barrier {
     public int getY() {
         return y;
     }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
 }
 
 

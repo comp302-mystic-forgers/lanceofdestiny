@@ -10,20 +10,23 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList; // Import ArrayList class
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 public class GameView extends JPanel implements ComponentListener, ActionListener {
     private MagicalStaff magicalStaff;
     private FireBall fireball;
-    private ArrayList<SimpleBarrier> simpleBarriers; // ArrayList to hold SimpleBarrier objects
-    private ArrayList<ReinforcedBarrier> reinforcedBarriers;
-    private ArrayList<ExplosiveBarrier> explosiveBarriers;
-    private ArrayList<RewardingBarrier> rewardingBarriers;
-    private List<Spell> collectedSpells;
+    private ArrayList<Barrier> movingBarriers;
     private ArrayList<Barrier> allBarriers;
+    private List<SimpleBarrier> simpleBarriers; // ArrayList to hold SimpleBarrier objects
+    private List<ReinforcedBarrier> reinforcedBarriers;
+    private List<ExplosiveBarrier> explosiveBarriers;
+    private List<RewardingBarrier> rewardingBarriers;
+    private List<Spell> collectedSpells;
     private OverwhelmingFireBall overFireBall;
     private MagicalStaffExp magicalStaffExp;
+    //private MagicalStaffExp magicalStaffExp;
     private FelixFelicis felixFelicis;
     private OverwhelmingFireBall overwhelmingFireBall;
     private Timer timer;
@@ -36,15 +39,16 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     private BufferedImage giftBarrierImage;
     private PlayerAccount currentPlayer = UserSession.getInstance().getCurrentPlayer();
     private  PlayerAccountDAO playerAccountDAO;
-    private final GameInfoDAO gameInfoDAO;
+    private GameInfoDAO gameInfoDAO;
     private HUD hud;
     private Score score;
     private Hex hexSpell;
     private Ymir ymir;
-
-    public GameView(int panelWidth, int panelHeight, GameInfoDAO gameInfoDAO, PlayerAccountDAO playerAccountDAO) {
+    private GameInfo gameInfo;
+    public GameView(int panelWidth, int panelHeight, GameInfoDAO gameInfoDAO, PlayerAccountDAO playerAccountDAO, GameInfo gameInfo) {
         super();
-        this.gameInfoDAO =gameInfoDAO;
+        // initialize all attributes and establish connections to the images
+        this.gameInfoDAO = gameInfoDAO;
         this.playerAccountDAO = playerAccountDAO;
         try {
             background = ImageIO.read(new File("Assets/Images/200Background.png"));
@@ -69,59 +73,111 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         this.hud = new HUD();
         this.score = new Score();
         addComponentListener(this);
+        this.hexSpell = new Hex(magicalStaff);
+        this.hud = new HUD();
+        this.score = new Score();
+        this.movingBarriers = new ArrayList<>();
+        this.allBarriers = new ArrayList<>();
+        if (gameInfo != null) {
+            this.gameInfo = gameInfo;
+            this.simpleBarriers = gameInfo.getSimpleBarrierList();
+            this.reinforcedBarriers = gameInfo.getReinforcedBarrierList();
+            this.rewardingBarriers = gameInfo.getRewardingBarrierList();
+            this.explosiveBarriers = gameInfo.getExplosiveBarrierList();
+            System.out.println("spells: " + gameInfo.getSpellsAcquired());
+            this.collectedSpells = gameInfo.getSpellsAcquired();
+            System.out.println("collected spells: " + collectedSpells);
+            hud.updateLives(gameInfo.getLives());
+            score.setScoreValue(gameInfo.getScore());
+        } else {
+            this.simpleBarriers = new ArrayList<>(); // Initialize the ArrayList
+            this.reinforcedBarriers = new ArrayList<>();
+            this.explosiveBarriers = new ArrayList<>();
+            this.rewardingBarriers = new ArrayList<>();
+            this.collectedSpells = new ArrayList<>();
+            addComponentListener(this);
 
-        int count = GameLayoutPanel.placedBarriers.size();
 
-        for (int i = 0; i < count; i++) {
-            Rectangle rectangle = GameLayoutPanel.placedBarriers.get(i);
-            Integer type = GameLayoutPanel.placedBarrierTypes.get(i);
+            int count = GameLayoutPanel.placedBarriers.size();
 
-            Barrier barrier;
-            if (type == 1) {
-                barrier = new SimpleBarrier((int) rectangle.getX() / 6 * 8, (int) rectangle.getY() / 6 * 8, (int) rectangle.getWidth() / 6 * 8, (int) rectangle.getHeight() / 6 * 8);
-                simpleBarriers.add(new SimpleBarrier((int) rectangle.getX()/6*8, (int) rectangle.getY()/6*8, (int) rectangle.getWidth()/6*8, (int) rectangle.getHeight()/6*8));
-            } else if (type == 2) {
-                barrier = new ReinforcedBarrier((int) rectangle.getX() / 6 * 8, (int) rectangle.getY() / 6 * 8, (int) rectangle.getWidth() / 6 * 8, (int) rectangle.getHeight() / 6 * 8);
-                reinforcedBarriers.add(new ReinforcedBarrier((int) rectangle.getX()/6*8, (int) rectangle.getY()/6*8, (int) rectangle.getWidth()/6*8, (int) rectangle.getHeight()/6*8));
-            } else if (type == 3) {
-                barrier = new ReinforcedBarrier((int) rectangle.getX() / 6 * 8, (int) rectangle.getY() / 6 * 8, (int) rectangle.getWidth() / 6 * 8, (int) rectangle.getHeight() / 6 * 8);
-                explosiveBarriers.add(new ExplosiveBarrier((int) rectangle.getX()/6*8, (int) rectangle.getY()/6*8, (int) rectangle.getWidth()/6*8, (int) rectangle.getHeight()/6*8));
-            } else {
-                barrier = new RewardingBarrier((int) rectangle.getX() / 6 * 8, (int) rectangle.getY() / 6 * 8, (int) rectangle.getWidth() / 6 * 8, (int) rectangle.getHeight() / 6 * 8);
-                rewardingBarriers.add(new RewardingBarrier((int) rectangle.getX()/6*8, (int) rectangle.getY()/6*8, (int) rectangle.getWidth()/6*8, (int) rectangle.getHeight()/6*8));
+            // place all barriers
+            for (int i = 0; i < count; i++) {
+                Rectangle rectangle = GameLayoutPanel.placedBarriers.get(i);
+                Integer type = GameLayoutPanel.placedBarrierTypes.get(i);
+                Barrier barrier;
+                if (type == 1) {
+                    barrier = new SimpleBarrier((int) rectangle.getX() / 6 * 8, (int) rectangle.getY() / 6 * 8, (int) rectangle.getWidth() / 6 * 8, (int) rectangle.getHeight() / 6 * 8);
+                    simpleBarriers.add(new SimpleBarrier((int) rectangle.getX() / 6 * 8, (int) rectangle.getY() / 6 * 8, (int) rectangle.getWidth() / 6 * 8, (int) rectangle.getHeight() / 6 * 8));
+                } else if (type == 2) {
+                    barrier = new ReinforcedBarrier((int) rectangle.getX() / 6 * 8, (int) rectangle.getY() / 6 * 8, (int) rectangle.getWidth() / 6 * 8, (int) rectangle.getHeight() / 6 * 8);
+                    reinforcedBarriers.add(new ReinforcedBarrier((int) rectangle.getX() / 6 * 8, (int) rectangle.getY() / 6 * 8, (int) rectangle.getWidth() / 6 * 8, (int) rectangle.getHeight() / 6 * 8));
+                } else if (type == 3) {
+                    barrier = new ReinforcedBarrier((int) rectangle.getX() / 6 * 8, (int) rectangle.getY() / 6 * 8, (int) rectangle.getWidth() / 6 * 8, (int) rectangle.getHeight() / 6 * 8);
+                    explosiveBarriers.add(new ExplosiveBarrier((int) rectangle.getX() / 6 * 8, (int) rectangle.getY() / 6 * 8, (int) rectangle.getWidth() / 6 * 8, (int) rectangle.getHeight() / 6 * 8));
+                } else {
+                    barrier = new RewardingBarrier((int) rectangle.getX() / 6 * 8, (int) rectangle.getY() / 6 * 8, (int) rectangle.getWidth() / 6 * 8, (int) rectangle.getHeight() / 6 * 8);
+                    rewardingBarriers.add(new RewardingBarrier((int) rectangle.getX() / 6 * 8, (int) rectangle.getY() / 6 * 8, (int) rectangle.getWidth() / 6 * 8, (int) rectangle.getHeight() / 6 * 8));
+                }
+                allBarriers.add(barrier);
             }
-            allBarriers.add(barrier);
-        }
 
-        // Create multiple SimpleBarrier objects and add them to the ArrayList
-//        simpleBarriers.add(new SimpleBarrier(100, 200, 50, 20));
-//        simpleBarriers.add(new SimpleBarrier(300, 150, 50, 20));
-//        reinforcedBarriers.add(new ReinforcedBarrier(400, 100, 50, 20));
-//        reinforcedBarriers.add(new ReinforcedBarrier(300, 100, 50, 20));
-//        explosiveBarriers.add(new ExplosiveBarrier(500, 100, 50, 15));
-//        explosiveBarriers.add(new ExplosiveBarrier(600, 100, 50, 15));
-//        rewardingBarriers.add(new RewardingBarrier(700, 100, 50, 20));
-//        rewardingBarriers.add(new RewardingBarrier(800, 100, 50, 20));
-        this.ymir = new Ymir(fireball, allBarriers);
-        timer = new Timer(10, this);
-        timer.start();
+            for (SimpleBarrier simple : simpleBarriers) {
+                if (simple.moves) {
+                    movingBarriers.add(simple);
+                }
+                allBarriers.add(simple);
+            }
+            for (ReinforcedBarrier reinf : reinforcedBarriers) {
+                if (reinf.moves) {
+                    movingBarriers.add(reinf);
+                }
+                allBarriers.add(reinf);
+            }
+            for (ExplosiveBarrier explo : explosiveBarriers) {
+                if (explo.moves) {
+                    movingBarriers.add(explo);
+                }
+                allBarriers.add(explo);
+            }
+            for (RewardingBarrier rewa : rewardingBarriers) {
+                allBarriers.add(rewa);
+            }
+
+            this.ymir = new Ymir(fireball, allBarriers);
+
+            timer = new Timer(10, this);
+            timer.start();
+        }
     }
+
     void saveGameInfo() {
-        GameInfo gameInfo = new GameInfo();
-        PlayerAccount playerAccount = playerAccountDAO.findPlayerAccountByUsername(currentPlayer.getUsername());
-        gameInfo.getPlayer().setPlayerId(playerAccount.getPlayerId());
-        gameInfo.getPlayer().setUsername(playerAccount.getUsername());
-        gameInfo.setScore((int) score.getScoreValue());
-        gameInfo.setLives(currentPlayer.getChances());
-        gameInfo.setGameState(GameState.PASSIVE);
-        gameInfo.setLastSaved(new Date());
-        gameInfo.setSpellsAcquired(null);
-        List<Barrier> remainingBarriers = new ArrayList<>();
-        remainingBarriers.addAll(reinforcedBarriers);
-        remainingBarriers.addAll(simpleBarriers);
-        remainingBarriers.addAll(explosiveBarriers);
-        remainingBarriers.addAll(rewardingBarriers);
-        gameInfo.setBarriersRemaining(remainingBarriers);
+        GameInfo gameInfo;
+        if (this.gameInfo != null){
+            gameInfo = this.gameInfo;
+            gameInfo.setPlayerId(gameInfo.getPlayerId());
+            gameInfo.setScore((int) score.getScoreValue());
+            gameInfo.setLives(currentPlayer.getChances());
+            gameInfo.setGameState(GameState.PASSIVE);
+            gameInfo.setLastSaved(new Date());
+            gameInfo.setSpellsAcquired(collectedSpells);
+            gameInfo.setSimpleBarrierList(simpleBarriers);
+            gameInfo.setReinforcedBarrierList(reinforcedBarriers);
+            gameInfo.setRewardingBarrierList(rewardingBarriers);
+            gameInfo.setExplosiveBarrierList(explosiveBarriers);
+        } else {
+            gameInfo = new GameInfo();
+            PlayerAccount playerAccount = playerAccountDAO.findPlayerAccountByUsername(currentPlayer.getUsername());
+            gameInfo.setPlayerId(playerAccount.getPlayerId());
+            gameInfo.setScore((int) score.getScoreValue());
+            gameInfo.setLives(currentPlayer.getChances());
+            gameInfo.setGameState(GameState.PASSIVE);
+            gameInfo.setLastSaved(new Date());
+            gameInfo.setSpellsAcquired(collectedSpells);
+            gameInfo.setSimpleBarrierList(simpleBarriers);
+            gameInfo.setReinforcedBarrierList(reinforcedBarriers);
+            gameInfo.setRewardingBarrierList(rewardingBarriers);
+            gameInfo.setExplosiveBarrierList(explosiveBarriers);
+        }
         try {
             gameInfoDAO.saveGameInfo(gameInfo);
         } catch (Exception e) {
@@ -133,7 +189,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     public long getScore() {
         return score.getScoreValue();
     }
-
+    // paint all components
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -164,11 +220,17 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         }
     }
 
+    // game loop
     @Override
     public void actionPerformed(ActionEvent e) {
         if (gameRunning) {
             if (fireball.isBallActive) {
                 fireball.move(getWidth(), getHeight());
+
+                for (Barrier each : movingBarriers){
+                    each.move(getWidth(),getHeight(),allBarriers);
+                }
+
                 checkCollisions();
                 updateGifts();
             }
@@ -178,6 +240,8 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     }
 
     private void checkCollisions() {
+
+        // checks correct FireBall bouncing off borders
         if (fireball.getX() <= 0 || fireball.getX() + fireball.getDiameter() >= getWidth()) {
             fireball.reverseXDirection();
         }
@@ -186,6 +250,8 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             fireball.reverseYDirection();
         }
 
+
+        // checks correct FireBall bouncing off staff
         if (fireball.collidesWithMagicalStaff(magicalStaff)) {
             double speed = Math.hypot(fireball.xVelocity, fireball.yVelocity);
 
@@ -222,8 +288,11 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             // Further actions to reset or end the game can be added here
         }
 
+        // check if Barriers hit by Hex
         ArrayList<FireBall> hexes = magicalStaff.getHexes();
         ArrayList<FireBall> hexesToRemove = new ArrayList<>();
+        ArrayList<Barrier> allToRemove = new ArrayList<>();
+        ArrayList<Barrier> movingToRemove = new ArrayList<>();
         for (FireBall hex : hexes) {
             for (SimpleBarrier barrier : simpleBarriers) {
                 if (barrier.collidesWithFireBall(hex)) {
@@ -231,11 +300,19 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                         updateScore();
                         barrier.destroy();
                         hexesToRemove.add(hex);
+                        if(barrier.moves){
+                            movingToRemove.add(barrier);
+                        }
+                        allToRemove.add(barrier);
                     } else {
                         updateScore();
                         barrier.destroy();
                         barrier.handleCollisionResponse(hex);
                         hexesToRemove.add(hex);
+                        if(barrier.moves){
+                            movingToRemove.add(barrier);
+                        }
+                        allToRemove.add(barrier);
                     }
                 }
             }
@@ -245,9 +322,17 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                         updateScore();
                         rbarrier.destroy();
                         hexesToRemove.add(hex);
+                        if(rbarrier.moves){
+                            movingToRemove.add(rbarrier);
+                        }
+                        allToRemove.add(rbarrier);
                     } else {
                         if (rbarrier.isDestroyed()) {
                             updateScore();
+                            if(rbarrier.moves){
+                                movingToRemove.add(rbarrier);
+                            }
+                            allToRemove.add(rbarrier);
                         }
                         rbarrier.isDestroyed();
                         rbarrier.handleCollisionResponse(hex);
@@ -261,9 +346,17 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                         updateScore();
                         ebarrier.destroy();
                         hexesToRemove.add(hex);
+                        if(ebarrier.moves){
+                            movingToRemove.add(ebarrier);
+                        }
+                        allToRemove.add(ebarrier);
                     } else {
                         updateScore();
                         ebarrier.destroy();
+                        if(ebarrier.moves){
+                            movingToRemove.add(ebarrier);
+                        }
+                        allToRemove.add(ebarrier);
                     }
                     ebarrier.handleCollisionResponse(hex);
                     hexesToRemove.add(hex);
@@ -281,11 +374,19 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                         updateScore();
                         rwbarrier.destroy();
                         hexesToRemove.add(hex);
+                        if(rwbarrier.moves){
+                            movingToRemove.add(rwbarrier);
+                        }
+                        allToRemove.add(rwbarrier);
                     } else {
                         updateScore();
                         rwbarrier.destroy();
                         rwbarrier.handleCollisionResponse(hex);
                         hexesToRemove.add(hex);
+                        if(rwbarrier.moves){
+                            movingToRemove.add(rwbarrier);
+                        }
+                        allToRemove.add(rwbarrier);
                     }
                 }
                 if (rwbarrier.getGift() != null && rwbarrier.collidesWithMagicalStaff(magicalStaff)) {
@@ -299,15 +400,24 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
 
         hexes.removeAll(hexesToRemove);
 
+        // check if Barriers hit by Fireball or OverwhelmingFireBall
         for (SimpleBarrier barrier : simpleBarriers) {
             if (barrier.collidesWithFireBall(fireball)) {
                 if (fireball.isOverwhelming()) {
                     updateScore();
                     barrier.destroy();
+                    if(barrier.moves){
+                        movingToRemove.add(barrier);
+                    }
+                    allToRemove.add(barrier);
                 } else {
                     updateScore();
                     barrier.destroy();
                     barrier.handleCollisionResponse(fireball);
+                    if(barrier.moves){
+                        movingToRemove.add(barrier);
+                    }
+                    allToRemove.add(barrier);
                 }
             }
         }
@@ -317,11 +427,18 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                 if (fireball.isOverwhelming()) {
                     updateScore();
                     rbarrier.destroy();
+                    if(rbarrier.moves){
+                        movingToRemove.add(rbarrier);
+                    }
+                    allToRemove.add(rbarrier);
                 } else {
                     if (rbarrier.isDestroyed()) {
                         updateScore();
+                        if(rbarrier.moves){
+                            movingToRemove.add(rbarrier);
+                        }
+                        allToRemove.add(rbarrier);
                     }
-                    rbarrier.isDestroyed();
                     rbarrier.handleCollisionResponse(fireball);
                 }
             }
@@ -332,9 +449,17 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                 if (fireball.isOverwhelming()) {
                     updateScore();
                     ebarrier.destroy();
+                    if(ebarrier.moves){
+                        movingToRemove.add(ebarrier);
+                    }
+                    allToRemove.add(ebarrier);
                 } else {
                     updateScore();
                     ebarrier.destroy();
+                    if(ebarrier.moves){
+                        movingToRemove.add(ebarrier);
+                    }
+                    allToRemove.add(ebarrier);
                 }
                 ebarrier.handleCollisionResponse(fireball);
             }
@@ -351,10 +476,18 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                 if (fireball.isOverwhelming()) {
                     updateScore();
                     rwbarrier.destroy();
+                    if(rwbarrier.moves){
+                        movingToRemove.add(rwbarrier);
+                    }
+                    allToRemove.add(rwbarrier);
                 } else {
                     updateScore();
                     rwbarrier.destroy();
                     rwbarrier.handleCollisionResponse(fireball);
+                    if(rwbarrier.moves){
+                        movingToRemove.add(rwbarrier);
+                    }
+                    allToRemove.add(rwbarrier);
                 }
             }
             if (rwbarrier.getGift() != null && rwbarrier.collidesWithMagicalStaff(magicalStaff)) {
@@ -363,6 +496,11 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                 rwbarrier.setCollected(true);
             }
         }
+
+        movingBarriers.removeAll(movingToRemove);
+        allBarriers.removeAll(allToRemove);
+        System.out.println("movingBarriers size is: "+ movingBarriers.size());
+        System.out.println("allBarriers size is: "+ allBarriers.size());
     }
     private void updateGifts() {
         for (RewardingBarrier rwbarrier : rewardingBarriers) {
@@ -458,7 +596,6 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         hud.updateScore(score.getScoreValue()); // Update the HUD with the new score
         repaint();
     }
-
 
     public void updateLives(){
         fireball.isBallActive = false;

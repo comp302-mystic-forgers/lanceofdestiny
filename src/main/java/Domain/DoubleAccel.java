@@ -8,7 +8,7 @@ public class DoubleAccel extends Spell{
     private Timer timer;
 
     public DoubleAccel(FireBall fireball) {
-        super("Double Accel", "Reduces fireball speed by half for 15 seconds");
+        super(SpellType.valueOf("Double Accel"), "Reduces fireball speed by half for 15 seconds");
         this.fireball = fireball;
         this.timer = new Timer();
     }

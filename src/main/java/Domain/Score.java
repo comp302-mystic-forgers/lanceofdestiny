@@ -6,18 +6,19 @@ public class Score {
 
     public Score() {
         this.scoreValue = 0;
-        this.gameStartingTime = System.currentTimeMillis();
+        this.gameStartingTime = System.currentTimeMillis()/1000;
     }
 
     public void updateScore() {
-        long currentTime = System.currentTimeMillis();
+        long currentTime = System.currentTimeMillis()/1000;
         long elapsedTime = currentTime - gameStartingTime;
         if (elapsedTime <= 0) {
             elapsedTime = 1; // Add a small constant value to prevent division by zero
         }
-        if (elapsedTime >= 300) {
+        /**if (elapsedTime >= 300) {
             elapsedTime = elapsedTime/ 1000; // Try to keep increasing the score equally
         }
+        **/
         // Calculate score based on barrier destroy time
         long newScore = (scoreValue + (300 / elapsedTime));
         scoreValue = newScore;
@@ -36,6 +37,10 @@ public class Score {
         Score score = new Score();
         score.updateScore();score.updateScore();
 
+    }
+
+    public void setScoreValue(long scoreValue) {
+        this.scoreValue = scoreValue;
     }
 }
 

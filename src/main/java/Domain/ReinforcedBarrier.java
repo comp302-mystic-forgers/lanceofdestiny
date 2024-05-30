@@ -9,15 +9,18 @@ public class ReinforcedBarrier extends Barrier{
     private int hitsRequired;
     private int hitsReceived;
     private ImageIcon icon;
-    private int xSpeed;
-    private int ySpeed;
 
+    // Can move horizontally, if it has a free space around it in the x-axis.
+    // Might be moving back and forth with a probability of 0.2, or stiff with
+    // a probability of 0.8. It will of course move in its free space, meaning
+    // that if it is about to collide with another barrier it will reverse its direction.
     public ReinforcedBarrier(int x, int y, int width, int height) {
         super(x, y, width, height);
         Random random = new Random();
         this.hitsRequired = random.nextInt(5) + 1;
         this.hitsReceived = hitsRequired;
         this.icon = new ImageIcon("Assets/Images/200Firm.png");
+        moveHorizontally();
     }
 
     @Override
@@ -38,6 +41,11 @@ public class ReinforcedBarrier extends Barrier{
         }
     }
 
+    @Override
+    public void destroy() {
+        super.destroy();
+    }
+
     // Method to handle collision with FireBall
     public boolean collidesWithFireBall(FireBall fireBall) {
         return !isDestroyed() && !isFrozen() && fireBall.getX() + fireBall.getDiameter() >= x &&
@@ -56,22 +64,6 @@ public class ReinforcedBarrier extends Barrier{
     public void handleCollisionResponse(FireBall fireBall) {
         fireBall.reverseYDirection();
         decreaseHitsReceived();
-    }
-
-    public int getxSpeed() {
-        return xSpeed;
-    }
-
-    public void setxSpeed(int xSpeed) {
-        this.xSpeed = xSpeed;
-    }
-
-    public int getySpeed() {
-        return ySpeed;
-    }
-
-    public void setySpeed(int ySpeed) {
-        this.ySpeed = ySpeed;
     }
 
     public int getHitsRequired() {

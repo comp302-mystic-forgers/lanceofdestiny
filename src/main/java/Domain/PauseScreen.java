@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
+import static Domain.BuildingModePage.BUILDING_MODE_MENU;
+
 
 public class PauseScreen extends JFrame {
     private JButton helpButton;
@@ -63,19 +65,10 @@ public class PauseScreen extends JFrame {
         returnMenuButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                 GameController gameController = new GameController();
-                BuildingModeController buildingModeController1 = new BuildingModeController(gameController);
-
-                  //buildingModeController.setCurrentMode("building_mode_menu");
-                //buildingModeController.setCurrentMode("building_mode_menu");
-
-               BuildingModeMenu menu = new BuildingModeMenu(buildingModeController1);
-
-                menu.setVisible(false);
-               // buildingModeController.setCurrentMode("building_mode_menu");
-              //  buildingModeController.switchScreens();
+               buildingModeController.setCurrentMode(BUILDING_MODE_MENU);
+               buildingModeController.switchScreens();
                gameWindow.dispose();
-               // closePauseScreen();
+               closePauseScreen();
 
             }
         });

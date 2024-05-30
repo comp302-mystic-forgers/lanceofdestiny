@@ -7,6 +7,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import static Domain.BuildingModePage.BUILDING_MODE_MENU;
+
 
 /**
  * The Login class provides a GUI for users to log in or sign up to the game.
@@ -84,7 +86,7 @@ public class Login extends JFrame implements ActionListener {
                 if (playerAccount != null && playerAccount.getPassword().equals(password)) {
                     JOptionPane.showMessageDialog(this, "Login is successful", "Success", JOptionPane.INFORMATION_MESSAGE);
                     UserSession.getInstance().setCurrentPlayer(playerAccount);
-                    buildingModeController.setCurrentMode("building_mode_menu");
+                    buildingModeController.setCurrentMode(BUILDING_MODE_MENU);
                     buildingModeController.switchScreens();
                     this.dispose();
                 } else {

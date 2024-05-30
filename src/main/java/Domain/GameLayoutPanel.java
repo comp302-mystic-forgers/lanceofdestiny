@@ -66,7 +66,7 @@ class GameLayoutPanel extends JPanel {
     }
 
     private void placeBarriersRowByRow(Graphics g) {
-        int padding = 5;
+        int padding = 10;
         int offsetY = 25;
 
         offsetY = drawBarriers(g,simpleBarriersCount + firmBarriersCount + explosiveBarriersCount + giftBarriersCount, offsetY, padding);
