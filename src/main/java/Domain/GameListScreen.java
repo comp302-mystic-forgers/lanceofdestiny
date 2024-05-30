@@ -10,6 +10,8 @@ import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+import static Domain.BuildingModePage.FINISH;
+
 public class GameListScreen extends JFrame {
 
     private GameInfoDAO gameInfoDAO;
@@ -153,7 +155,7 @@ public class GameListScreen extends JFrame {
                     System.out.println("Play button clicked on row " + selectedRow);
                     buildingModeController.setGameInfo(selectedGame);
                     gameListScreen.setVisible(false);
-                    buildingModeController.setCurrentMode("finish");
+                    buildingModeController.setCurrentMode(FINISH);
                     buildingModeController.switchScreens();
                 }
             }

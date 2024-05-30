@@ -11,7 +11,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 
-import static Domain.BuildingModePage.ASSEMBLY_MENU;
+import static Domain.BuildingModePage.*;
 
 public class BuildingModeMenu extends JFrame {
 
@@ -49,7 +49,7 @@ public class BuildingModeMenu extends JFrame {
         loadGameButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                buildingModeController.setCurrentMode("load_game");
+                buildingModeController.setCurrentMode(LOAD_GAME);
                 buildingModeController.switchScreens();
             }
         });

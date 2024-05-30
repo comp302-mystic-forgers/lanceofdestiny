@@ -7,6 +7,9 @@ public enum BuildingModePage {
     LOGIN,
 
     BUILDING_MODE_MENU,
+    NEW_GAME,
+    LOAD_GAME,
+    GAME_LIST_SCREEN,
 
     ASSEMBLY_MENU,
 

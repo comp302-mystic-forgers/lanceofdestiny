@@ -17,16 +17,16 @@ import java.util.List;
 public class GameView extends JPanel implements ComponentListener, ActionListener {
     private MagicalStaff magicalStaff;
     private FireBall fireball;
-    private ArrayList<SimpleBarrier> simpleBarriers; // ArrayList to hold SimpleBarrier objects
-    private ArrayList<ReinforcedBarrier> reinforcedBarriers;
-    private ArrayList<ExplosiveBarrier> explosiveBarriers;
-    private ArrayList<RewardingBarrier> rewardingBarriers;
+    //private ArrayList<SimpleBarrier> simpleBarriers; // ArrayList to hold SimpleBarrier objects
+    //private ArrayList<ReinforcedBarrier> reinforcedBarriers;
+    //private ArrayList<ExplosiveBarrier> explosiveBarriers;
+    //private ArrayList<RewardingBarrier> rewardingBarriers;
     private ArrayList<Barrier> movingBarriers;
     private ArrayList<Barrier> allBarriers;
-    //private List<SimpleBarrier> simpleBarriers; // ArrayList to hold SimpleBarrier objects
-    //private List<ReinforcedBarrier> reinforcedBarriers;
-    //private List<ExplosiveBarrier> explosiveBarriers;
-    //private List<RewardingBarrier> rewardingBarriers;
+    private List<SimpleBarrier> simpleBarriers; // ArrayList to hold SimpleBarrier objects
+    private List<ReinforcedBarrier> reinforcedBarriers;
+    private List<ExplosiveBarrier> explosiveBarriers;
+    private List<RewardingBarrier> rewardingBarriers;
     private List<Spell> collectedSpells;
     //private MagicalStaffExp magicalStaffExp;
     private FelixFelicis felixFelicis;
