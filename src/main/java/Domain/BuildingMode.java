@@ -6,6 +6,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import static Domain.BuildingModePage.FINISH;
+
 public class BuildingMode extends JFrame {
     // Initialize counts with the minimum required values
     private BuildingModeController buildingModeController;
@@ -93,7 +95,7 @@ public class BuildingMode extends JFrame {
         playButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                buildingModeController.setCurrentMode("finish");
+                buildingModeController.setCurrentMode(FINISH);
                 buildingModeController.switchScreens();
             }
         });

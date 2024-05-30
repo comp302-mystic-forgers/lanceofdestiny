@@ -11,6 +11,8 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 
+import static Domain.BuildingModePage.ASSEMBLY_MENU;
+
 public class BuildingModeMenu extends JFrame {
 
     private BuildingModeController buildingModeController;
@@ -25,13 +27,19 @@ public class BuildingModeMenu extends JFrame {
     public BuildingModeMenu(BuildingModeController buildingModeController) {
         this.buildingModeController = buildingModeController;
         setTitle("Lance of Destiny - Building Mode Menu");
-        setSize(400, 300);
+        setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         setLayout(new BorderLayout());
 
         // Load and set the background image
         setContentPane(new BackgroundPanel(backgroundImagePath));
+
+        JLabel titleLabel = new JLabel("Get ready!", SwingConstants.CENTER);
+        titleLabel.setForeground(Color.white);
+        titleLabel.setFont(new Font("Serif", Font.BOLD, 48));
+        titleLabel.setPreferredSize(new Dimension(800, 100));
+        add(titleLabel, BorderLayout.NORTH);
 
         JPanel buttonPanel = new JPanel(new FlowLayout());
         buttonPanel.setOpaque(false); // Make panel transparent to show the background image
@@ -50,7 +58,7 @@ public class BuildingModeMenu extends JFrame {
         newGameButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                buildingModeController.setCurrentMode("assembly_menu");
+                buildingModeController.setCurrentMode(ASSEMBLY_MENU);
                 buildingModeController.switchScreens();
             }
         });

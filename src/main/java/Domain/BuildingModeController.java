@@ -1,12 +1,15 @@
 package Domain;
 
+import static Domain.BuildingModePage.*;
+
 public class BuildingModeController {
     private WelcomePage welcomePage;
     private Login loginPage;
     private BuildingModeMenu buildingModeMenu;
     private BuildingMode assemblyMenu;
+    private BuildingModePage currentMode;
+
     private GameListScreen gameListScreen;
-    private String currentMode;
     private GameController gameController;
 
     private GameInfo gameInfo;
@@ -17,42 +20,42 @@ public class BuildingModeController {
         loginPage = new Login (this);
         buildingModeMenu = new BuildingModeMenu(this);
         assemblyMenu = new BuildingMode(this);
-        currentMode = "welcome";
+        currentMode = WELCOME;
         welcomePage.setVisible(true);
     }
 
     public void switchScreens() {
         switch (currentMode) {
-            case "login":
+            case LOGIN:
                 welcomePage.getClip().stop();
                 welcomePage.setVisible(false);
                 loginPage.setVisible(true);
-                currentMode = "building_mode_menu";
+                currentMode = BUILDING_MODE_MENU;
                 break;
-            case "building_mode_menu":
+            case BUILDING_MODE_MENU:
                 loginPage.setVisible(false);
                 buildingModeMenu.setVisible(true);
                 break;
-            case "new_game":
+            case NEW_GAME:
                 buildingModeMenu.setVisible(false);
                 assemblyMenu.setVisible(true);
-                currentMode = "assembly_menu";
+                currentMode = ASSEMBLY_MENU;
                 break;
-            case "load_game":
+            case LOAD_GAME:
                 gameListScreen = new GameListScreen(this);
                 gameListScreen.setVisible(true);
                 buildingModeMenu.setVisible(false);
-                currentMode = "game_list_screen";
+                currentMode = GAME_LIST_SCREEN;
                 break;
-            case "assembly_menu":
+            case ASSEMBLY_MENU:
                 buildingModeMenu.getClip().stop();
                 buildingModeMenu.setVisible(false);
                 assemblyMenu.setVisible(true);
-                currentMode = "finish";
+                currentMode = FINISH;
                 break;
-            case "finish":
+            case FINISH:
                 assemblyMenu.setVisible(false);
-                currentMode = "readyForGame";
+                currentMode = READY_FOR_GAME;
                 gameController.switchModes();
                 break;
         }
@@ -66,11 +69,11 @@ public class BuildingModeController {
         this.gameInfo = gameInfo;
     }
 
-    public void setCurrentMode(String currentMode) {
+    public void setCurrentMode(BuildingModePage currentMode) {
         this.currentMode = currentMode;
     }
 
-    public String getCurrentMode() {
+    public BuildingModePage getCurrentMode() {
         return currentMode;
     }
 
