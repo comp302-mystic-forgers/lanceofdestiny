@@ -17,10 +17,6 @@ import java.util.List;
 public class GameView extends JPanel implements ComponentListener, ActionListener {
     private MagicalStaff magicalStaff;
     private FireBall fireball;
-    //private ArrayList<SimpleBarrier> simpleBarriers; // ArrayList to hold SimpleBarrier objects
-    //private ArrayList<ReinforcedBarrier> reinforcedBarriers;
-    //private ArrayList<ExplosiveBarrier> explosiveBarriers;
-    //private ArrayList<RewardingBarrier> rewardingBarriers;
     private ArrayList<Barrier> movingBarriers;
     private ArrayList<Barrier> allBarriers;
     private List<SimpleBarrier> simpleBarriers; // ArrayList to hold SimpleBarrier objects
@@ -129,19 +125,6 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         for (RewardingBarrier rewa : rewardingBarriers){
             allBarriers.add(rewa);
         }
-
-        System.out.println("movingBarriers size is: "+ movingBarriers.size());
-        System.out.println("allBarriers size is: "+ allBarriers.size());
-
-        // Create multiple SimpleBarrier objects and add them to the ArrayList
-        // simpleBarriers.add(new SimpleBarrier(100, 200, 50, 20));
-        // simpleBarriers.add(new SimpleBarrier(300, 150, 50, 20));
-        // reinforcedBarriers.add(new ReinforcedBarrier(400, 100, 50, 20));
-        // reinforcedBarriers.add(new ReinforcedBarrier(300, 100, 50, 20));
-        // explosiveBarriers.add(new ExplosiveBarrier(500, 100, 50, 15));
-        // explosiveBarriers.add(new ExplosiveBarrier(600, 100, 50, 15));
-        // rewardingBarriers.add(new RewardingBarrier(700, 100, 50, 20));
-        // rewardingBarriers.add(new RewardingBarrier(800, 100, 50, 20));
 
 
         timer = new Timer(10, this);
