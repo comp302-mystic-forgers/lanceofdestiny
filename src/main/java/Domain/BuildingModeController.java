@@ -11,8 +11,8 @@ public class BuildingModeController {
 
     private GameListScreen gameListScreen;
     private GameController gameController;
-
     private GameInfo gameInfo;
+    private boolean isNewGame = true;
 
     public BuildingModeController(GameController gameController) {
         this.gameController = gameController;
@@ -45,6 +45,7 @@ public class BuildingModeController {
                 gameListScreen = new GameListScreen(this);
                 gameListScreen.setVisible(true);
                 buildingModeMenu.setVisible(false);
+                isNewGame = false;
                 currentMode = GAME_LIST_SCREEN;
                 break;
             case ASSEMBLY_MENU:
@@ -93,6 +94,13 @@ public class BuildingModeController {
         return assemblyMenu;
     }
 
+    public boolean isNewGame() {
+        return isNewGame;
+    }
+
+    public void setNewGame(boolean newGame) {
+        isNewGame = newGame;
+    }
 }
 
 
