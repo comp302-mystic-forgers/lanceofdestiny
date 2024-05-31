@@ -115,6 +115,8 @@ public class MultiHostScreen extends JFrame {
                 if (tcpServer.getIsConnected()) {
                     countdownLabel.setVisible(true);
                     startCountdown();
+                } else {
+                    updateStatus("No client connected to start the game.");
                 }
             }
         });
@@ -143,7 +145,8 @@ public class MultiHostScreen extends JFrame {
                     countdownTimer.stop();
                     countdownLabel.setText("Starting now!");
                     tcpServer.sendMessage("Game Started!");
-                    // Here you can trigger the start of the game
+                    buildingModeController.setCurrentMode(BuildingModePage.FINISH);
+                    buildingModeController.switchScreens();
                 }
             }
         });

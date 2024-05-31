@@ -71,6 +71,7 @@ public class TCPServer {
             objectIn.close();
             objectOut.close();
             clientSocket.close();
+            isConnected = false;
             multiHostScreen.updateStatus("Client disconnected. Listening for new clients...");
 
         } catch (IOException e) {
@@ -84,7 +85,7 @@ public class TCPServer {
         try {
             if (objectOut != null) {
                 objectOut.writeObject(message);
-                objectOut.flush();
+                //objectOut.flush();
             }
         } catch (IOException e) {
             System.err.println("Failed to send message: " + e.getMessage());

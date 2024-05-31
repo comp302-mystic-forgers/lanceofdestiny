@@ -22,6 +22,8 @@ public class TCPClient {
             try {
                 ArrayList<Rectangle> placedBarriersMulti = (ArrayList<Rectangle>) objectIn.readObject();
                 ArrayList<Integer> placedBarrierTypesMulti = (ArrayList<Integer>) objectIn.readObject();
+                // Process the received barriers and types
+                System.out.println("Received barriers and types from server.");
             } catch (ClassNotFoundException ex) {
                 isConnected = false;
                 ex.printStackTrace();
@@ -39,7 +41,10 @@ public class TCPClient {
         try {
             while (isConnected) {
                 String message = (String) objectIn.readObject();
-                // Process received game status
+                if (message != null) {
+                    // Process received messages
+                    System.out.println("Received message: " + message);
+                }
             }
         } catch (IOException ex) {
             isConnected = false;
@@ -53,8 +58,8 @@ public class TCPClient {
 
     public void sendMessage(String message) {
         try {
-            objectOut.writeUTF(message);
-            objectOut.flush();
+            objectOut.writeObject(message);
+            //objectOut.flush();
         } catch (IOException ex) {
             System.err.println("Failed to send message");
             ex.printStackTrace();

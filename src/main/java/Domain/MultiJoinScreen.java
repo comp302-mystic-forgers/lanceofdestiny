@@ -100,7 +100,7 @@ public class MultiJoinScreen extends JFrame {
                 if (tcpClient.getIsConnected()) {
                     connectionStatusLabel.setText("Connected: waiting for host to start the game");
                     connectButton.setEnabled(false);
-                    startListeningForMessages();
+                    startListeningForMessages(buildingModeController);
                 } else {
                     connectionStatusLabel.setText("Connection failed");
                 }
@@ -117,7 +117,7 @@ public class MultiJoinScreen extends JFrame {
         setLocationRelativeTo(null);
     }
 
-    private void startListeningForMessages() {
+    private void startListeningForMessages(BuildingModeController buildingModeController) {
         new Thread(() -> {
             try {
                 while (tcpClient.getIsConnected()) {
@@ -129,8 +129,9 @@ public class MultiJoinScreen extends JFrame {
                         } else if (message.equals("Game Started!")) {
                             // Trigger the start of the game
                             countdownLabel.setText("Starting now!");
-                            tcpClient.stopConnection();
-                            // Here you can trigger the start of the game
+                            buildingModeController.setCurrentMode(BuildingModePage.FINISH);
+                            buildingModeController.switchScreens();
+                            //tcpClient.stopConnection();
                         }
                     }
                 }

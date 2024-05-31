@@ -648,6 +648,12 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         return gameRunning;
     }
 
-    public static int remainingBarrierCount() {return allBarriers.size();}
+    public static int remainingBarrierCount() {
+        // Ensure allBarriers is initialized
+        if (allBarriers == null) {
+            allBarriers = new ArrayList<>();
+        }
+        return allBarriers.size();
+    }
 
 }
