@@ -20,7 +20,7 @@ public class MultiJoinScreen extends JFrame {
     private JLabel countdownLabel = new JLabel("Starting in: " + countdown);
 
     public MultiJoinScreen(BuildingModeController buildingModeController) {
-        setTitle("Network Info Join");
+        setTitle("Join Game");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -100,6 +100,7 @@ public class MultiJoinScreen extends JFrame {
                 if (tcpClient.getIsConnected()) {
                     connectionStatusLabel.setText("Connected: waiting for host to start the game");
                     connectButton.setEnabled(false);
+                    startListeningForMessages();
                 } else {
                     connectionStatusLabel.setText("Connection failed");
                 }
@@ -116,8 +117,51 @@ public class MultiJoinScreen extends JFrame {
         setLocationRelativeTo(null);
     }
 
-    public void displayCountdown() {
-        startCountdown();
+    private void startListeningForMessages() {
+        new Thread(() -> {
+            try {
+                while (tcpClient.getIsConnected()) {
+                    String message = tcpClient.receiveMessage();
+                    if (message != null) {
+                        if (message.startsWith("Countdown: ")) {
+                            int countdownValue = Integer.parseInt(message.substring(11));
+                            displayCountdown(countdownValue);
+                        } else if (message.equals("Game Started!")) {
+                            // Trigger the start of the game
+                            countdownLabel.setText("Starting now!");
+                            tcpClient.stopConnection();
+                            // Here you can trigger the start of the game
+                        }
+                    }
+                }
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    private void displayCountdown(int countdownValue) {
+        SwingUtilities.invokeLater(() -> {
+            countdown = countdownValue;
+            countdownLabel.setText("Starting in: " + countdown);
+            countdownLabel.setVisible(true);
+            if (countdownTimer != null) {
+                countdownTimer.stop();
+            }
+            countdownTimer = new Timer(1000, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (countdown > 0) {
+                        countdown--;
+                        countdownLabel.setText("Starting in: " + countdown);
+                    } else {
+                        countdownTimer.stop();
+                        countdownLabel.setText("Starting now!");
+                    }
+                }
+            });
+            countdownTimer.start();
+        });
     }
 
     static class BackgroundPanel extends JPanel {
@@ -139,21 +183,4 @@ public class MultiJoinScreen extends JFrame {
             }
         }
     }
-
-    private void startCountdown() {
-        countdownTimer = new Timer(1000, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (countdown > 0) {
-                    countdownLabel.setText("Starting in: " + countdown);
-                    countdown--;
-                } else {
-                    countdownTimer.stop();
-                    countdownLabel.setText("Starting now!");
-                }
-            }
-        });
-        countdownTimer.start();
-    }
-
 }

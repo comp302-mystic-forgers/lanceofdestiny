@@ -24,7 +24,7 @@ public class BuildingModeController {
         loginPage = new Login (this);
         buildingModeMenu = new BuildingModeMenu(this);
         assemblyMenu = new BuildingMode(this, buildingModeMenu);
-        multiHostScreen = new MultiHostScreen(this, multiJoinScreen);
+        multiHostScreen = new MultiHostScreen(this);
         multiJoinScreen = new MultiJoinScreen(this);
         currentMode = WELCOME;
         welcomePage.setVisible(true);

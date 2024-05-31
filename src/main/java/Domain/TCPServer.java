@@ -8,8 +8,10 @@ import java.util.ArrayList;
 public class TCPServer {
     private String ipAddress;
     private int port = 5001;
-    private String clientMessage;
     private MultiHostScreen multiHostScreen;
+    private Socket clientSocket;
+    private ObjectOutputStream objectOut;
+    private ObjectInputStream objectIn;
 
     private boolean isConnected = false;
 
@@ -31,15 +33,15 @@ public class TCPServer {
             System.out.println("Listening for clients...");
             multiHostScreen.updateStatus("Listening for clients...");
 
-            Socket clientSocket = serverSocket.accept();
+            clientSocket = serverSocket.accept();
             String clientSocketIP = clientSocket.getInetAddress().toString();
             int clientSocketPort = clientSocket.getPort();
             System.out.println("[IP: " + clientSocketIP + " ,Port: " + clientSocketPort + "] Client Connection Successful!");
             multiHostScreen.updateStatus("Client connected from IP: " + clientSocketIP + ", Port: " + clientSocketPort);
             isConnected = true;
 
-            ObjectInputStream objectIn = new ObjectInputStream(clientSocket.getInputStream());
-            ObjectOutputStream objectOut = new ObjectOutputStream(clientSocket.getOutputStream());
+            objectOut = new ObjectOutputStream(clientSocket.getOutputStream());
+            objectIn = new ObjectInputStream(clientSocket.getInputStream());
 
             ArrayList<Rectangle> placedBarriersMulti = GameLayoutPanel.placedBarriers;
             ArrayList<Integer> placedBarrierTypesMulti = GameLayoutPanel.placedBarrierTypes;
@@ -53,10 +55,10 @@ public class TCPServer {
                     int livesStatus = GameInfo.getLives();
                     int barrierCountStatus = GameView.remainingBarrierCount();
 
-                    ArrayList<Integer> gameStatus = new ArrayList<Integer>();
-                    gameStatus.set(0, scoreStatus);
-                    gameStatus.set(1, livesStatus);
-                    gameStatus.set(2, barrierCountStatus);
+                    ArrayList<Integer> gameStatus = new ArrayList<>();
+                    gameStatus.add(scoreStatus);
+                    gameStatus.add(livesStatus);
+                    gameStatus.add(barrierCountStatus);
 
                     objectOut.writeObject(gameStatus);
 
@@ -78,6 +80,18 @@ public class TCPServer {
         }
     }
 
+    public void sendMessage(String message) {
+        try {
+            if (objectOut != null) {
+                objectOut.writeObject(message);
+                objectOut.flush();
+            }
+        } catch (IOException e) {
+            System.err.println("Failed to send message: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
     public String getIpAddress() {
         return ipAddress;
     }
@@ -89,5 +103,4 @@ public class TCPServer {
     public boolean getIsConnected() {
         return isConnected;
     }
-
 }

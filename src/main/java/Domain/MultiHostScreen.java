@@ -12,7 +12,7 @@ import java.net.UnknownHostException;
 
 public class MultiHostScreen extends JFrame {
     private JLabel ipLabel;
-    JLabel ipValueLabel;
+    private JLabel ipValueLabel;
     private JLabel portLabel;
     private JLabel portValueLabel;
     private JLabel statusLabel;
@@ -22,16 +22,16 @@ public class MultiHostScreen extends JFrame {
     private int countdown = 3;
     private JLabel countdownLabel;
     private String backgroundImagePath = "Assets/Images/BuildingModeStartBackground.png";
-    private MultiJoinScreen multiJoinScreen;
+    private BuildingModeController buildingModeController;
 
-    public MultiHostScreen(BuildingModeController buildingModeController, MultiJoinScreen multiJoinScreen) {
-        this.multiJoinScreen = multiJoinScreen;
-        setTitle("Network Info Join");
+    public MultiHostScreen(BuildingModeController buildingModeController) {
+        this.buildingModeController = buildingModeController;
+        setTitle("Host Game");
         setSize(1280, 720);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         setLayout(new BorderLayout());
-        setContentPane(new MultiJoinScreen.BackgroundPanel(backgroundImagePath));
+        setContentPane(new BackgroundPanel(backgroundImagePath));
 
         JPanel mainPanel = new JPanel(new GridBagLayout());
         mainPanel.setOpaque(false);
@@ -62,6 +62,9 @@ public class MultiHostScreen extends JFrame {
         statusLabel.setForeground(Color.WHITE);
         statusValueLabel = new JLabel("Waiting for connection...");
         statusValueLabel.setForeground(Color.WHITE);
+        countdownLabel = new JLabel();
+        countdownLabel.setForeground(Color.WHITE);
+        countdownLabel.setVisible(false);
         JButton startButton = new JButton("Start");
 
         gbc.gridx = 0;
@@ -100,18 +103,17 @@ public class MultiHostScreen extends JFrame {
         gbc.anchor = GridBagConstraints.CENTER;
         mainPanel.add(startButton, gbc);
 
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        mainPanel.add(countdownLabel, gbc);
+
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (tcpServer.getIsConnected()) {
-
-                    gbc.gridx = 0;
-                    gbc.gridy = 4;
-                    gbc.anchor = GridBagConstraints.CENTER;
-                    mainPanel.add(countdownLabel, gbc);
-
-                    multiJoinScreen.displayCountdown();
-
+                    countdownLabel.setVisible(true);
                     startCountdown();
                 }
             }
@@ -135,10 +137,13 @@ public class MultiHostScreen extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 if (countdown > 0) {
                     countdownLabel.setText("Starting in: " + countdown);
+                    tcpServer.sendMessage("Countdown: " + countdown);
                     countdown--;
                 } else {
                     countdownTimer.stop();
                     countdownLabel.setText("Starting now!");
+                    tcpServer.sendMessage("Game Started!");
+                    // Here you can trigger the start of the game
                 }
             }
         });
@@ -146,7 +151,7 @@ public class MultiHostScreen extends JFrame {
     }
 
     public void updateStatus(String status) {
-        statusValueLabel.setText(status);
+        SwingUtilities.invokeLater(() -> statusValueLabel.setText(status));
     }
 
     static class BackgroundPanel extends JPanel {
@@ -159,6 +164,13 @@ public class MultiHostScreen extends JFrame {
                 e.printStackTrace();
             }
         }
-    }
 
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            if (backgroundImage != null) {
+                g.drawImage(backgroundImage, 0, 0, this.getWidth(), this.getHeight(), this);
+            }
+        }
+    }
 }

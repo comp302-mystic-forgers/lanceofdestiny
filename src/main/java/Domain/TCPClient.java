@@ -7,10 +7,8 @@ import java.util.ArrayList;
 
 public class TCPClient {
     private Socket socket;
-    ObjectInputStream objectIn;
-    ObjectOutputStream objectOut;
-
-
+    private ObjectInputStream objectIn;
+    private ObjectOutputStream objectOut;
     private boolean isConnected = false;
 
     public void connectToServer(String ip, int port) {
@@ -40,7 +38,8 @@ public class TCPClient {
     private void listenForMessages() {
         try {
             while (isConnected) {
-                ArrayList<Integer> intValues = (ArrayList<Integer>) objectIn.readObject();
+                String message = (String) objectIn.readObject();
+                // Process received game status
             }
         } catch (IOException ex) {
             isConnected = false;
@@ -55,8 +54,26 @@ public class TCPClient {
     public void sendMessage(String message) {
         try {
             objectOut.writeUTF(message);
+            objectOut.flush();
         } catch (IOException ex) {
             System.err.println("Failed to send message");
+            ex.printStackTrace();
+        }
+    }
+
+    public String receiveMessage() throws IOException, ClassNotFoundException {
+        return (String) objectIn.readObject();
+    }
+
+    public void stopConnection() {
+        try {
+            if (objectIn != null) objectIn.close();
+            if (objectOut != null) objectOut.close();
+            if (socket != null) socket.close();
+            isConnected = false;
+            System.out.println("Disconnected from server.");
+        } catch (IOException ex) {
+            System.err.println("Failed to close connection: " + ex.getMessage());
             ex.printStackTrace();
         }
     }
