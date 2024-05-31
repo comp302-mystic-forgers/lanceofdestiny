@@ -27,6 +27,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     private OverwhelmingFireBall overwhelmingFireBall;
     private Timer timer;
     private boolean gameRunning = true;
+    private boolean gameEnded = false;
     private  PauseScreen pauseScreen;
     private BufferedImage background;
     private BufferedImage simpleBarrierImage;
@@ -73,9 +74,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             this.reinforcedBarriers = gameInfo.getReinforcedBarrierList();
             this.rewardingBarriers = gameInfo.getRewardingBarrierList();
             this.explosiveBarriers = gameInfo.getExplosiveBarrierList();
-            System.out.println("spells: " + gameInfo.getSpellsAcquired());
             this.collectedSpells = gameInfo.getSpellsAcquired();
-            System.out.println("collected spells: " + collectedSpells);
             hud.updateLives(gameInfo.getLives());
             score.setScoreValue(gameInfo.getScore());
         } else {
@@ -199,14 +198,16 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             for (FireBall hex : magicalStaff.getHexes()) {
                 hex.draw(g);
             }
-        }
-        if (currentPlayer.getChances()<=0){
-            g.drawImage(looseBackgroundImage, 0, 0, getWidth(), getHeight(), this);
+        } else if (gameEnded) {
+            // Draw the end game background based on win or lose
+            if (currentPlayer.getChances() <= 0) {
+                g.drawImage(looseBackgroundImage, 0, 0, getWidth(), getHeight(), this);
+            } else if (allBarriers.size() < 1) {
+                g.drawImage(winBackgroundImage, 0, 0, getWidth(), getHeight(), this);
+            }
             remove(hud.getLivesLabel());
             remove(hud.getScoreLabel());
-        }
-        if (allBarriers.size() < 1){
-            g.drawImage(winBackgroundImage, 0, 0, getWidth(), getHeight(), this);
+            currentPlayer.setChances(3);
         }
     }
 
@@ -506,6 +507,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             System.out.println(collectedSpells);
             fireball.isBallActive = false;
             gameRunning = false;
+            gameEnded = true;
             timer.stop();
         }
     }
@@ -610,7 +612,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         magicalStaff.updatePosition(getWidth(), getHeight());
         fireball.updatePosition(magicalStaff.getX() + magicalStaff.getWidth() / 2 - 8, magicalStaff.getY() - 16);
         timer.stop(); // Stop the game loop
-        JOptionPane.showMessageDialog(this, "Lives: " + currentPlayer.getChances(), "Watch out!", JOptionPane.INFORMATION_MESSAGE);
+        if (currentPlayer.getChances() > 0) JOptionPane.showMessageDialog(this, "Lives: " + currentPlayer.getChances(), "Watch out!", JOptionPane.INFORMATION_MESSAGE);
         hud.updateLives(currentPlayer.getChances()); // Update the HUD with the new lives count
         repaint();
         timer.start(); // Continue game loop
@@ -620,6 +622,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             System.out.println(collectedSpells);
             fireball.isBallActive = false;
             gameRunning = false;
+            gameEnded = true;
             timer.stop();
         }
     }
