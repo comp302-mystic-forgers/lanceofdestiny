@@ -4,25 +4,18 @@ import java.awt.*;
 import java.util.UUID;
 
 public abstract class Spell {
-
-    private UUID spellId;
     private String description;
     private boolean activated;
     private SpellType spellType;
+    private long count;
 
-    public Spell() {
-        this.spellId = UUID.randomUUID();
-    }
-    public Spell(SpellType spellType, String description) {
+    public Spell(SpellType spellType, String description, long count) {
         this.spellType = spellType;
         this.description = description;
         this.activated = false;
-        this.spellId = UUID.randomUUID();
+        this.count = count;
     }
     public abstract void activate();
-    public UUID getSpellId() {
-        return spellId;
-    }
 
     public String getName() {
         return this.spellType.getName();
@@ -45,5 +38,9 @@ public abstract class Spell {
     }
     public SpellType getSpellType() {
         return spellType;
+    }
+
+    public long getCount() {
+        return count;
     }
 }
