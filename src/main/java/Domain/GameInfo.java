@@ -8,8 +8,8 @@ import java.util.UUID;
 
 public class GameInfo {
     private String playerId;
-    private int score;
-    private int lives;
+    private static int score;
+    private static int  lives;
     private GameState gameState;
     private Date lastSaved;
     private List<Spell> spellsAcquired;
@@ -44,7 +44,7 @@ public class GameInfo {
         this.explosiveBarrierList = explosiveBarrierList;
     }
 
-    public int getScore() {
+    public static int getScore() {
         return score;
     }
 
@@ -52,7 +52,7 @@ public class GameInfo {
         this.score = score;
     }
 
-    public int getLives() {
+    public static int getLives() {
         return lives;
     }
 

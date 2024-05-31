@@ -1,14 +1,17 @@
 package Domain;
 
+import java.awt.*;
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 
 public class TCPServer {
-
     private String ipAddress;
     private int port = 5001;
     private String clientMessage;
     private MultiHostScreen multiHostScreen;
+
+    private boolean isConnected = false;
 
     public TCPServer(MultiHostScreen multiHostScreen) {
         this.multiHostScreen = multiHostScreen;
@@ -33,17 +36,29 @@ public class TCPServer {
             int clientSocketPort = clientSocket.getPort();
             System.out.println("[IP: " + clientSocketIP + " ,Port: " + clientSocketPort + "] Client Connection Successful!");
             multiHostScreen.updateStatus("Client connected from IP: " + clientSocketIP + ", Port: " + clientSocketPort);
+            isConnected = true;
 
-            DataInputStream dataIn = new DataInputStream(clientSocket.getInputStream());
-            DataOutputStream dataOut = new DataOutputStream(clientSocket.getOutputStream());
+            ObjectInputStream objectIn = new ObjectInputStream(clientSocket.getInputStream());
+            ObjectOutputStream objectOut = new ObjectOutputStream(clientSocket.getOutputStream());
+
+            ArrayList<Rectangle> placedBarriersMulti = GameLayoutPanel.placedBarriers;
+            ArrayList<Integer> placedBarrierTypesMulti = GameLayoutPanel.placedBarrierTypes;
+
+            objectOut.writeObject(placedBarriersMulti);
+            objectOut.writeObject(placedBarrierTypesMulti);
 
             while (true) {
                 try {
-                    clientMessage = dataIn.readUTF();
-                    System.out.println("Received from client: " + clientMessage);
-                    multiHostScreen.updateLastMessage(clientMessage);
+                    int scoreStatus = GameInfo.getScore();
+                    int livesStatus = GameInfo.getLives();
+                    int barrierCountStatus = GameView.remainingBarrierCount();
 
-                    dataOut.writeUTF("Hi, this is coming from Server!");
+                    ArrayList<Integer> gameStatus = new ArrayList<Integer>();
+                    gameStatus.set(0, scoreStatus);
+                    gameStatus.set(1, livesStatus);
+                    gameStatus.set(2, barrierCountStatus);
+
+                    objectOut.writeObject(gameStatus);
 
                 } catch (EOFException e) {
                     System.out.println("Client disconnected.");
@@ -51,8 +66,8 @@ public class TCPServer {
                 }
             }
 
-            dataIn.close();
-            dataOut.close();
+            objectIn.close();
+            objectOut.close();
             clientSocket.close();
             multiHostScreen.updateStatus("Client disconnected. Listening for new clients...");
 
@@ -71,7 +86,8 @@ public class TCPServer {
         return port;
     }
 
-    public String getMessage() {
-        return clientMessage;
+    public boolean getIsConnected() {
+        return isConnected;
     }
+
 }

@@ -16,7 +16,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     private MagicalStaff magicalStaff;
     private FireBall fireball;
     private ArrayList<Barrier> movingBarriers;
-    private ArrayList<Barrier> allBarriers;
+    private static ArrayList<Barrier> allBarriers;
     private List<SimpleBarrier> simpleBarriers; // ArrayList to hold SimpleBarrier objects
     private List<ReinforcedBarrier> reinforcedBarriers;
     private List<ExplosiveBarrier> explosiveBarriers;
@@ -647,5 +647,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     public boolean isGameRunning() {
         return gameRunning;
     }
+
+    public static int remainingBarrierCount() {return allBarriers.size();}
 
 }

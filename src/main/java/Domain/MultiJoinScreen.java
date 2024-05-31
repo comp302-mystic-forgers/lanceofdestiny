@@ -15,6 +15,9 @@ public class MultiJoinScreen extends JFrame {
     private JLabel connectionStatusLabel;
     private TCPClient tcpClient = new TCPClient();
     private String backgroundImagePath = "Assets/Images/BuildingModeStartBackground.png";
+    private Timer countdownTimer;
+    private int countdown = 3;
+    private JLabel countdownLabel = new JLabel("Starting in: " + countdown);
 
     public MultiJoinScreen(BuildingModeController buildingModeController) {
         setTitle("Network Info Join");
@@ -76,6 +79,12 @@ public class MultiJoinScreen extends JFrame {
         gbc.gridwidth = 2;
         mainPanel.add(connectionStatusLabel, gbc);
 
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.anchor = GridBagConstraints.CENTER;
+        mainPanel.add(countdownLabel, gbc);
+        countdownLabel.setVisible(false);
+
         connectButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -88,7 +97,7 @@ public class MultiJoinScreen extends JFrame {
                     return;
                 }
                 tcpClient.connectToServer(ip, port);
-                if (tcpClient.isConnected()) {
+                if (tcpClient.getIsConnected()) {
                     connectionStatusLabel.setText("Connected: waiting for host to start the game");
                     connectButton.setEnabled(false);
                 } else {
@@ -105,6 +114,10 @@ public class MultiJoinScreen extends JFrame {
 
         add(paddingPanel, BorderLayout.CENTER);
         setLocationRelativeTo(null);
+    }
+
+    public void displayCountdown() {
+        startCountdown();
     }
 
     static class BackgroundPanel extends JPanel {
@@ -125,6 +138,22 @@ public class MultiJoinScreen extends JFrame {
                 g.drawImage(backgroundImage, 0, 0, this.getWidth(), this.getHeight(), this);
             }
         }
+    }
+
+    private void startCountdown() {
+        countdownTimer = new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (countdown > 0) {
+                    countdownLabel.setText("Starting in: " + countdown);
+                    countdown--;
+                } else {
+                    countdownTimer.stop();
+                    countdownLabel.setText("Starting now!");
+                }
+            }
+        });
+        countdownTimer.start();
     }
 
 }

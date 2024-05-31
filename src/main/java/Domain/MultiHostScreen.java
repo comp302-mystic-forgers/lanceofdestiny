@@ -1,33 +1,45 @@
 package Domain;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 public class MultiHostScreen extends JFrame {
-
     private JLabel ipLabel;
+    JLabel ipValueLabel;
     private JLabel portLabel;
+    private JLabel portValueLabel;
     private JLabel statusLabel;
-    private JTextField messageInput;
-    private JLabel lastMessageLabel;
-    private String lastMessage = "None";
-    private String givenMessage;
+    private JLabel statusValueLabel;
     private TCPServer tcpServer;
+    private Timer countdownTimer;
+    private int countdown = 3;
+    private JLabel countdownLabel;
+    private String backgroundImagePath = "Assets/Images/BuildingModeStartBackground.png";
+    private MultiJoinScreen multiJoinScreen;
 
-    public MultiHostScreen(BuildingModeController buildingModeController) {
-        setTitle("Network Info Host");
-        setSize(400, 200);
+    public MultiHostScreen(BuildingModeController buildingModeController, MultiJoinScreen multiJoinScreen) {
+        this.multiJoinScreen = multiJoinScreen;
+        setTitle("Network Info Join");
+        setSize(1280, 720);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new GridLayout(4, 2));
-        setVisible(false);
+
+        setLayout(new BorderLayout());
+        setContentPane(new MultiJoinScreen.BackgroundPanel(backgroundImagePath));
+
+        JPanel mainPanel = new JPanel(new GridBagLayout());
+        mainPanel.setOpaque(false);
 
         try {
             String ipAddress = InetAddress.getLocalHost().getHostAddress();
-            ipLabel = new JLabel("IP address: " + ipAddress);
+            ipValueLabel = new JLabel(ipAddress);
+            ipValueLabel.setForeground(Color.WHITE);
         } catch (UnknownHostException e) {
             ipLabel = new JLabel("IP address: Not available");
             e.printStackTrace();
@@ -35,44 +47,118 @@ public class MultiHostScreen extends JFrame {
 
         tcpServer = new TCPServer(this);
 
-        portLabel = new JLabel("Port: " + tcpServer.getPort());
-        statusLabel = new JLabel("Status: Waiting for connection...");
-        messageInput = new JTextField();
-        lastMessageLabel = new JLabel("Last message: " + lastMessage);
-        JButton sendButton = new JButton("Send");
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        add(ipLabel);
-        add(portLabel);
-        add(statusLabel);
-        add(new JLabel("Message:"));
-        add(messageInput);
-        add(lastMessageLabel);
-        add(sendButton);
+        ipLabel = new JLabel("IP address: ");
+        ipLabel.setForeground(Color.WHITE);
+        portLabel = new JLabel("Port: ");
+        portLabel.setForeground(Color.WHITE);
+        portValueLabel = new JLabel(String.valueOf(tcpServer.getPort()));
+        portValueLabel.setForeground(Color.WHITE);
+        statusLabel = new JLabel("Status: ");
+        statusLabel.setForeground(Color.WHITE);
+        statusValueLabel = new JLabel("Waiting for connection...");
+        statusValueLabel.setForeground(Color.WHITE);
+        JButton startButton = new JButton("Start");
 
-        sendButton.addActionListener(new ActionListener() {
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.EAST;
+        mainPanel.add(ipLabel, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.WEST;
+        mainPanel.add(ipValueLabel, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.anchor = GridBagConstraints.EAST;
+        mainPanel.add(portLabel, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.anchor = GridBagConstraints.WEST;
+        mainPanel.add(portValueLabel, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.anchor = GridBagConstraints.EAST;
+        mainPanel.add(statusLabel, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        gbc.anchor = GridBagConstraints.WEST;
+        mainPanel.add(statusValueLabel, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        mainPanel.add(startButton, gbc);
+
+        startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                givenMessage = messageInput.getText();
-                // Send message logic if needed
+                if (tcpServer.getIsConnected()) {
+
+                    gbc.gridx = 0;
+                    gbc.gridy = 4;
+                    gbc.anchor = GridBagConstraints.CENTER;
+                    mainPanel.add(countdownLabel, gbc);
+
+                    multiJoinScreen.displayCountdown();
+
+                    startCountdown();
+                }
             }
         });
 
+        JPanel paddingPanel = new JPanel(new BorderLayout());
+        paddingPanel.setOpaque(false);
+        paddingPanel.setBorder(BorderFactory.createEmptyBorder(100, 100, 100, 100)); // Set padding: top, left, bottom, right
+
+        paddingPanel.add(mainPanel, BorderLayout.CENTER);
+
+        add(paddingPanel, BorderLayout.CENTER);
         setLocationRelativeTo(null);
 
-        // Start the server in a new thread
         new Thread(() -> tcpServer.startServer()).start();
     }
 
+    private void startCountdown() {
+        countdownTimer = new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (countdown > 0) {
+                    countdownLabel.setText("Starting in: " + countdown);
+                    countdown--;
+                } else {
+                    countdownTimer.stop();
+                    countdownLabel.setText("Starting now!");
+                }
+            }
+        });
+        countdownTimer.start();
+    }
+
     public void updateStatus(String status) {
-        statusLabel.setText("Status: " + status);
+        statusValueLabel.setText(status);
     }
 
-    public void updateLastMessage(String message) {
-        lastMessage = message;
-        lastMessageLabel.setText("Last message: " + message);
+    static class BackgroundPanel extends JPanel {
+        private Image backgroundImage;
+
+        public BackgroundPanel(String imagePath) {
+            try {
+                backgroundImage = ImageIO.read(new File(imagePath));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
-    public String getGivenMessage() {
-        return givenMessage;
-    }
 }
