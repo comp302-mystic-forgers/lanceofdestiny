@@ -12,25 +12,29 @@ public class MultiJoinScreen extends JFrame {
     private JTextField messageInput;
     private JLabel lastMessageLabel;
     private String lastMessage = "None";
-    private  String givenMessage;
     private TCPClient tcpClient = new TCPClient();
 
     public MultiJoinScreen(BuildingModeController buildingModeController) {
-
         setTitle("Network Info Join");
         setSize(400, 200);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new GridLayout(4, 2));
 
-        ipInput = new JTextField("IP address:");
-        portInput = new JTextField("Port:");
-
-        add(ipInput);
-        add(portInput);
-
+        ipInput = new JTextField();
+        portInput = new JTextField();
+        messageInput = new JTextField();
+        lastMessageLabel = new JLabel("Last message: " + lastMessage);
         JButton connectButton = new JButton("Connect");
+        JButton sendButton = new JButton("Send");
 
+        add(new JLabel("IP address:"));
+        add(ipInput);
+        add(new JLabel("Port:"));
+        add(portInput);
         add(connectButton);
+        add(new JLabel(""));
+        add(lastMessageLabel);
+        add(sendButton);
 
         connectButton.addActionListener(new ActionListener() {
             @Override
@@ -38,29 +42,29 @@ public class MultiJoinScreen extends JFrame {
                 String ip = ipInput.getText();
                 int port = Integer.parseInt(portInput.getText());
                 tcpClient.connectToServer(ip, port);
+                if (tcpClient.isConnected()) {
+                    lastMessageLabel.setText("Connected to server");
+                    connectButton.setEnabled(false);
+                    sendButton.setEnabled(true);
+                } else {
+                    lastMessageLabel.setText("Connection failed");
+                }
             }
         });
 
-        if (tcpClient.getIsConnected()) {
-
-            messageInput = new JTextField();
-            lastMessageLabel = new JLabel("Last message: " + lastMessage);
-            JButton sendButton = new JButton("Send");
-
-            add(new JLabel("Message:"));
-            add(messageInput);
-            add(lastMessageLabel);
-            add(sendButton);
-
-            sendButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    givenMessage = messageInput.getText();
-                }
-            });
-
-        }
+        sendButton.setEnabled(false);
+        sendButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String message = messageInput.getText();
+                tcpClient.sendMessage(message);
+                lastMessage = message;
+                lastMessageLabel.setText("Last message: " + lastMessage);
+                messageInput.setText("");
+            }
+        });
 
         setLocationRelativeTo(null);
+        setVisible(true);
     }
 }

@@ -4,11 +4,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-public class MultiHostScreen extends JFrame{
+public class MultiHostScreen extends JFrame {
 
     private JLabel ipLabel;
     private JLabel portLabel;
@@ -16,35 +15,31 @@ public class MultiHostScreen extends JFrame{
     private JTextField messageInput;
     private JLabel lastMessageLabel;
     private String lastMessage = "None";
-    private  String givenMessage;
+    private String givenMessage;
+    private TCPServer tcpServer;
 
-    private String ipAddress;
-    private TCPServer tcpServer = new TCPServer();
-    private TCPClient tcpClient = new TCPClient();
-
-
-    public MultiHostScreen(BuildingModeController buildingModeController) {
-
+    public MultiHostScreen() {
         setTitle("Network Info Host");
         setSize(400, 200);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new GridLayout(4, 2));
 
         try {
-            ipAddress = InetAddress.getLocalHost().getHostAddress();
+            String ipAddress = InetAddress.getLocalHost().getHostAddress();
+            ipLabel = new JLabel("IP address: " + ipAddress);
         } catch (UnknownHostException e) {
-            System.out.println("IP address could not be determined.");
+            ipLabel = new JLabel("IP address: Not available");
             e.printStackTrace();
         }
 
-        ipLabel = new JLabel("IP address: " + ipAddress);
+        tcpServer = new TCPServer(this);
+
         portLabel = new JLabel("Port: " + tcpServer.getPort());
-        statusLabel = new JLabel("Status: " + tcpClient.getIsConnected());
+        statusLabel = new JLabel("Status: Waiting for connection...");
         messageInput = new JTextField();
-        lastMessageLabel = new JLabel("Last message: " + tcpServer.getMessage());
+        lastMessageLabel = new JLabel("Last message: " + lastMessage);
         JButton sendButton = new JButton("Send");
 
-        // Add components to the frame
         add(ipLabel);
         add(portLabel);
         add(statusLabel);
@@ -57,13 +52,27 @@ public class MultiHostScreen extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 givenMessage = messageInput.getText();
-                tcpClient.sendMessage(givenMessage);
+                // Send message logic if needed
             }
         });
 
         setLocationRelativeTo(null);
+        setVisible(true);
+
+        // Start the server in a new thread
+        new Thread(() -> tcpServer.startServer()).start();
     }
 
-    public String getGivenMessage() {return givenMessage;}
+    public void updateStatus(String status) {
+        statusLabel.setText("Status: " + status);
+    }
 
+    public void updateLastMessage(String message) {
+        lastMessage = message;
+        lastMessageLabel.setText("Last message: " + message);
+    }
+
+    public String getGivenMessage() {
+        return givenMessage;
+    }
 }
