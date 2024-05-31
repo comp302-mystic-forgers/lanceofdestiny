@@ -1,7 +1,9 @@
 package Domain;
 
 import javax.imageio.ImageIO;
+import javax.swing.JPanel;
 import javax.swing.*;
+import javax.swing.Timer;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -43,6 +45,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     private GameInfo gameInfo;
     private BufferedImage winBackgroundImage;
     private BufferedImage looseBackgroundImage;
+    private Ymir ymir;
     public GameView(int panelWidth, int panelHeight, GameInfoDAO gameInfoDAO, PlayerAccountDAO playerAccountDAO, GameInfo gameInfo) {
         super();
         // initialize all attributes and establish connections to the images
@@ -129,6 +132,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
 
         timer = new Timer(10, this);
         timer.start();
+        this.ymir = new Ymir(this);
     }
     void saveGameInfo() {
         GameInfo gameInfo;
@@ -178,10 +182,10 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             magicalStaff.draw(g);
 
             fireball.draw(g);
-
+            // Draw all SimpleBarrier objects in the ArrayList
             add(hud.getLivesLabel(), BorderLayout.NORTH);
             add(hud.getScoreLabel(), BorderLayout.NORTH);
-            // Draw all SimpleBarrier objects in the ArrayList
+
             for (SimpleBarrier barrier : simpleBarriers) {
                 barrier.draw(g);
             }
@@ -303,7 +307,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         ArrayList<Barrier> movingToRemove = new ArrayList<>();
         for (FireBall hex : hexes) {
             for (SimpleBarrier barrier : simpleBarriers) {
-                if (barrier.collidesWithFireBall(hex)) {
+                if (barrier.collidesWithFireBall(hex) && !barrier.isFrozen ) {
                     if (hex.isOverwhelming()) {
                         updateScore();
                         barrier.destroy();
@@ -326,7 +330,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                 }
             }
             for (ReinforcedBarrier rbarrier : reinforcedBarriers) {
-                if (rbarrier.collidesWithFireBall(hex)) {
+                if (rbarrier.collidesWithFireBall(hex) && !rbarrier.isFrozen) {
                     if (hex.isOverwhelming()) {
                         updateScore();
                         rbarrier.destroy();
@@ -352,7 +356,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                 }
             }
             for (ExplosiveBarrier ebarrier : explosiveBarriers) {
-                if (ebarrier.collidesWithFireBall(hex)) {
+                if (ebarrier.collidesWithFireBall(hex)&& !ebarrier.isFrozen) {
                     if (hex.isOverwhelming()) {
                         updateScore();
                         ebarrier.destroy();
@@ -373,7 +377,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                     hexesToRemove.add(hex);
                     allToRemove.add(ebarrier);
                 }
-                if (ebarrier.destroyed) {
+                if (ebarrier.destroyed ) {
                     if (ebarrier.collidesWithMagicalStaff(magicalStaff)) {
                         updateLives();
                         ebarrier.staffHit();
@@ -382,7 +386,7 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                 }
             }
             for (RewardingBarrier rwbarrier : rewardingBarriers) {
-                if (rwbarrier.collidesWithFireBall(hex)) {
+                if (rwbarrier.collidesWithFireBall(hex)&& !rwbarrier.isFrozen) {
                     if (hex.isOverwhelming()) {
                         if(!rwbarrier.destroyed){
                             updateScore();
@@ -416,21 +420,33 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         // check if Barriers hit by Fireball or OverwhelmingFireBall
         for (SimpleBarrier barrier : simpleBarriers) {
             if (barrier.collidesWithFireBall(fireball)) {
-                if (fireball.isOverwhelming()) {
-                    updateScore();
+                if (fireball.isOverwhelming() ) {
+                    if(barrier.IsAddScore){
+                        updateScore();
+                    }
                     barrier.destroy();
                     if(barrier.moves){
                         movingToRemove.add(barrier);
                     }
                     allToRemove.add(barrier);
                 } else {
-                    updateScore();
-                    barrier.destroy();
-                    barrier.handleCollisionResponse(fireball);
-                    if(barrier.moves){
-                        movingToRemove.add(barrier);
+                    if(!barrier.isFrozen)
+                    {
+                    if(barrier.IsAddScore){
+                        updateScore();}
+                        barrier.destroy();
+                        barrier.handleCollisionResponse(fireball);
+                        if(barrier.moves){
+                            movingToRemove.add(barrier);
+                        }
+                        allToRemove.add(barrier);
                     }
-                    allToRemove.add(barrier);
+                    else{
+
+                        barrier.handleCollisionResponse(fireball);
+                    }
+
+
                 }
                 allToRemove.add(barrier);
             }
@@ -439,13 +455,27 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         for (ReinforcedBarrier rbarrier : reinforcedBarriers) {
             if (rbarrier.collidesWithFireBall(fireball)) {
                 if (fireball.isOverwhelming()) {
+                    if(!rbarrier.isFrozen){
                     updateScore();
                     rbarrier.destroy();
                     if(rbarrier.moves){
                         movingToRemove.add(rbarrier);
                     }
                     allToRemove.add(rbarrier);
+                    }
+                    else{
+                        if (rbarrier.isDestroyed()) {
+                            updateScore();
+                            if(rbarrier.moves){
+                                movingToRemove.add(rbarrier);
+                            }
+                            allToRemove.add(rbarrier);
+                        }
+                        rbarrier.handleCollisionResponse(fireball);
+
+                    }
                 } else {
+                    if(!rbarrier.isFrozen){
                     if (rbarrier.isDestroyed()) {
                         updateScore();
                         if(rbarrier.moves){
@@ -455,13 +485,15 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                     }
                     rbarrier.handleCollisionResponse(fireball);
                 }
+                    else{fireball.reverseYDirection();}
+                }
                 allToRemove.add(rbarrier);
             }
         }
 
         for (ExplosiveBarrier ebarrier : explosiveBarriers) {
             if (ebarrier.collidesWithFireBall(fireball)) {
-                if (fireball.isOverwhelming()) {
+                if (fireball.isOverwhelming() ) {
                     updateScore();
                     ebarrier.destroy();
                     if(ebarrier.moves){
@@ -469,12 +501,17 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                     }
                     allToRemove.add(ebarrier);
                 } else {
-                    updateScore();
-                    ebarrier.destroy();
-                    if(ebarrier.moves){
-                        movingToRemove.add(ebarrier);
+                    if(!ebarrier.isFrozen){
+                        updateScore();
+                        ebarrier.destroy();
+                        if(ebarrier.moves){
+                            movingToRemove.add(ebarrier);
+                        }
+                        allToRemove.add(ebarrier);
+                    ebarrier.handleCollisionResponse(fireball);}
+                    else{
+                        fireball.reverseYDirection();
                     }
-                    allToRemove.add(ebarrier);
                 }
                 ebarrier.handleCollisionResponse(fireball);
                 allToRemove.add(ebarrier);
@@ -497,14 +534,18 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
                     rwbarrier.destroy();
                     allToRemove.add(rwbarrier);
                 } else {
-                    if(!rwbarrier.destroyed){
-                        updateScore();
+                    if(!rwbarrier.isFrozen) {
+                        if(!rwbarrier.destroyed){
+                            updateScore();
+                        }
+                        rwbarrier.destroy();
+                        rwbarrier.handleCollisionResponse(fireball);
+                        allToRemove.add(rwbarrier);
                     }
-                    rwbarrier.destroy();
-                    rwbarrier.handleCollisionResponse(fireball);
-                    allToRemove.add(rwbarrier);
+                    else{
+                        fireball.reverseYDirection();
+                    }
                 }
-                allToRemove.add(rwbarrier);
             }
             if (rwbarrier.getGift() != null && rwbarrier.collidesWithMagicalStaff(magicalStaff)) {
                 collectGift(rwbarrier.getGift());
@@ -646,6 +687,30 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
 
     public boolean isGameRunning() {
         return gameRunning;
+    }
+
+    public List<Barrier> getAllBarriers() {
+        return allBarriers;
+    }
+
+    // Getter method for fireball
+    public FireBall getFireball() {
+        return fireball;
+    }
+
+    // Method to add a Hollow Purple Barrier
+    public void addHollowPurpleBarrier(HollowPurpleBarrier barrier) {
+        allBarriers.add(barrier);
+        simpleBarriers.add(barrier);
+        repaint();
+    }
+
+    public FireBall getFireBall(){
+        return this.fireball;
+    }
+
+    public Rectangle getMagicalStaffBounds() {
+        return new Rectangle((int) magicalStaff.getX(), (int) magicalStaff.getY(), (int) magicalStaff.getWidth(), (int) magicalStaff.getHeight());
     }
 
     public static int remainingBarrierCount() {

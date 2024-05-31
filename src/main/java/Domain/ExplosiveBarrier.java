@@ -14,10 +14,11 @@ public class ExplosiveBarrier extends Barrier{
     private double radius; // radius of circular motion (1.5 * L)
     private double centerX; // x-coordinate of center of rotation
     private double centerY; // y-coordinate of center of rotation
-
+    private ImageIcon frozenIcon;
     public ExplosiveBarrier(int x, int y, int width, int height) {
         super(x, y, width, height);
         this.icon = new ImageIcon("Assets/Images/200Redgem.png");
+        this.frozenIcon = new ImageIcon("Assets/Images/FrozenExplosive.png");
         this.xSpeed = 0;
         this.ySpeed = 0;
         this.hitStaff = false;
@@ -32,7 +33,12 @@ public class ExplosiveBarrier extends Barrier{
     @Override
     public void draw(Graphics g) {
         if (!destroyed) {
-            g.drawImage(icon.getImage(), x, y, width, height, null);
+            if(!isFrozen) {
+                g.drawImage(icon.getImage(), x, y, width, height, null);
+            }
+            else{
+                g.drawImage(icon.getImage(), x, y, width, height, null);
+            }
         }
         else {
             if (!hitStaff) {

@@ -3,7 +3,8 @@ import javax.swing.*;
 import java.awt.Graphics;
 
 public class SimpleBarrier extends Barrier {
-    private ImageIcon icon;
+    public ImageIcon icon;
+    public ImageIcon frozenIcon;
 
     // Can move horizontally, if it has a free space around it in the x-axis.
     // Might be moving back and forth with a probability of 0.2, or stiff with
@@ -12,6 +13,7 @@ public class SimpleBarrier extends Barrier {
     public SimpleBarrier(int x, int y, int width, int height) {
         super(x, y, width, height);
         this.icon = new ImageIcon("Assets/Images/200Bluegem.png");
+        this.frozenIcon = new ImageIcon("Assets/Images/FrozenSimple.png");
         moveable();
         moveHorizontally();
     }
@@ -19,7 +21,11 @@ public class SimpleBarrier extends Barrier {
     @Override
     public void draw(Graphics g) {
         if (!destroyed) {
-            g.drawImage(icon.getImage(), x, y, width, height, null);
+            if (isFrozen) {
+                g.drawImage(frozenIcon.getImage(), x, y, width, height, null);
+            } else {
+                g.drawImage(icon.getImage(), x, y, width, height, null);
+            }
         }
     }
 

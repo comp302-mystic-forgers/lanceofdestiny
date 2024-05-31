@@ -3,6 +3,8 @@ package Domain;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.UUID;
+import javax.swing.Timer;
+
 
 // Abstract Function: The Barrier class provides a way to represent a barrier in a graphical environment
 // and render it on the screen using the draw method. It also allows the barrier to be destroyed
@@ -16,8 +18,10 @@ public abstract class Barrier {
     public double xSpeed; // Barrier horizontal movement speed
     public double ySpeed; // Barrier vertical movement speed
     protected boolean destroyed;
-
+    private Timer freezeTimer;
     protected boolean moves;
+    protected boolean isFrozen;
+    protected boolean IsAddScore = true;
 
     // probability of moving horizontally or in circle
     private static final double probMovable = 0.2;
@@ -41,6 +45,8 @@ public abstract class Barrier {
         this.height = height;
         this.destroyed = false;
         this.moves = false;
+        this.isFrozen = false;
+        moveable();
         repOK();
     }
     public abstract void draw(Graphics g);
@@ -134,6 +140,22 @@ public abstract class Barrier {
         return height;
     }
 
+    public Rectangle getBounds() {
+        return new Rectangle(x, y, width, height);
+    }
+    public boolean isFrozen() {
+        return isFrozen;
+    }
+    private void unfreeze() {
+        isFrozen = false;
+        freezeTimer.stop();
+    }
+    public void freeze(int duration) {
+        isFrozen = true;
+        freezeTimer = new Timer(duration, e -> unfreeze());
+        freezeTimer.setRepeats(false);
+        freezeTimer.start();
+    }
 }
 
 

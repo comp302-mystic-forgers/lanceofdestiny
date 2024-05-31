@@ -8,18 +8,26 @@ public class RewardingBarrier extends Barrier{
     private ImageIcon icon2;
     private boolean collected;
     private Gift gift;
-
+    private ImageIcon frozenIcon;
     public RewardingBarrier(int x, int y, int width, int height) {
         super(x, y, width, height);
         this.icon = new ImageIcon("Assets/Images/200Greengem.png");
         this.icon2 = new ImageIcon("Assets/Images/giftbox.png");
+        this.frozenIcon = new ImageIcon("Assets/Images/FrozenRewarding.png");
         this.collected = false;
     }
 
     @Override
     public void draw(Graphics g) {
         if (!destroyed) {
-            g.drawImage(icon.getImage(), x, y, width, height, null);
+            if(!isFrozen)
+            {
+                g.drawImage(icon.getImage(), x, y, width, height, null);
+            }
+            else{
+                g.drawImage(frozenIcon.getImage(), x, y, width, height, null);
+            }
+
         } else if (!collected && gift != null) {
             g.drawImage(icon2.getImage(), gift.getX(), gift.getY(), width, height * 2, null);
         }

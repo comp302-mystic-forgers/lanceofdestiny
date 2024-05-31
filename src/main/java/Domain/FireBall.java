@@ -106,4 +106,8 @@ public class FireBall {
     public void setOverwhelming(boolean overwhelming) {
         this.overwhelming = overwhelming;
     }
+    public void setSpeedMultiplier(double multiplier) {
+        this.xVelocity *= multiplier;
+        this.yVelocity *= multiplier;
+    }
 }

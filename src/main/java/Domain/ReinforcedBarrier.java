@@ -8,8 +8,8 @@ import java.awt.*;
 public class ReinforcedBarrier extends Barrier{
     private int hitsRequired;
     private int hitsReceived;
-    private ImageIcon icon;
-
+    public ImageIcon icon;
+    public ImageIcon frozenIcon;
     // Can move horizontally, if it has a free space around it in the x-axis.
     // Might be moving back and forth with a probability of 0.2, or stiff with
     // a probability of 0.8. It will of course move in its free space, meaning
@@ -20,6 +20,7 @@ public class ReinforcedBarrier extends Barrier{
         this.hitsRequired = random.nextInt(5) + 1;
         this.hitsReceived = hitsRequired;
         this.icon = new ImageIcon("Assets/Images/200Firm.png");
+        this.frozenIcon = new ImageIcon("Assets/Images/FrozenReinforcement.png");
         moveable();
         moveHorizontally();
     }
@@ -28,10 +29,17 @@ public class ReinforcedBarrier extends Barrier{
     public void draw(Graphics g) {
         if(!destroyed){
             if (hitsReceived > 0) {
-                g.drawImage(icon.getImage(), x, y, width, height, null);
-                g.setColor(Color.WHITE);
-                g.setFont(new Font("Arial", Font.BOLD, 15));
-                g.drawString(String.valueOf(hitsReceived), x + 20, y + 17);
+                if(!isFrozen) {
+                    g.drawImage(icon.getImage(), x, y, width, height, null);
+                }
+                else {
+                    g.drawImage(frozenIcon.getImage(), x, y, width, height, null);
+                }
+                    g.setColor(Color.WHITE);
+                    g.setFont(new Font("Arial", Font.BOLD, 15));
+                    g.drawString(String.valueOf(hitsReceived), x + 20, y + 17);
+
+
             }
         }
     }
