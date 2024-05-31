@@ -19,7 +19,11 @@ public class GameController {
     public void switchModes() {
         if(buildingModeController.getCurrentMode() == READY_FOR_GAME) {
             setCurrentMode(RUNNING);
-            gameWindow = new GameWindow(buildingModeController, buildingModeController.getGameInfo());
+            if (buildingModeController.isNewGame()) {
+                gameWindow = new GameWindow(buildingModeController, null);
+            } else {
+                gameWindow = new GameWindow(buildingModeController, buildingModeController.getGameInfo());
+            }
             gameWindow.setVisible(true);
         }
         if(currentMode == BUILDING_MODE){
