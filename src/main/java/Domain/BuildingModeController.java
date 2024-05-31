@@ -8,9 +8,13 @@ public class BuildingModeController {
     private BuildingModeMenu buildingModeMenu;
     private BuildingMode assemblyMenu;
     private BuildingModePage currentMode;
-
     private GameListScreen gameListScreen;
     private GameController gameController;
+
+    private MultiHostScreen multiHostScreen;
+
+    private MultiJoinScreen multiJoinScreen;
+
     private GameInfo gameInfo;
     private boolean isNewGame = true;
 
@@ -19,7 +23,9 @@ public class BuildingModeController {
         welcomePage = new WelcomePage(this);
         loginPage = new Login (this);
         buildingModeMenu = new BuildingModeMenu(this);
-        assemblyMenu = new BuildingMode(this);
+        assemblyMenu = new BuildingMode(this, buildingModeMenu);
+        multiHostScreen = new MultiHostScreen(this);
+        multiJoinScreen = new MultiJoinScreen(this);
         currentMode = WELCOME;
         welcomePage.setVisible(true);
     }
@@ -53,6 +59,16 @@ public class BuildingModeController {
                 buildingModeMenu.setVisible(false);
                 assemblyMenu.setVisible(true);
                 currentMode = FINISH;
+                break;
+            case MULTIHOST:
+                assemblyMenu.setVisible(false);
+                multiHostScreen.setVisible(true);
+                currentMode = MULTIHOST;
+                break;
+            case MULTIJOIN:
+                buildingModeMenu.setVisible(false);
+                multiJoinScreen.setVisible(true);
+                currentMode = MULTIJOIN;
                 break;
             case FINISH:
                 assemblyMenu.setVisible(false);

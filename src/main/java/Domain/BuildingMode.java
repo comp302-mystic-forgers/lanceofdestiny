@@ -6,10 +6,11 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import static Domain.BuildingModePage.FINISH;
+import static Domain.BuildingModePage.*;
 
 public class BuildingMode extends JFrame {
     // Initialize counts with the minimum required values
+    private BuildingModeMenu buildingModeMenu;
     private BuildingModeController buildingModeController;
     private int simpleBarriersCount = 75;
     private int firmBarriersCount = 10;
@@ -17,8 +18,9 @@ public class BuildingMode extends JFrame {
     private int giftBarriersCount = 10;
     private GameLayoutPanel gameLayoutPanel;
 
-    public BuildingMode(BuildingModeController buildingModeController) {
+    public BuildingMode(BuildingModeController buildingModeController, BuildingModeMenu buildingModeMenu) {
         this.buildingModeController = buildingModeController;
+        this.buildingModeMenu = buildingModeMenu;
         setTitle("Lance of Destiny - Building Mode");
         setSize(1280, 720);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -95,8 +97,14 @@ public class BuildingMode extends JFrame {
         playButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                buildingModeController.setCurrentMode(FINISH);
-                buildingModeController.switchScreens();
+
+                if (buildingModeMenu.getIsSingle()) {
+                    buildingModeController.setCurrentMode(FINISH);
+                    buildingModeController.switchScreens();
+                } else {
+                    buildingModeController.setCurrentMode(MULTIHOST);
+                    buildingModeController.switchScreens();
+                }
             }
         });
 
