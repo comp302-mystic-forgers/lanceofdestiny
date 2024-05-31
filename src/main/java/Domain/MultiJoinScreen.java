@@ -19,6 +19,7 @@ public class MultiJoinScreen extends JFrame {
         setSize(400, 200);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new GridLayout(4, 2));
+        setVisible(false);
 
         ipInput = new JTextField();
         portInput = new JTextField();
@@ -65,6 +66,5 @@ public class MultiJoinScreen extends JFrame {
         });
 
         setLocationRelativeTo(null);
-        setVisible(true);
     }
 }

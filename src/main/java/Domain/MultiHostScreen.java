@@ -18,11 +18,12 @@ public class MultiHostScreen extends JFrame {
     private String givenMessage;
     private TCPServer tcpServer;
 
-    public MultiHostScreen() {
+    public MultiHostScreen(BuildingModeController buildingModeController) {
         setTitle("Network Info Host");
         setSize(400, 200);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new GridLayout(4, 2));
+        setVisible(false);
 
         try {
             String ipAddress = InetAddress.getLocalHost().getHostAddress();
@@ -57,7 +58,6 @@ public class MultiHostScreen extends JFrame {
         });
 
         setLocationRelativeTo(null);
-        setVisible(true);
 
         // Start the server in a new thread
         new Thread(() -> tcpServer.startServer()).start();
