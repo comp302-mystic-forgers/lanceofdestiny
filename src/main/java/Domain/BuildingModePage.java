@@ -15,6 +15,10 @@ public enum BuildingModePage {
 
     FINISH,
 
+    MULTIHOST,
+
+    MULTIJOIN,
+
     READY_FOR_GAME,
 
 
