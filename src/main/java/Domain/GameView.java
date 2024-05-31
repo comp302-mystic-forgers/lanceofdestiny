@@ -555,6 +555,15 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             }
         }
 
+        for (Barrier each : allBarriers){
+            if (each.destroyed){
+                if (each.moves){
+                    movingToRemove.add(each);
+                }
+                allToRemove.add(each);
+            }
+        }
+
         movingBarriers.removeAll(movingToRemove);
         allBarriers.removeAll(allToRemove);
         System.out.println("movingBarriers size is: "+ movingBarriers.size());

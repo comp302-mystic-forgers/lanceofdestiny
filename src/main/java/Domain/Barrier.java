@@ -46,7 +46,6 @@ public abstract class Barrier {
         this.destroyed = false;
         this.moves = false;
         this.isFrozen = false;
-        moveable();
         repOK();
     }
     public abstract void draw(Graphics g);
