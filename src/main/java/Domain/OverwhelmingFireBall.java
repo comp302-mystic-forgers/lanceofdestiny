@@ -24,6 +24,8 @@ public class OverwhelmingFireBall extends Spell{
                 }
             });
         }
+        timer.setRepeats(false);
+        timer.start();
     }
 
     public void deactivate() {
