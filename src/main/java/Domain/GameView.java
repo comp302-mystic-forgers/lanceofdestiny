@@ -68,21 +68,21 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         this.score = new Score();
         this.movingBarriers = new ArrayList<>();
         this.allBarriers = new ArrayList<>();
+        this.collectedSpells = new ArrayList<>();
         if (gameInfo != null){
             this.gameInfo = gameInfo;
             this.simpleBarriers = gameInfo.getSimpleBarrierList();
             this.reinforcedBarriers = gameInfo.getReinforcedBarrierList();
             this.rewardingBarriers = gameInfo.getRewardingBarrierList();
             this.explosiveBarriers = gameInfo.getExplosiveBarrierList();
-            this.collectedSpells = gameInfo.getSpellsAcquired();
             hud.updateLives(gameInfo.getLives());
             score.setScoreValue(gameInfo.getScore());
+            linkSpellsToGame(gameInfo.getSpellsAcquired());
         } else {
             this.simpleBarriers = new ArrayList<>(); // Initialize the ArrayList
             this.reinforcedBarriers = new ArrayList<>();
             this.explosiveBarriers = new ArrayList<>();
             this.rewardingBarriers = new ArrayList<>();
-            this.collectedSpells = new ArrayList<>();
             addComponentListener(this);
 
 
@@ -126,7 +126,6 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
         for (RewardingBarrier rewa : rewardingBarriers){
             allBarriers.add(rewa);
         }
-
 
         timer = new Timer(10, this);
         timer.start();
@@ -210,7 +209,25 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
             currentPlayer.setChances(3);
         }
     }
-
+    private void linkSpellsToGame(List<Spell> rawSpells) {
+        for (Spell rawSpell : rawSpells) {
+            for (long i = 0; i < rawSpell.getCount(); i++) {
+                switch (rawSpell.getSpellType()) {
+                    case HEX:
+                        collectedSpells.add(new Hex(magicalStaff));
+                        break;
+                    case OVERWHELMING_FIRE_BALL:
+                        collectedSpells.add(new OverwhelmingFireBall(fireball));
+                        break;
+                    case MAGICAL_STAFF_EXPANSION:
+                        collectedSpells.add(new MagicalStaffExp(magicalStaff));
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Unknown spell type: " + rawSpell.getSpellType());
+                }
+            }
+        }
+    }
     // game loop
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -630,6 +647,5 @@ public class GameView extends JPanel implements ComponentListener, ActionListene
     public boolean isGameRunning() {
         return gameRunning;
     }
-
 
 }

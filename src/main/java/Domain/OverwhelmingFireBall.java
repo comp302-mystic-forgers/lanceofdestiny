@@ -8,7 +8,7 @@ public class OverwhelmingFireBall extends Spell{
     private FireBall fireBall;
     private Timer timer;
     public OverwhelmingFireBall(FireBall fireBall) {
-        super(SpellType.OVERWHELMING_FIRE_BALL, "Upgrades the Fire Ball to destroy any barrier for 30 seconds.");
+        super(SpellType.OVERWHELMING_FIRE_BALL, "Upgrades the Fire Ball to destroy any barrier for 30 seconds.", 1);
         this.fireBall = fireBall;
     }
 
