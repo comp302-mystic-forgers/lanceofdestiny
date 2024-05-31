@@ -21,6 +21,7 @@ public class ReinforcedBarrier extends Barrier{
         this.hitsReceived = hitsRequired;
         this.icon = new ImageIcon("Assets/Images/200Firm.png");
         this.frozenIcon = new ImageIcon("Assets/Images/FrozenReinforcement.png");
+        moveable();
         moveHorizontally();
     }
 

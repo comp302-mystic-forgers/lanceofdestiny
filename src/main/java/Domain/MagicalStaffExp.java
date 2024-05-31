@@ -12,7 +12,7 @@ public class MagicalStaffExp extends Spell{
     private Timer timer;
 
     public MagicalStaffExp(MagicalStaff magicalStaff) {
-        super(SpellType.MAGICAL_STAFF_EXPANSION, "Doubles the length of the Magical Staff for 30 seconds.");
+        super(SpellType.MAGICAL_STAFF_EXPANSION, "Doubles the length of the Magical Staff for 30 seconds.", 1);
         this.staff = magicalStaff;
         this.activated = false;
         this.originalWidth = magicalStaff.getWidth();

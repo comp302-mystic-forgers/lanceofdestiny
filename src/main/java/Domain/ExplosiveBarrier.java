@@ -27,6 +27,7 @@ public class ExplosiveBarrier extends Barrier{
         this.centerY = y + radius; // calculate center y-coordinate
         this.angle = 180.25; // initial angle of rotation
         this.angularSpeed = 0.025; // adjust angular speed to desired value
+        moveable();
     }
 
     @Override

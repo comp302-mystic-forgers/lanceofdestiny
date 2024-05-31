@@ -14,9 +14,9 @@ public class SimpleBarrier extends Barrier {
         super(x, y, width, height);
         this.icon = new ImageIcon("Assets/Images/200Bluegem.png");
         this.frozenIcon = new ImageIcon("Assets/Images/FrozenSimple.png");
+        moveable();
         moveHorizontally();
     }
-
 
     @Override
     public void draw(Graphics g) {

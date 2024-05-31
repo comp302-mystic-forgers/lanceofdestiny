@@ -1,33 +1,41 @@
 package Domain;
 
-import static Domain.BuildingModePage.READY_FOR_GAME;
+import static Domain.BuildingModePage.*;
+import static Domain.RunningModePage.*;
 
 public class GameController {
 
     private BuildingModeController buildingModeController;
 
     private GameWindow gameWindow;
-    private String currentMode;
+    private RunningModePage currentMode;
 
 
     public GameController() {
         buildingModeController = new BuildingModeController(this);
-        currentMode = "building_mode";
+        currentMode = BUILDING_MODE;
     }
 
     public void switchModes() {
-        if(buildingModeController.getCurrentMode() == READY_FOR_GAME){
-            setCurrentMode("running");
-            gameWindow = new GameWindow(buildingModeController, buildingModeController.getGameInfo());
+        if(buildingModeController.getCurrentMode() == READY_FOR_GAME) {
+            setCurrentMode(RUNNING);
+            if (buildingModeController.isNewGame()) {
+                gameWindow = new GameWindow(buildingModeController, null);
+            } else {
+                gameWindow = new GameWindow(buildingModeController, buildingModeController.getGameInfo());
+            }
             gameWindow.setVisible(true);
+        }
+        if(currentMode == BUILDING_MODE){
+            buildingModeController.setCurrentMode(BUILDING_MODE_MENU);
         }
     }
 
-    public void setCurrentMode(String mode) {
+    public void setCurrentMode(RunningModePage mode) {
         currentMode = mode;
     }
 
-    public String getCurrentMode() {
+    public RunningModePage getCurrentMode() {
         return currentMode;
     }
 

@@ -7,7 +7,7 @@ public class DoubleAcceleration extends Spell {
     private FireBall fireball;
 
     public DoubleAcceleration(FireBall fireball) {
-        super(SpellType.DOUBLE_ACCELERATION, "Reduces fireball speed by half for 15 seconds.");
+        super(SpellType.DOUBLE_ACCELERATION, "Reduces fireball speed by half for 15 seconds.",1);
         this.fireball = fireball;
     }
 

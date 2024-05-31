@@ -59,6 +59,7 @@ public class BuildingModeMenu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 buildingModeController.setCurrentMode(ASSEMBLY_MENU);
+                buildingModeController.setNewGame(true);
                 buildingModeController.switchScreens();
             }
         });
