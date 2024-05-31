@@ -6,8 +6,6 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 
@@ -24,9 +22,7 @@ public class BuildingModeMenu extends JFrame {
     // Path to your background image
     private String backgroundImagePath = "Assets/Images/BuildingModeStartBackground.png";
 
-    private boolean multiButtonsAdded = false;
-
-    private JPanel multiButtonsPanel;
+    private JPanel buttonPanel;
 
     private JPanel secondButtonPanel;
 
@@ -49,89 +45,14 @@ public class BuildingModeMenu extends JFrame {
         titleLabel.setPreferredSize(new Dimension(800, 100));
         add(titleLabel, BorderLayout.NORTH);
 
-        JPanel buttonPanel = new JPanel(new FlowLayout());
+        buttonPanel = new JPanel(new FlowLayout());
         buttonPanel.setOpaque(false); // Make panel transparent to show the background image
 
-        JPanel secondButtonPanel = new JPanel();
+        secondButtonPanel = new JPanel();
         secondButtonPanel.setLayout(new BoxLayout(secondButtonPanel, BoxLayout.Y_AXIS));
         secondButtonPanel.setOpaque(false);
 
-        JButton loadGameButton = new JButton("Load Game");
-        //loadGameButton.addActionListener(e -> System.out.println("Load game action"));
-        loadGameButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                buildingModeController.setCurrentMode(LOAD_GAME);
-                buildingModeController.switchScreens();
-            }
-        });
-
-        JButton newSingleButton = new JButton("New Single PLayer Game");
-        newSingleButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                buildingModeController.setCurrentMode(ASSEMBLY_MENU);
-                buildingModeController.setNewGame(true);
-                buildingModeController.switchScreens();
-            }
-        });
-
-        JButton newMultiButton = new JButton("New Dual Player Game");
-        newMultiButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                JPanel multiButtonsPanel = new JPanel();;
-                if (!multiButtonsAdded) {
-                    multiButtonsPanel.setLayout(new FlowLayout());
-                    multiButtonsPanel.setOpaque(false);
-
-                    JButton hostButton = new JButton("Host a game");
-                    JButton joinButton = new JButton("Join the game");
-
-                    multiButtonsPanel.add(hostButton);
-                    multiButtonsPanel.add(joinButton);
-
-                    System.out.println(isSingle);
-
-                    hostButton.addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            isSingle = false;
-                            buildingModeController.setCurrentMode(ASSEMBLY_MENU);
-                            buildingModeController.switchScreens();
-
-                        }
-                    });
-
-                    joinButton.addActionListener(new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            isSingle = false;
-                            buildingModeController.setCurrentMode(MULTIJOIN);
-                            buildingModeController.switchScreens();
-
-                        }
-                    });
-
-                    secondButtonPanel.add(multiButtonsPanel);
-                    multiButtonsAdded = true;
-                }
-
-                //else {
-                  //  secondButtonPanel.remove(multiButtonsPanel);
-                  //  multiButtonsAdded = false;
-                //}
-                revalidate();
-                repaint();
-
-
-            }
-        });
-
-        buttonPanel.add(loadGameButton);
-        buttonPanel.add(newSingleButton);
-        buttonPanel.add(newMultiButton);
+        addButtonsToPanel();
 
         add(buttonPanel, BorderLayout.CENTER);
         add(secondButtonPanel, BorderLayout.WEST);
@@ -149,22 +70,77 @@ public class BuildingModeMenu extends JFrame {
         }
     }
 
+    private void addButtonsToPanel() {
+        buttonPanel.removeAll();
+
+        JButton loadGameButton = new JButton("Load Game");
+        loadGameButton.addActionListener(e -> {
+            buildingModeController.setCurrentMode(LOAD_GAME);
+            buildingModeController.switchScreens();
+        });
+
+        JButton newGameButton = new JButton("New Game");
+        JPopupMenu newGameMenu = new JPopupMenu();
+        JMenuItem singlePlayerItem = new JMenuItem("Single Player Game");
+        JMenuItem dualPlayerItem = new JMenuItem("Dual Player Game");
+
+        singlePlayerItem.addActionListener(e -> {
+            buildingModeController.setCurrentMode(ASSEMBLY_MENU);
+            buildingModeController.setNewGame(true);
+            buildingModeController.switchScreens();
+        });
+
+        dualPlayerItem.addActionListener(e -> showDualPlayerOptions());
+
+        newGameMenu.add(singlePlayerItem);
+        newGameMenu.add(dualPlayerItem);
+
+        newGameButton.addActionListener(e -> newGameMenu.show(newGameButton, 0, newGameButton.getHeight()));
+
+        buttonPanel.add(loadGameButton);
+        buttonPanel.add(newGameButton);
+
+        revalidate();
+        repaint();
+    }
+
+    private void showDualPlayerOptions() {
+        buttonPanel.removeAll();
+
+        JButton hostButton = new JButton("Host a game");
+        JButton joinButton = new JButton("Join the game");
+        JButton returnButton = new JButton("Return to Menu");
+
+        hostButton.addActionListener(e -> {
+            isSingle = false;
+            buildingModeController.setCurrentMode(ASSEMBLY_MENU);
+            buildingModeController.switchScreens();
+        });
+
+        joinButton.addActionListener(e -> {
+            isSingle = false;
+            buildingModeController.setCurrentMode(MULTIJOIN);
+            buildingModeController.switchScreens();
+        });
+
+        returnButton.addActionListener(e -> addButtonsToPanel());
+
+        buttonPanel.add(hostButton);
+        buttonPanel.add(joinButton);
+        buttonPanel.add(returnButton);
+
+        revalidate();
+        repaint();
+    }
+
     public Clip getClip() {
         return clip;
     }
 
-    public boolean getIsSingle() {return isSingle;}
-
-    /**
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            BuildingModeController buildingModeController = new BuildingModeController();
-            BuildingModeMenu buildingModeMenu = new BuildingModeMenu(buildingModeController);
-        });
+    public boolean getIsSingle() {
+        return isSingle;
     }
-     **/
 
-    // Inner class to use a background image
     static class BackgroundPanel extends JPanel {
         private Image backgroundImage;
 
