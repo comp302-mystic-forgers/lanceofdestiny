@@ -172,23 +172,39 @@ public class MagicalStaff {
         }
     }
 
-    private void fireHexes() {
-        if (isFiring) {
-            double leftCanonX = xPosition + width / 2 - width / 2 * Math.cos(Math.toRadians(angle)) - 5 * Math.cos(Math.toRadians(angle));
-            double leftCanonY = yPosition + height / 2 - height / 2 * Math.sin(Math.toRadians(angle)) - 5 * Math.sin(Math.toRadians(angle));
-            double rightCanonX = xPosition + width / 2 + width / 2 * Math.cos(Math.toRadians(angle)) - 5 * Math.cos(Math.toRadians(angle));
-            double rightCanonY = yPosition + height / 2 + height / 2 * Math.sin(Math.toRadians(angle)) - 5 * Math.sin(Math.toRadians(angle));
 
-            FireBall leftHex = new FireBall(leftCanonX, leftCanonY, Color.YELLOW);
-            FireBall rightHex = new FireBall(rightCanonX, rightCanonY, Color.YELLOW);
+private void fireHexes() {
+    if (isFiring) {
+        double offset = -80;  // Adjust this value to ensure the firing starts above the staff
 
-            leftHex.setVelocity(-5 * Math.sin(Math.toRadians(angle)), -5 * Math.cos(Math.toRadians(angle))); // Set upward velocity relative to rotation
-            rightHex.setVelocity(-5 * Math.sin(Math.toRadians(angle)), -5 * Math.cos(Math.toRadians(angle))); // Set upward velocity relative to rotation
+        // Calculate base positions for left and right cannons
+        double leftCanonX = xPosition + width / 2 - width / 2 * Math.cos(Math.toRadians(angle)) - 5 * Math.cos(Math.toRadians(angle));
+        double leftCanonY = yPosition + height / 2 - height / 2 * Math.sin(Math.toRadians(angle)) - 5 * Math.sin(Math.toRadians(angle));
+        double rightCanonX = xPosition + width / 2 + width / 2 * Math.cos(Math.toRadians(angle)) + 5 * Math.cos(Math.toRadians(angle));
+        double rightCanonY = yPosition + height / 2 + height / 2 * Math.sin(Math.toRadians(angle)) + 5 * Math.sin(Math.toRadians(angle));
 
-            hexes.add(leftHex);
-            hexes.add(rightHex);
+        // Determine which side is up based on the angle
+        if (angle  < 0 ) {
+            // Right side is up
+            rightCanonY += offset * Math.cos(Math.toRadians(angle));
+        } else if (angle > 0) {
+            // Left side is up
+            leftCanonY += offset * Math.cos(Math.toRadians(angle));
         }
+
+        FireBall leftHex = new FireBall(leftCanonX, leftCanonY, Color.YELLOW);
+        FireBall rightHex = new FireBall(rightCanonX, rightCanonY, Color.YELLOW);
+
+        leftHex.setVelocity(5 * Math.sin(Math.toRadians(angle)), -5 * Math.cos(Math.toRadians(angle)));
+        rightHex.setVelocity(5 * Math.sin(Math.toRadians(angle)), -5 * Math.cos(Math.toRadians(angle)));
+
+        hexes.add(leftHex);
+        hexes.add(rightHex);
     }
+}
+
+
+
 
     public ArrayList<FireBall> getHexes() {
         return hexes;
