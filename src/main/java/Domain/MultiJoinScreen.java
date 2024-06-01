@@ -18,8 +18,10 @@ public class MultiJoinScreen extends JFrame {
     private Timer countdownTimer;
     private int countdown = 3;
     private JLabel countdownLabel = new JLabel("Starting in: " + countdown);
+    private BuildingModeController buildingModeController;
 
     public MultiJoinScreen(BuildingModeController buildingModeController) {
+        this.buildingModeController = buildingModeController;
         setTitle("Join Game");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -127,11 +129,11 @@ public class MultiJoinScreen extends JFrame {
                             int countdownValue = Integer.parseInt(message.substring(11));
                             displayCountdown(countdownValue);
                         } else if (message.equals("Game Started!")) {
-                            // Trigger the start of the game
-                            countdownLabel.setText("Starting now!");
+                            // Receive the game info and start the game
+                            GameInfo gameInfo = tcpClient.receiveGameInfo();
+                            buildingModeController.setGameInfo(gameInfo);
                             buildingModeController.setCurrentMode(BuildingModePage.FINISH);
                             buildingModeController.switchScreens();
-                            //tcpClient.stopConnection();
                         }
                     }
                 }
@@ -158,12 +160,15 @@ public class MultiJoinScreen extends JFrame {
                     } else {
                         countdownTimer.stop();
                         countdownLabel.setText("Starting now!");
+                        buildingModeController.setCurrentMode(BuildingModePage.FINISH);
+                        buildingModeController.switchScreens();
                     }
                 }
             });
             countdownTimer.start();
         });
     }
+
 
     static class BackgroundPanel extends JPanel {
         private Image backgroundImage;

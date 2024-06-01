@@ -114,12 +114,15 @@ public class MultiHostScreen extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 if (tcpServer.getIsConnected()) {
                     countdownLabel.setVisible(true);
+                    GameInfo gameInfo = buildingModeController.getGameInfo();
+                    tcpServer.sendGameInfo(gameInfo);  // Send the game state to the client
                     startCountdown();
                 } else {
                     updateStatus("No client connected to start the game.");
                 }
             }
         });
+
 
         JPanel paddingPanel = new JPanel(new BorderLayout());
         paddingPanel.setOpaque(false);
@@ -152,6 +155,7 @@ public class MultiHostScreen extends JFrame {
         });
         countdownTimer.start();
     }
+
 
     public void updateStatus(String status) {
         SwingUtilities.invokeLater(() -> statusValueLabel.setText(status));

@@ -92,6 +92,17 @@ public class TCPServer {
             e.printStackTrace();
         }
     }
+    public void sendGameInfo(GameInfo gameInfo) {
+        try {
+            if (objectOut != null) {
+                objectOut.writeObject(gameInfo);
+                //objectOut.flush();
+            }
+        } catch (IOException e) {
+            System.err.println("Failed to send GameInfo: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 
     public String getIpAddress() {
         return ipAddress;

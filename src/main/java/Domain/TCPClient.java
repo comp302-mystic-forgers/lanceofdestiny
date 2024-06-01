@@ -69,6 +69,18 @@ public class TCPClient {
     public String receiveMessage() throws IOException, ClassNotFoundException {
         return (String) objectIn.readObject();
     }
+    public GameInfo receiveGameInfo() {
+        try {
+            if (objectIn != null) {
+                return (GameInfo) objectIn.readObject();
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            System.err.println("Failed to receive GameInfo: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
     public void stopConnection() {
         try {

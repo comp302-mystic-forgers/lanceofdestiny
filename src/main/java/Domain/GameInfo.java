@@ -1,12 +1,14 @@
 package Domain;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 
-public class GameInfo {
+public class GameInfo implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String playerId;
     private static int score;
     private static int  lives;

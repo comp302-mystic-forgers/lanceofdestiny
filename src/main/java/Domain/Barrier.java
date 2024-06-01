@@ -1,6 +1,7 @@
 package Domain;
 
 import java.awt.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -8,7 +9,8 @@ import java.util.UUID;
 // and render it on the screen using the draw method. It also allows the barrier to be destroyed
 // and checks if it is already destroyed. It is an obstacle that needs to be destroyed by the player
 // in order to win the game. For this it needs to be hit by a fireball a certain amount of times.
-public abstract class Barrier {
+public abstract class Barrier implements Serializable {
+    private static final long serialVersionUID = 1L;
     private UUID barrierId;
     protected int x, y; // Position
     protected int width, height; // Dimensions

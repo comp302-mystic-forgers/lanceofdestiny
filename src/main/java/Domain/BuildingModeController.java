@@ -74,6 +74,12 @@ public class BuildingModeController {
                 assemblyMenu.setVisible(false);
                 currentMode = READY_FOR_GAME;
                 gameController.switchModes();
+                if (multiHostScreen.isVisible()) {
+                    multiHostScreen.setVisible(false);
+                }
+                if (multiJoinScreen.isVisible()) {
+                    multiJoinScreen.setVisible(false);
+                }
                 break;
         }
     }
