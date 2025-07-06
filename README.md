@@ -1,92 +1,120 @@
 # Lance Of Destiny
 
+## 🎮 Introduction
 
-## Introduction
-Lance of Destiny is an interactive game where you will play and navigate a magical staff that balances a fireball which destroys barriers to reach the lance of destiny.
-Each barrier has different traits. Some are rewarding, others can kill you. You only have 1 live.
-In order to win, you need to find destroy all obstacles.
+Lance of Destiny is an interactive game where you control a magical staff balancing a fireball to destroy barriers and reach the legendary lance. Each barrier has unique traits—some are rewarding, others are deadly. You have only **one life**. To win, destroy all obstacles!
 
+---
 
-## How to run the game
-1. You should download the zip file and upload the code to your IDE. Open the GameController and run it to start.
-2. You will see the welcome page.
-3. Click "start game" to open the Login Page.
-4. Either sign up or login to an existing account. You will then be able to load an old game (soon to be added feature) or play a new one.
-5. If you decide to play a new one choose your barrier number. Click play.
-6. Play the game! Avoid dropping the ball and reach the lance with your live to win the game!
+## 🚀 How to Run the Game
 
-## Class Structure
-In order to implement this game, we set up 31 different classes.
+1. **Download** the zip file and open the code in your IDE.
+2. Open `GameController.java` and run it to start the game.
+3. The **Welcome Page** will appear.
+4. Click **Start Game** to open the Login Page.
+5. **Sign up** or **log in** to an existing account. You can load an old game (feature coming soon) or start a new one.
+6. If starting a new game, choose your barrier numbers and click **Play**.
+7. Enjoy! Avoid dropping the ball and reach the lance with your life to win!
 
-## Bonus Feature
-1. Collect Gift
-   When you hit a rewarding barrier you get a gift.
+---
 
-## Feature List
+## 🏗️ Class Structure
+
+The game is implemented with **31 different classes** for modularity and clarity.
+
+---
+
+## 🎁 Bonus Feature
+
+- **Collect Gift:**  
+  When you hit a rewarding barrier, you receive a gift!
+
+---
+
+## 📝 Feature List
+
 ### 1. Starting The Game
-#### 1.1 GameController, BuidlingModeController & GameView
-The GameController class is the entry point for the desktop version of the game.
-It sets up the game window and launches the game using Swing framework.
-First it delegates the Screen Management to the BuidlingModeController during the Building (Set up) Mode, and then to the GameWindow during Running (Playing) Mode.
 
-When running the Lance Of Destiny for the first time, it will open WelcomePage screen, which displays a button to start the game, background image and play the BGM.
+#### 1.1 GameController, BuildingModeController & GameView
+
+- `GameController` is the entry point for the desktop version.
+- Sets up the game window and launches the game using the Swing framework.
+- Delegates screen management to `BuildingModeController` during setup, and to `GameWindow` during play.
+- On first run, opens the `WelcomePage` with a start button, background image, and BGM.
 
 #### 1.2 Login, Database (MongoDB) & Building Mode Menu
-When player click the "start game" button, player will open a Login Page.
-Player needs to log in to his account saved in the online DataBase or sign up with new username and password meeting length requirements.
-Once logged in, player will go to Building Mode Menu. In Building Mode Menu he/ she can load an old game (soon feature implementation) or create a new game.
+
+- Clicking "Start Game" opens the Login Page.
+- Log in to your account (saved in the online database) or sign up with a new username and password (must meet length requirements).
+- After login, access the Building Mode Menu to load an old game (coming soon) or create a new one.
 
 #### 1.3 Building Mode (Assembly of Barriers)
-Player needs to choose the amount of each barrier type included. The rendering of the Assembly / Building Mode is established through GameLayoutPanel.
 
-##### Value & Type
- SimpleBarrier -> Only needs to be touched once by Fireball to break \
- RewardingBarrier -> This barrier drops a gift!\
- ReinforcedBarrier -> The barrier is hard to destory and has between 1 and 5 hits duration \
- ExplosiveBarrier -> This obstacle falls down when hit, and you loose your live when colliding with one of them \
- 
+- Choose the amount of each barrier type.
+- Rendering is handled by `GameLayoutPanel`.
+
+##### Barrier Types
+
+- **SimpleBarrier:** Breaks with one hit.
+- **RewardingBarrier:** Drops a gift!
+- **ReinforcedBarrier:** Hard to destroy, requires 1-5 hits.
+- **ExplosiveBarrier:** Falls when hit; colliding with it means game over.
+
+---
 
 ### 2. Playing The Game
-#### 2.1 Render Fireball, Magical Staff and Barriers
-Fireball checks if collision with magical staff or barriers and gets reflected.
 
+#### 2.1 Render Fireball, Magical Staff, and Barriers
+
+- Fireball checks for collisions with the staff or barriers and reflects accordingly.
 
 #### 2.2 Display HUD
-The HUD consists of Pause option.
+
+- The HUD includes a pause option.
 
 #### 2.3 Moving the Character
-Player (magical staff) will start from middle of screen.
-Player can move the character using arrow buttons (left, right) during the game and rotate with A and D.
-Player can move around the bottom but cannot move up.
 
-#### 2.4 Collision with Trap & Enemies
-When player collides with the explosive barrier or ball drops to the bottom, then player's dies!
+- The magical staff starts in the middle.
+- Move left/right with arrow keys, rotate with A/D.
+- Movement is limited to the bottom of the screen.
+
+#### 2.4 Collision with Traps & Enemies
+
+- Colliding with an explosive barrier or dropping the ball ends the game.
 
 #### 2.5 Losing the Game
-When player's dies, then player loses and the game ends.
-We will show "Game Over" message.
 
+- If you die, the game ends and a "Game Over" message is shown.
 
-#### 2.6 Win the Game
-When player destroys all barriers, then player wins and the game ends.
+#### 2.6 Winning the Game
 
+- Destroy all barriers to win!
+
+---
 
 ### 3. Pausing the Game
-Player can press Pause button to pause the game,
-When the game pauses, then every element of the game will stop and the pause screen is shown.
-There are four options in the pause screen:
-1. Resume Button - to continue the game
-2. Quit Button - to stop the game completely
-3. Exit Button - to go back to menu screen
-4. Help Butoon - to open Help Screen with tips
+
+- Press the Pause button to stop the game.
+- All elements freeze and the pause screen appears.
+- Options:
+  1. Resume
+  2. Quit
+  3. Exit to Menu
+  4. Help (tips)
+
+---
 
 ### 4. Screen Adjustment
-Player have the default screen that is not in full screen.
-Player has the ability to adjust screen size. The zoom will not be affected, but only certain part of the maps can be shown.
-HUD will always be shown in different sizes.
 
-### Contributors
+- Default screen is not fullscreen.
+- You can adjust the screen size; zoom remains the same, but only part of the map is visible.
+- HUD adapts to different sizes.
 
-Created by Agne Armonaite, Emircan Kılıç, Ertuğrul Altuntaş, Ferhat Özen, Gülbeyaz Baymaz and Igor Cvijanović
+---
+
+## 👥 Contributors
+
+Created by:  
+Agne Armonaite, Emircan Kılıç, Ertuğrul Altuntaş, Ferhat Özen, Gülbeyaz Baymaz, Igor Cvijanović
 
 
